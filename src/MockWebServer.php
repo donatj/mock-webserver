@@ -36,6 +36,9 @@ class MockWebServer {
 		$this->host = $host;
 	}
 
+	/**
+	 * Start the Web Server on the selected port and host
+	 */
 	public function start() {
 		if( $this->isRunning() ) {
 			return;
@@ -73,6 +76,11 @@ class MockWebServer {
 		});
 	}
 
+	/**
+	 * Is the Web Server currently running?
+	 *
+	 * @return bool
+	 */
 	public function isRunning() {
 		if( !$this->pid ) {
 			return false;
@@ -94,6 +102,12 @@ class MockWebServer {
 		$this->started = false;
 	}
 
+	/**
+	 * Get the HTTP root of the webserver
+	 *  e.g.: http://127.0.0.1:8123
+	 *
+	 * @return string
+	 */
 	public function getServerRoot() {
 		return "http://{$this->host}:{$this->port}";
 	}
