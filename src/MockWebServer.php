@@ -6,6 +6,10 @@ class MockWebServer {
 
 	const VND = 'VND.DonatStudios.MockWebServer';
 
+	const RESPONSE_BODY    = 'body';
+	const RESPONSE_STATUS  = 'status';
+	const RESPONSE_HEADERS = 'headers';
+
 	protected $pid = null;
 
 	/**
@@ -113,6 +117,45 @@ class MockWebServer {
 	 */
 	public function getServerRoot() {
 		return "http://{$this->host}:{$this->port}";
+	}
+
+	/**
+	 * Get a URL providing the specified response.
+	 *
+	 * @param string $body
+	 * @param array  $headers
+	 * @param int    $status
+	 * @return string URL where response can be found
+	 */
+	public function getUrlOfResponse( $body, array $headers = [], $status = 200 ) {
+		$content = json_encode([
+			self::RESPONSE_BODY    => $body,
+			self::RESPONSE_STATUS  => $status,
+			self::RESPONSE_HEADERS => $headers,
+		]);
+
+		$url     = md5($content);
+		$tmpPath = self::getTmpDir();
+
+		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $url, $content) ) {
+			throw new \RuntimeException('Failed to write temporary content');
+		}
+
+		return $this->getServerRoot() . '/' . self::VND . '/' . $url;
+	}
+
+	/**
+	 * @return string
+	 * @internal
+	 */
+	public static function getTmpDir() {
+		$tmpDir  = sys_get_temp_dir();
+		$tmpPath = $tmpDir . DIRECTORY_SEPARATOR . 'MockWebServer';
+		if( !is_dir($tmpPath) ) {
+			mkdir($tmpPath);
+		}
+
+		return $tmpPath;
 	}
 
 	/**
