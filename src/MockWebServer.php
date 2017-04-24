@@ -4,11 +4,15 @@ namespace donatj\MockWebServer;
 
 class MockWebServer {
 
+	const VND = 'VND.DonatStudios.MockWebServer';
+
 	protected $pid = null;
+
 	/**
 	 * @var string
 	 */
 	private $host;
+
 	/**
 	 * @var int
 	 */
