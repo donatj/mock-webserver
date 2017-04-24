@@ -19,6 +19,12 @@ class MockWebServer {
 	private $port;
 
 	/**
+	 * Indicates whether or not the server was successfully started
+	 *
+	 * @var bool
+	 */
+	private $started = false;
+
 	/**
 	 * TestWebServer constructor.
 	 *
@@ -31,6 +37,9 @@ class MockWebServer {
 	}
 
 	public function start() {
+		if( $this->isRunning() ) {
+			return;
+		}
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
 		$cmd    = "php -S {$this->host}:{$this->port} " . __DIR__ . '/server.php';
 
@@ -54,6 +63,8 @@ class MockWebServer {
 		if( !$this->isRunning() ) {
 			throw new \RuntimeException("Failed to start server. Is something already running on port {$this->port}?");
 		}
+
+		$this->started = true;
 
 		register_shutdown_function(function () {
 			if( $this->isRunning() ) {
@@ -79,6 +90,8 @@ class MockWebServer {
 	public function shutdown() {
 		exec(sprintf('kill %d',
 			$this->pid));
+
+		$this->started = false;
 	}
 
 	public function getServerRoot() {
