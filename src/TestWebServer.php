@@ -50,7 +50,9 @@ class TestWebServer {
 		}
 
 		register_shutdown_function(function () {
-			$this->shutdown();
+			if( $this->isRunning() ) {
+				$this->shutdown();
+			}
 		});
 	}
 
