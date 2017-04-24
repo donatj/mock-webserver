@@ -15,13 +15,15 @@ class MockWebServer {
 	private $port;
 
 	/**
+	/**
 	 * TestWebServer constructor.
+	 *
+	 * @param int    $port Network port to run on
+	 * @param string $host Listening hostname
 	 */
-	public function __construct( $host = "localhost", $port = 8123 ) {
-		$this->host = $host;
+	public function __construct( $port = 8123, $host = "127.0.0.1" ) {
 		$this->port = $port;
-
-		$this->start();
+		$this->host = $host;
 	}
 
 	public function start() {
