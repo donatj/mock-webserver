@@ -1,5 +1,7 @@
 <?php
 
+namespace donatj\MockWebserver;
+
 class TestWebServer {
 
 	protected $pid = null;
@@ -23,7 +25,7 @@ class TestWebServer {
 	}
 
 	public function start() {
-		$stdout = tempnam(sys_get_temp_dir(), 'boomserv-stdout-');
+		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
 		$cmd    = "php -S {$this->host}:{$this->port} " . __DIR__ . '/server.php';
 
 		$fullCmd = sprintf("%s > %s 2>&1 & echo $!",
@@ -38,13 +40,13 @@ class TestWebServer {
 		);
 
 		if( !ctype_digit($this->pid) ) {
-			throw new RuntimeException("Error starting server, received '{$this->pid}', expected int PID");
+			throw new \RuntimeException("Error starting server, received '{$this->pid}', expected int PID");
 		}
 
 		sleep(1); // just to make sure it's fully started up, maybe not nesessary
 
 		if( !$this->isRunning() ) {
-			throw new RuntimeException("Failed to start server. Is something already running on port {$this->port}?");
+			throw new \RuntimeException("Failed to start server. Is something already running on port {$this->port}?");
 		}
 
 		register_shutdown_function(function () {
