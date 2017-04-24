@@ -2,6 +2,9 @@
 
 namespace donatj\MockWebServer;
 
+use donatj\MockWebServer\Exceptions;
+use donatj\MockWebServer\Exceptions;
+
 class MockWebServer {
 
 	const VND = 'VND.DonatStudios.MockWebServer';
@@ -65,13 +68,13 @@ class MockWebServer {
 		);
 
 		if( !ctype_digit($this->pid) ) {
-			throw new \RuntimeException("Error starting server, received '{$this->pid}', expected int PID");
+			throw new Exceptions\ServerException("Error starting server, received '{$this->pid}', expected int PID");
 		}
 
 		sleep(1); // just to make sure it's fully started up, maybe not necessary
 
 		if( !$this->isRunning() ) {
-			throw new \RuntimeException("Failed to start server. Is something already running on port {$this->port}?");
+			throw new Exceptions\ServerException("Failed to start server. Is something already running on port {$this->port}?");
 		}
 
 		$this->started = true;
@@ -143,7 +146,7 @@ class MockWebServer {
 		$tmpPath = self::getTmpDir();
 
 		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $url, $content) ) {
-			throw new \RuntimeException('Failed to write temporary content');
+			throw new Exceptions\RuntimeException('Failed to write temporary content');
 		}
 
 		return $this->getServerRoot() . '/' . self::VND . '/' . $url;
