@@ -78,7 +78,7 @@ class MockWebServer {
 
 		register_shutdown_function(function () {
 			if( $this->isRunning() ) {
-				$this->shutdown();
+				$this->stop();
 			}
 		});
 	}
@@ -102,9 +102,14 @@ class MockWebServer {
 		return false;
 	}
 
-	public function shutdown() {
-		exec(sprintf('kill %d',
-			$this->pid));
+	/**
+	 * Stop the Web Server
+	 */
+	public function stop() {
+		if( $this->started ) {
+			exec(sprintf('kill %d',
+				$this->pid));
+		}
 
 		$this->started = false;
 	}
