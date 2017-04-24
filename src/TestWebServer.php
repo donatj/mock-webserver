@@ -43,7 +43,7 @@ class TestWebServer {
 			throw new \RuntimeException("Error starting server, received '{$this->pid}', expected int PID");
 		}
 
-		sleep(1); // just to make sure it's fully started up, maybe not nesessary
+		sleep(1); // just to make sure it's fully started up, maybe not necessary
 
 		if( !$this->isRunning() ) {
 			throw new \RuntimeException("Failed to start server. Is something already running on port {$this->port}?");
