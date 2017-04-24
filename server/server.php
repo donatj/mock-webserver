@@ -29,16 +29,20 @@ if( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', 
 			}
 		}
 
-		echo $response[MockWebServer::RESPONSE_BODY];
+		if( $response[MockWebServer::RESPONSE_BODY] !== false ) {
+			echo $response[MockWebServer::RESPONSE_BODY];
+
+			return;
+		}
 	} else {
 		http_response_code(404);
 		echo MockWebServer::VND . ": Resource '{$path}' not found!\n";
+
+		return;
 	}
-
-	return;
+} else {
+	header('Content-Type: application/json');
 }
-
-header('Content-Type: application/json');
 
 $headers = getallheaders();
 
