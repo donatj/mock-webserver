@@ -43,8 +43,11 @@ class MockWebServer {
 		if( $this->isRunning() ) {
 			return;
 		}
+
+		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
+
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd    = "php -S {$this->host}:{$this->port} " . __DIR__ . '/server.php';
+		$cmd    = "php -S {$this->host}:{$this->port} " . escapeshellarg($script);
 
 		$fullCmd = sprintf("%s > %s 2>&1 & echo $!",
 			escapeshellcmd($cmd),
