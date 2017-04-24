@@ -3,7 +3,6 @@
 namespace donatj\MockWebServer;
 
 use donatj\MockWebServer\Exceptions;
-use donatj\MockWebServer\Exceptions;
 
 class MockWebServer {
 
