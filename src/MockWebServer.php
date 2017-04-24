@@ -78,4 +78,18 @@ class MockWebServer {
 	public function getServerRoot() {
 		return "http://{$this->host}:{$this->port}";
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getHost() {
+		return $this->host;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getPort() {
+		return $this->port;
+	}
 }
