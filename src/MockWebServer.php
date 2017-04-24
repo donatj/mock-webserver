@@ -1,8 +1,8 @@
 <?php
 
-namespace donatj\MockWebserver;
+namespace donatj\MockWebServer;
 
-class TestWebServer {
+class MockWebServer {
 
 	protected $pid = null;
 	/**

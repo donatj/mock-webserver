@@ -1,13 +1,23 @@
 {
-    "name": "donatj/mock-php-webserver",
-    "description": "Simple mock webserver for unit testing",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Jesse Donat",
-            "email": "donatj@gmail.com"
-        }
-    ],
-    "require": {}
+	"name": "donatj/mock-webserver",
+	"description": "Simple mock web server for unit testing",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jesse Donat",
+			"email": "donatj@gmail.com"
+		}
+	],
+	"require": {
+		"ralouphie/getallheaders": "^2.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"donatj\\MockWebServer\\": "src/"
+		}
+	},
+	"require-dev": {
+		"donatj/drop": "^1.0"
+	}
 }
