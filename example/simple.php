@@ -1,14 +1,15 @@
 <?php
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $server = new \donatj\MockWebServer\MockWebServer;
 $server->start();
 
-// Get us a generated URL that will give us the defined request.
-$url = $server->getUrlOfResponse(
-	json_encode([ 'foo' => 'bar' ]),
-	[ 'X-Hot-Sauce' => 'foobar' ],
+// We define the servers response to requests of the /definedPath endpoint
+$url = $server->setResponseOfPath(
+	'/definedPath',
+	'Body Response',
+	[ 'Cache-Control' => 'no-cache' ],
 	200
 );
 

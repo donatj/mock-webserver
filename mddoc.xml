@@ -26,6 +26,34 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 				<text>Omitting the `--dev` will add this to `require` rather than `require-dev`</text>
 			</section>
 			<section title="Examples">
+				<section title="Basic Usage">
+					<text>The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.</text>
+					<source name="example/basic.php" lang="php"/>
+					<text>Outputs:</text>
+					<source><![CDATA[
+Requesting: http://127.0.0.1:8123/endpoint?get=foobar
+
+{
+    "_GET": {
+        "get": "foobar"
+    },
+    "_POST": [],
+    "_FILES": [],
+    "_COOKIE": [],
+    "HEADERS": {
+        "Host": "127.0.0.1:8123",
+        "Connection": "close"
+    },
+    "METHOD": "GET",
+    "INPUT": "",
+    "PARSED_INPUT": [],
+    "REQUEST_URI": "\/endpoint?get=foobar",
+    "PARSED_REQUEST_URI": {
+        "path": "\/endpoint",
+        "query": "get=foobar"
+    }
+}]]></source>
+				</section>
 				<section title="Simple">
 					<source name="example/simple.php" lang="php"/>
 					<text>Outputs:</text>

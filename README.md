@@ -28,20 +28,67 @@ Omitting the `--dev` will add this to `require` rather than `require-dev`
 
 ## Examples
 
+### Basic Usage
+
+The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.
+
+```php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$server = new \donatj\MockWebServer\MockWebServer;
+$server->start();
+
+$url = $server->getServerRoot() . '/endpoint?get=foobar';
+
+echo "Requesting: $url\n\n";
+echo file_get_contents($url);
+```
+
+Outputs:
+
+```
+
+Requesting: http://127.0.0.1:8123/endpoint?get=foobar
+
+{
+    "_GET": {
+        "get": "foobar"
+    },
+    "_POST": [],
+    "_FILES": [],
+    "_COOKIE": [],
+    "HEADERS": {
+        "Host": "127.0.0.1:8123",
+        "Connection": "close"
+    },
+    "METHOD": "GET",
+    "INPUT": "",
+    "PARSED_INPUT": [],
+    "REQUEST_URI": "\/endpoint?get=foobar",
+    "PARSED_REQUEST_URI": {
+        "path": "\/endpoint",
+        "query": "get=foobar"
+    }
+}
+```
+
 ### Simple
 
 ```php
 <?php
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $server = new \donatj\MockWebServer\MockWebServer;
 $server->start();
 
-// Get us a generated URL that will give us the defined request.
-$url = $server->getUrlOfResponse(
-	json_encode([ 'foo' => 'bar' ]),
-	[ 'X-Hot-Sauce' => 'foobar' ],
+// We define the servers response to requests of the /definedPath endpoint
+$url = $server->setResponseOfPath(
+	'/definedPath',
+	'Body Response',
+	[ 'Cache-Control' => 'no-cache' ],
 	200
 );
 
@@ -107,5 +154,4 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 	}
 
 }
-
 ```
