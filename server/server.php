@@ -15,6 +15,25 @@ foreach( $files as $file ) {
 $tmp                = getenv(MockWebServer::TMP_ENV);
 $PARSED_REQUEST_URI = parse_url($_SERVER['REQUEST_URI']);
 
+$HEADERS = getallheaders();
+$INPUT   = file_get_contents("php://input");
+parse_str($INPUT, $PARSED_INPUT);
+
+$request = [
+	'_GET'               => $_GET,
+	'_POST'              => $_POST,
+	'_FILES'             => $_FILES,
+	'_COOKIE'            => $_COOKIE,
+	'HEADERS'            => $HEADERS,
+	'METHOD'             => $_SERVER['REQUEST_METHOD'],
+	'INPUT'              => $INPUT,
+	'PARSED_INPUT'       => $PARSED_INPUT,
+	'REQUEST_URI'        => $_SERVER['REQUEST_URI'],
+	'PARSED_REQUEST_URI' => $PARSED_REQUEST_URI,
+];
+
+file_put_contents($tmp . DIRECTORY_SEPARATOR . 'last.request', json_encode($request));
+
 $path  = false;
 $alias = 'alias.' . md5($PARSED_REQUEST_URI['path']);
 if( file_exists($tmp . DIRECTORY_SEPARATOR . $alias) ) {
@@ -55,20 +74,4 @@ if( $path !== false ) {
 	header('Content-Type: application/json');
 }
 
-$headers = getallheaders();
-
-$INPUT = file_get_contents("php://input");
-parse_str($INPUT, $PARSED_INPUT);
-
-echo json_encode([
-	'_GET'               => $_GET,
-	'_POST'              => $_POST,
-	'_FILES'             => $_FILES,
-	'_COOKIE'            => $_COOKIE,
-	'HEADERS'            => $headers,
-	'METHOD'             => $_SERVER['REQUEST_METHOD'],
-	'INPUT'              => $INPUT,
-	'PARSED_INPUT'       => $PARSED_INPUT,
-	'REQUEST_URI'        => $_SERVER['REQUEST_URI'],
-	'PARSED_REQUEST_URI' => $PARSED_REQUEST_URI,
-], JSON_PRETTY_PRINT);
+echo json_encode($request, JSON_PRETTY_PRINT);

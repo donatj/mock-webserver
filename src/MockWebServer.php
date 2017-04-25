@@ -219,6 +219,24 @@ class MockWebServer {
 	}
 
 	/**
+	 * Get the previous requests associated request data.
+	 *
+	 * @return array|null
+	 */
+	public function getLastRequest() {
+		$path = $this->tmpDir . DIRECTORY_SEPARATOR . 'last.request';
+		if( file_exists($path) ) {
+			$content = file_get_contents($path);
+			$data    = @json_decode($content, true);
+			if( json_last_error() === JSON_ERROR_NONE ) {
+				return $data;
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Get the host of the server.
 	 *
 	 * @return string

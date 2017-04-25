@@ -79,6 +79,16 @@ Set a specified path to provide a specific response
 
 ---
 
+### Method: `MockWebServer->getLastRequest()`
+
+Get the previous requests associated request data.
+
+#### Returns:
+
+- ***array*** | ***null***
+
+---
+
 ### Method: `MockWebServer->getHost()`
 
 Get the host of the server.
