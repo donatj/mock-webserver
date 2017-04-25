@@ -26,7 +26,8 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 	}
 
 	static function tearDownAfterClass() {
-		self::$server->stop(); // tearing down the server after the class lets us reuse the port for other tests
+		// stopping the webs erver during tear down allows us to reuse the port for later tests
+		self::$server->stop();
 	}
 
 }
