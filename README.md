@@ -1,5 +1,7 @@
 # Mock Web Server
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver/?branch=master)
+
 Simple mock webserver in PHP for unit testing.
 
 Unit testing HTTP requests can be difficult, especially in cases where injecting a request library is diffult or not ideal.
