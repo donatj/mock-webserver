@@ -24,10 +24,11 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 				<source lang="php">composer require "donatj/mock-webserver" --dev</source>
 				<text>Omitting the `--dev` will add this to `require` rather than `require-dev`</text>
 			</section>
-			<section title="Example">
-				<source name="example/simple.php" lang="php"/>
-				<text>Outputs:</text>
-				<source><![CDATA[
+			<section title="Examples">
+				<section title="Simple">
+					<source name="example/simple.php" lang="php"/>
+					<text>Outputs:</text>
+					<source><![CDATA[
 Requesting: http://127.0.0.1:8123/VND.DonatStudios.MockWebServer/9acece3eac841f003f4258e0e00445ed
 
 HTTP/1.0 200 OK
@@ -38,6 +39,10 @@ X-Hot-Sauce: foobar
 Content-type: text/html; charset=UTF-8
 
 {"foo":"bar"}]]></source>
+				</section>
+				<section title="PHPUnit">
+					<source name="example/phpunit.php" lang="php"/>
+				</section>
 			</section>
 		</section>
 	</docpage>
