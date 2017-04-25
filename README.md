@@ -87,7 +87,7 @@ $server->start();
 // We define the servers response to requests of the /definedPath endpoint
 $url = $server->setResponseOfPath(
 	'/definedPath',
-	'Body Response',
+	'This is our http body response',
 	[ 'Cache-Control' => 'no-cache' ],
 	200
 );
@@ -106,16 +106,16 @@ Outputs:
 
 ```
 
-Requesting: http://127.0.0.1:8123/VND.DonatStudios.MockWebServer/9acece3eac841f003f4258e0e00445ed
+Requesting: http://127.0.0.1:8123/definedPath
 
 HTTP/1.0 200 OK
 Host: 127.0.0.1:8123
 Connection: close
 X-Powered-By: PHP/5.6.30
-X-Hot-Sauce: foobar
+Cache-Control: no-cache
 Content-type: text/html; charset=UTF-8
 
-{"foo":"bar"}
+This is our http body response
 ```
 
 ### PHPUnit

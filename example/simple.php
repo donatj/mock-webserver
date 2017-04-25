@@ -8,7 +8,7 @@ $server->start();
 // We define the servers response to requests of the /definedPath endpoint
 $url = $server->setResponseOfPath(
 	'/definedPath',
-	'Body Response',
+	'This is our http body response',
 	[ 'Cache-Control' => 'no-cache' ],
 	200
 );
