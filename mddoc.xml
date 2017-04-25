@@ -2,8 +2,7 @@
 	<docpage target="README.md" autoloader="psr4" autoloader-root="src"
 			 autoloader-root-namespace="donatj\MockWebServer">
 		<section title="Mock Web Server">
-			<text><![CDATA[
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver/?branch=master)
+			<text><![CDATA[[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver/?branch=master)
 [![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
 
 Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
@@ -27,11 +26,10 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 			</section>
 			<section title="Examples">
 				<section title="Basic Usage">
-					<text>The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.</text>
+					<text><![CDATA[The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.]]></text>
 					<source name="example/basic.php" lang="php"/>
 					<text>Outputs:</text>
-					<source><![CDATA[
-Requesting: http://127.0.0.1:8123/endpoint?get=foobar
+					<source><![CDATA[Requesting: http://127.0.0.1:8123/endpoint?get=foobar
 
 {
     "_GET": {
@@ -57,8 +55,7 @@ Requesting: http://127.0.0.1:8123/endpoint?get=foobar
 				<section title="Simple">
 					<source name="example/simple.php" lang="php"/>
 					<text>Outputs:</text>
-					<source><![CDATA[
-Requesting: http://127.0.0.1:8123/definedPath
+					<source><![CDATA[Requesting: http://127.0.0.1:8123/definedPath
 
 HTTP/1.0 200 OK
 Host: 127.0.0.1:8123

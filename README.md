@@ -49,7 +49,6 @@ echo file_get_contents($url);
 Outputs:
 
 ```
-
 Requesting: http://127.0.0.1:8123/endpoint?get=foobar
 
 {
@@ -105,7 +104,6 @@ echo $content . "\n";
 Outputs:
 
 ```
-
 Requesting: http://127.0.0.1:8123/definedPath
 
 HTTP/1.0 200 OK
