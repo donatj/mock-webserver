@@ -219,6 +219,8 @@ class MockWebServer {
 	}
 
 	/**
+	 * Get the host of the server.
+	 *
 	 * @return string
 	 */
 	public function getHost() {
@@ -226,6 +228,8 @@ class MockWebServer {
 	}
 
 	/**
+	 * Get the port the network server is to be ran on.
+	 *
 	 * @return int
 	 */
 	public function getPort() {
