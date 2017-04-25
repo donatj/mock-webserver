@@ -142,7 +142,7 @@ class MockWebServer {
 		]);
 
 		$url     = md5($content);
-		$tmpPath = self::getTmpDir();
+		$tmpPath = self::getTmpDir($this->port);
 
 		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $url, $content) ) {
 			throw new Exceptions\RuntimeException('Failed to write temporary content');
@@ -152,12 +152,18 @@ class MockWebServer {
 	}
 
 	/**
+	 * @param int $port
 	 * @return string
 	 * @internal
 	 */
-	public static function getTmpDir() {
+	public static function getTmpDir( $port ) {
 		$tmpDir  = sys_get_temp_dir();
 		$tmpPath = $tmpDir . DIRECTORY_SEPARATOR . 'MockWebServer';
+		if( !is_dir($tmpPath) ) {
+			mkdir($tmpPath);
+		}
+
+		$tmpPath .= DIRECTORY_SEPARATOR . intval($port);
 		if( !is_dir($tmpPath) ) {
 			mkdir($tmpPath);
 		}
