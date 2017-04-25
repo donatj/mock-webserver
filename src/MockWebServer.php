@@ -152,6 +152,8 @@ class MockWebServer {
 	}
 
 	/**
+	 * Set a specified path to provide a specific response
+	 *
 	 * @param string $path
 	 * @param string $body
 	 * @param array  $headers
