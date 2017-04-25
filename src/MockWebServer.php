@@ -12,6 +12,8 @@ class MockWebServer {
 	const RESPONSE_STATUS  = 'status';
 	const RESPONSE_HEADERS = 'headers';
 
+	const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
+
 	protected $pid = null;
 
 	/**
@@ -32,14 +34,20 @@ class MockWebServer {
 	private $started = false;
 
 	/**
+	 * @var string
+	 */
+	private $tmpDir;
+
+	/**
 	 * TestWebServer constructor.
 	 *
 	 * @param int    $port Network port to run on
 	 * @param string $host Listening hostname
 	 */
 	public function __construct( $port = 8123, $host = "127.0.0.1" ) {
-		$this->port = $port;
-		$this->host = $host;
+		$this->port   = $port;
+		$this->host   = $host;
+		$this->tmpDir = $this->getTmpDir();
 	}
 
 	/**
@@ -55,6 +63,9 @@ class MockWebServer {
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
 		$cmd    = "php -S {$this->host}:{$this->port} " . escapeshellarg($script);
 
+		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
+			throw new Exceptions\RuntimeException('Unable to put environmental variable');
+		}
 		$fullCmd = sprintf("%s > %s 2>&1 & echo $!",
 			escapeshellcmd($cmd),
 			escapeshellarg($stdout)
@@ -141,10 +152,9 @@ class MockWebServer {
 			self::RESPONSE_HEADERS => $headers,
 		]);
 
-		$url     = md5($content);
-		$tmpPath = self::getTmpDir($this->port);
+		$url = md5($content);
 
-		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $url, $content) ) {
+		if( !file_put_contents($this->tmpDir . DIRECTORY_SEPARATOR . $url, $content) ) {
 			throw new Exceptions\RuntimeException('Failed to write temporary content');
 		}
 
@@ -152,18 +162,21 @@ class MockWebServer {
 	}
 
 	/**
-	 * @param int $port
 	 * @return string
 	 * @internal
 	 */
-	public static function getTmpDir( $port ) {
-		$tmpDir  = sys_get_temp_dir();
+	private function getTmpDir() {
+		$tmpDir = sys_get_temp_dir() ?: '/tmp';
+		if( !is_dir($tmpDir) || !is_writable($tmpDir) ) {
+			throw new \RuntimeException('Unable to find system tmp directory');
+		}
+
 		$tmpPath = $tmpDir . DIRECTORY_SEPARATOR . 'MockWebServer';
 		if( !is_dir($tmpPath) ) {
 			mkdir($tmpPath);
 		}
 
-		$tmpPath .= DIRECTORY_SEPARATOR . intval($port);
+		$tmpPath .= DIRECTORY_SEPARATOR . md5(microtime() . ':' . rand(0, 100000));
 		if( !is_dir($tmpPath) ) {
 			mkdir($tmpPath);
 		}

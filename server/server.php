@@ -13,8 +13,9 @@ foreach( $files as $file ) {
 	}
 }
 
+$tmp = getenv(MockWebServer::TMP_ENV);
 if( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $_SERVER['REQUEST_URI'], $matches) ) {
-	$path = MockWebServer::getTmpDir($_SERVER['SERVER_PORT']) . DIRECTORY_SEPARATOR . $matches[1];
+	$path = $tmp . DIRECTORY_SEPARATOR . $matches[1];
 	if( is_readable($path) ) {
 		$content  = file_get_contents($path);
 		$response = json_decode($content, true);
