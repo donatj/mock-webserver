@@ -1,0 +1,44 @@
+<mddoc>
+	<docpage target="README.md" autoloader="psr4" autoloader-root="src"
+			 autoloader-root-namespace="donatj\MockWebServer">
+		<section title="Mock Web Server">
+			<text><![CDATA[
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver/?branch=master)
+
+Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
+
+Unit testing HTTP requests can be difficult, especially in cases where injecting a request library is difficult or not ideal. This helps greatly simplify the process.
+
+Mock Web Server creates a local Web Server you can make predefined requests against.
+]]></text>
+			<docpage target="docs/docs.md" autoloader="psr4" autoloader-root="src"
+					 autoloader-root-namespace="donatj\MockWebServer">
+				<section title="Documentation">
+					<file name="src/MockWebServer.php"/>
+				</section>
+			</docpage>
+			<section title="Requirements">
+				<text>- PHP 5.4+</text>
+			</section>
+			<section title="Installing">
+				<source lang="php">composer require "donatj/mock-webserver" --dev</source>
+				<text>Omitting the `--dev` will add this to `require` rather than `require-dev`</text>
+			</section>
+			<section title="Example">
+				<source name="example/simple.php" lang="php"/>
+				<text>Outputs:</text>
+				<source><![CDATA[
+Requesting: http://127.0.0.1:8123/VND.DonatStudios.MockWebServer/9acece3eac841f003f4258e0e00445ed
+
+HTTP/1.0 200 OK
+Host: 127.0.0.1:8123
+Connection: close
+X-Powered-By: PHP/5.6.30
+X-Hot-Sauce: foobar
+Content-type: text/html; charset=UTF-8
+
+{"foo":"bar"}]]></source>
+			</section>
+		</section>
+	</docpage>
+</mddoc>
