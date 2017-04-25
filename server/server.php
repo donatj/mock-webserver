@@ -12,10 +12,20 @@ foreach( $files as $file ) {
 		break;
 	}
 }
+$tmp                = getenv(MockWebServer::TMP_ENV);
+$PARSED_REQUEST_URI = parse_url($_SERVER['REQUEST_URI']);
 
-$tmp = getenv(MockWebServer::TMP_ENV);
-if( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $_SERVER['REQUEST_URI'], $matches) ) {
+$path  = false;
+$alias = 'alias.' . md5($PARSED_REQUEST_URI['path']);
+if( file_exists($tmp . DIRECTORY_SEPARATOR . $alias) ) {
+	if( $path = file_get_contents($tmp . DIRECTORY_SEPARATOR . $alias) ) {
+		$path = $tmp . DIRECTORY_SEPARATOR . $path;
+	}
+} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $_SERVER['REQUEST_URI'], $matches) ) {
 	$path = $tmp . DIRECTORY_SEPARATOR . $matches[1];
+}
+
+if( $path !== false ) {
 	if( is_readable($path) ) {
 		$content  = file_get_contents($path);
 		$response = json_decode($content, true);
@@ -60,5 +70,5 @@ echo json_encode([
 	'INPUT'              => $INPUT,
 	'PARSED_INPUT'       => $PARSED_INPUT,
 	'REQUEST_URI'        => $_SERVER['REQUEST_URI'],
-	'PARSED_REQUEST_URI' => parse_url($_SERVER['REQUEST_URI']),
+	'PARSED_REQUEST_URI' => $PARSED_REQUEST_URI,
 ], JSON_PRETTY_PRINT);

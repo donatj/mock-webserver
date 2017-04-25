@@ -146,19 +146,51 @@ class MockWebServer {
 	 * @return string URL where response can be found
 	 */
 	public function getUrlOfResponse( $body, array $headers = [], $status = 200 ) {
+		$ref = $this->storeResponse($body, $headers, $status);
+
+		return $this->getServerRoot() . '/' . self::VND . '/' . $ref;
+	}
+
+	/**
+	 * @param string $path
+	 * @param string $body
+	 * @param array  $headers
+	 * @param int    $status
+	 * @return string
+	 */
+	public function setResponseOfPath( $path, $body, array $headers = [], $status = 200 ) {
+		$ref = $this->storeResponse($body, $headers, $status);
+
+		$path  = '/' . ltrim($path, '/');
+		$alias = 'alias.' . md5($path);
+
+		if( !file_put_contents($this->tmpDir . DIRECTORY_SEPARATOR . $alias, $ref) ) {
+			throw new \RuntimeException('Failed to store path alias');
+		}
+
+		return $this->getServerRoot() . $path;
+	}
+
+	/**
+	 * @param string $body
+	 * @param array  $headers
+	 * @param int    $status
+	 * @return string
+	 */
+	private function storeResponse( $body, array $headers, $status ) {
 		$content = json_encode([
 			self::RESPONSE_BODY    => $body,
 			self::RESPONSE_STATUS  => $status,
 			self::RESPONSE_HEADERS => $headers,
 		]);
 
-		$url = md5($content);
+		$ref = md5($content);
 
-		if( !file_put_contents($this->tmpDir . DIRECTORY_SEPARATOR . $url, $content) ) {
+		if( !file_put_contents($this->tmpDir . DIRECTORY_SEPARATOR . $ref, $content) ) {
 			throw new Exceptions\RuntimeException('Failed to write temporary content');
 		}
 
-		return $this->getServerRoot() . '/' . self::VND . '/' . $url;
+		return $ref;
 	}
 
 	/**
