@@ -1,6 +1,7 @@
 # Mock Web Server
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver/?branch=master)
+[![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
 
 Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
 
@@ -101,7 +102,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 	}
 
 	static function tearDownAfterClass() {
-		// stopping the webs erver during tear down allows us to reuse the port for later tests
+		// stopping the web server during tear down allows us to reuse the port for later tests
 		self::$server->stop();
 	}
 
