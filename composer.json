@@ -5,8 +5,10 @@
 	"license": "MIT",
 	"authors": [
 		{
-			"name": "Jesse Donat",
-			"email": "donatj@gmail.com"
+			"name": "Jesse G. Donat",
+			"email": "donatj@gmail.com",
+			"homepage": "https://donatstudios.com",
+			"role": "Lead"
 		}
 	],
 	"require": {
@@ -18,6 +20,7 @@
 		}
 	},
 	"require-dev": {
-		"donatj/drop": "^1.0"
+		"donatj/drop": "^1.0",
+		"phpunit/phpunit": "4.*"
 	}
 }
