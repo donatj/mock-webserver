@@ -44,10 +44,14 @@ class MockWebServer {
 	 * @param int    $port Network port to run on
 	 * @param string $host Listening hostname
 	 */
-	public function __construct( $port = 8123, $host = "127.0.0.1" ) {
+	public function __construct( $port = 0, $host = '127.0.0.1' ) {
 		$this->port   = $port;
 		$this->host   = $host;
 		$this->tmpDir = $this->getTmpDir();
+
+		if( $this->port == 0 ) {
+			$this->port = $this->findOpenPort();
+		}
 	}
 
 	/**
@@ -66,7 +70,7 @@ class MockWebServer {
 		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
 			throw new Exceptions\RuntimeException('Unable to put environmental variable');
 		}
-		$fullCmd = sprintf("%s > %s 2>&1 & echo $!",
+		$fullCmd = sprintf('%s > %s 2>&1 & echo $!',
 			escapeshellcmd($cmd),
 			escapeshellarg($stdout)
 		);
@@ -106,7 +110,7 @@ class MockWebServer {
 			return false;
 		}
 
-		$result = shell_exec(sprintf("ps %d",
+		$result = shell_exec(sprintf('ps %d',
 			$this->pid));
 		if( count(preg_split("/\n/", $result)) > 2 ) {
 			return true;
@@ -252,5 +256,28 @@ class MockWebServer {
 	 */
 	public function getPort() {
 		return $this->port;
+	}
+
+	/**
+	 * Let the OS find an open port for you.
+	 *
+	 * @return int
+	 */
+	private function findOpenPort() {
+		$sock = socket_create(AF_INET, SOCK_STREAM, 0);
+
+		// Bind the socket to an address/port
+		if( !socket_bind($sock, $this->getHost(), 0) ) {
+			throw new Exceptions\RuntimeException('Could not bind to address');
+		}
+
+		socket_getsockname($sock, $checkAddress, $checkPort);
+		socket_close($sock);
+
+		if( $checkPort > 0 ) {
+			return $checkPort;
+		}
+
+		throw new Exceptions\RuntimeException('Failed to find open port');
 	}
 }
