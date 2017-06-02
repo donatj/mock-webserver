@@ -1,8 +1,25 @@
 # Documentation
 
-## Class: MockWebServer \[ `\donatj\MockWebServer` \]
+## Class: \donatj\MockWebServer\MockWebServer
 
-### Method: `MockWebServer->__construct([ $port = 8123 [, $host = "127.0.0.1"]])`
+```php
+<?php
+namespace donatj\MockWebServer;
+
+class MockWebServer {
+	const VND = 'VND.DonatStudios.MockWebServer';
+	const RESPONSE_BODY = 'body';
+	const RESPONSE_STATUS = 'status';
+	const RESPONSE_HEADERS = 'headers';
+	const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
+}
+```
+
+### Method: MockWebServer->__construct
+
+```php
+function __construct($port [, $host = '127.0.0.1'])
+```
 
 TestWebServer constructor.
 
@@ -13,13 +30,21 @@ TestWebServer constructor.
 
 ---
 
-### Method: `MockWebServer->start()`
+### Method: MockWebServer->start
+
+```php
+function start()
+```
 
 Start the Web Server on the selected port and host
 
 ---
 
-### Method: `MockWebServer->isRunning()`
+### Method: MockWebServer->isRunning
+
+```php
+function isRunning()
+```
 
 Is the Web Server currently running?
 
@@ -29,13 +54,21 @@ Is the Web Server currently running?
 
 ---
 
-### Method: `MockWebServer->stop()`
+### Method: MockWebServer->stop
+
+```php
+function stop()
+```
 
 Stop the Web Server
 
 ---
 
-### Method: `MockWebServer->getServerRoot()`
+### Method: MockWebServer->getServerRoot
+
+```php
+function getServerRoot()
+```
 
 Get the HTTP root of the webserver  
  e.g.: http://127.0.0.1:8123
@@ -46,7 +79,11 @@ Get the HTTP root of the webserver
 
 ---
 
-### Method: `MockWebServer->getUrlOfResponse($body [, $headers = array() [, $status = 200]])`
+### Method: MockWebServer->getUrlOfResponse
+
+```php
+function getUrlOfResponse($body [, $headers = array() [, $status = 200]])
+```
 
 Get a URL providing the specified response.
 
@@ -62,7 +99,11 @@ Get a URL providing the specified response.
 
 ---
 
-### Method: `MockWebServer->setResponseOfPath($path, $body [, $headers = array() [, $status = 200]])`
+### Method: MockWebServer->setResponseOfPath
+
+```php
+function setResponseOfPath($path, $body [, $headers = array() [, $status = 200]])
+```
 
 Set a specified path to provide a specific response
 
@@ -79,7 +120,11 @@ Set a specified path to provide a specific response
 
 ---
 
-### Method: `MockWebServer->getLastRequest()`
+### Method: MockWebServer->getLastRequest
+
+```php
+function getLastRequest()
+```
 
 Get the previous requests associated request data.
 
@@ -89,7 +134,11 @@ Get the previous requests associated request data.
 
 ---
 
-### Method: `MockWebServer->getHost()`
+### Method: MockWebServer->getHost
+
+```php
+function getHost()
+```
 
 Get the host of the server.
 
@@ -99,7 +148,11 @@ Get the host of the server.
 
 ---
 
-### Method: `MockWebServer->getPort()`
+### Method: MockWebServer->getPort
+
+```php
+function getPort()
+```
 
 Get the port the network server is to be ran on.
 
