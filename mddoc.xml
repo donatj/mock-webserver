@@ -11,12 +11,14 @@ Unit testing HTTP requests can be difficult, especially in cases where injecting
 
 Mock Web Server creates a local Web Server you can make predefined requests against.
 ]]></text>
-			<docpage target="docs/docs.md" autoloader="psr4" autoloader-root="src"
-					 autoloader-root-namespace="donatj\MockWebServer">
-				<section title="Documentation">
-					<file name="src/MockWebServer.php"/>
-				</section>
-			</docpage>
+			<section title="Documentation">
+				<docpage target="docs/docs.md" autoloader="psr4" autoloader-root="src"
+						 autoloader-root-namespace="donatj\MockWebServer">
+					<section title="Documentation">
+						<file name="src/MockWebServer.php"/>
+					</section>
+				</docpage>
+			</section>
 			<section title="Requirements">
 				<text>- PHP 5.4+</text>
 			</section>
