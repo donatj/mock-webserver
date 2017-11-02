@@ -12,7 +12,8 @@
 		}
 	],
 	"require": {
-		"ralouphie/getallheaders": "^2.0"
+		"ext-sockets": "*",
+		"ralouphie/getallheaders": "~2.0"
 	},
 	"autoload": {
 		"psr-4": {
