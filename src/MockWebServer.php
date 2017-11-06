@@ -243,6 +243,34 @@ class MockWebServer {
 	}
 
 	/**
+	 * Get request by offset
+	 *
+	 * If offset is non-negative, the request will be the index from the start of the server.
+	 * If offset is negative, the request will be that from the end of the requests.
+	 *
+	 * @param int $offset
+	 * @return array|null
+	 */
+	public function getRequestByOffset( $offset ) {
+		$reqs = glob($this->tmpDir . DIRECTORY_SEPARATOR . 'request.*');
+		natsort($reqs);
+
+		$item = array_slice($reqs, $offset, 1);
+		if( !$item ) {
+			return null;
+		}
+
+		$path    = reset($item);
+		$content = file_get_contents($path);
+		$data    = @json_decode($content, true);
+		if( json_last_error() === JSON_ERROR_NONE ) {
+			return $data;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Get the host of the server.
 	 *
 	 * @return string

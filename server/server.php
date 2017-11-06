@@ -34,6 +34,7 @@ $request = [
 
 $reqStr = json_encode($request);
 file_put_contents($tmp . DIRECTORY_SEPARATOR . MockWebServer::LAST_REQUEST_FILE, $reqStr);
+file_put_contents($tmp . DIRECTORY_SEPARATOR . 'request.' . microtime(true), $reqStr);
 
 $path  = false;
 $alias = 'alias.' . md5($PARSED_REQUEST_URI['path']);
