@@ -12,6 +12,8 @@ class MockWebServer {
 	const RESPONSE_STATUS  = 'status';
 	const RESPONSE_HEADERS = 'headers';
 
+	const LAST_REQUEST_FILE = 'last.request';
+
 	const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
 
 	private $pid = null;
@@ -228,7 +230,7 @@ class MockWebServer {
 	 * @return array|null
 	 */
 	public function getLastRequest() {
-		$path = $this->tmpDir . DIRECTORY_SEPARATOR . 'last.request';
+		$path = $this->tmpDir . DIRECTORY_SEPARATOR . self::LAST_REQUEST_FILE;
 		if( file_exists($path) ) {
 			$content = file_get_contents($path);
 			$data    = @json_decode($content, true);
