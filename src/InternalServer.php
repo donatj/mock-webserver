@@ -105,9 +105,15 @@ class InternalServer {
 						($this->header)("{$key}: {$header}");
 					}
 				}
+				$body = $response->getBody();
 
-				if( $response->getBody() ) {
-					echo $response->getBody();
+				if( $response instanceof MultiResponseInterface ) {
+					$response->next();
+					InternalServer::storeResponse($this->tmpPath, $response);
+				}
+
+				if( $body ) {
+					echo $body;
 
 					return;
 				}
@@ -141,6 +147,23 @@ class InternalServer {
 		}
 
 		return $path;
+	}
+
+	/**
+	 * @internal
+	 * @param string                                  $tmpPath
+	 * @param \donatj\MockWebServer\ResponseInterface $response
+	 * @return string
+	 */
+	public static function storeResponse( $tmpPath, ResponseInterface $response ) {
+		$ref     = $response->getRef();
+		$content = serialize($response);
+
+		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $ref, $content) ) {
+			throw new Exceptions\RuntimeException('Failed to write temporary content');
+		}
+
+		return $ref;
 	}
 
 }
