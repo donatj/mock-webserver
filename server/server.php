@@ -13,14 +13,12 @@ foreach( $files as $file ) {
 	}
 }
 
-$INPUT = file_get_contents("php://input");
-
+$INPUT   = file_get_contents("php://input");
 $HEADERS = getallheaders();
 
 $tmp = getenv(MockWebServer::TMP_ENV);
 
-$x = new \donatj\MockWebServer\InternalServer(
-	$tmp, $_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $HEADERS, $INPUT
-);
+$r      = new \donatj\MockWebServer\RequestInfo($_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $HEADERS, $INPUT);
+$server = new \donatj\MockWebServer\InternalServer($tmp, $r);
 
-$x();
+$server();

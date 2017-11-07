@@ -9,58 +9,47 @@ namespace donatj\MockWebServer;
  */
 class InternalServer {
 
+	/**
+	 * @var string
+	 */
 	private $tmpPath;
+	/**
+	 * @var \donatj\MockWebServer\RequestInfo
+	 */
 	private $request;
-	private $parsedUri;
-	private $server;
 	/**
 	 * @var callable
 	 */
 	private $header;
 
-
 	/**
 	 * InternalServer constructor.
 	 *
-	 * @param string        $tmpPath
-	 * @param array         $server
-	 * @param array         $get
-	 * @param array         $post
-	 * @param array         $files
-	 * @param array         $cookie
-	 * @param array         $HEADERS
-	 * @param string        $INPUT
-	 * @param callable|null $header
+	 * @param string                            $tmpPath
+	 * @param \donatj\MockWebServer\RequestInfo $request
+	 * @param callable|null                     $header
+	 * @internal param array $server
+	 * @internal param array $get
+	 * @internal param array $post
+	 * @internal param array $files
+	 * @internal param array $cookie
+	 * @internal param array $HEADERS
+	 * @internal param string $INPUT
 	 */
-	function __construct( $tmpPath, array $server, array $get, array $post, array $files, array $cookie, array $HEADERS, $INPUT, callable $header = null ) {
+	function __construct( $tmpPath, RequestInfo $request, callable $header = null ) {
 		if( is_null($header) ) {
 			$header = "\\header";
 		}
 
 		$this->tmpPath = $tmpPath;
 
-		parse_str($INPUT, $PARSED_INPUT);
-		$this->parsedUri = parse_url($server['REQUEST_URI']);
+		$this->logRequest($request);
 
-		$this->request = [
-			'_GET'               => $get,
-			'_POST'              => $post,
-			'_FILES'             => $files,
-			'_COOKIE'            => $cookie,
-			'HEADERS'            => $HEADERS,
-			'METHOD'             => $server['REQUEST_METHOD'],
-			'INPUT'              => $INPUT,
-			'PARSED_INPUT'       => $PARSED_INPUT,
-			'REQUEST_URI'        => $server['REQUEST_URI'],
-			'PARSED_REQUEST_URI' => $this->parsedUri,
-		];
-
-		$this->logRequest($this->request);
-		$this->server = $server;
-		$this->header = $header;
+		$this->header  = $header;
+		$this->request = $request;
 	}
 
-	private function logRequest( array $request ) {
+	private function logRequest( RequestInfo $request ) {
 		$reqStr = json_encode($request);
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . MockWebServer::LAST_REQUEST_FILE, $reqStr);
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . microtime(true), $reqStr);
@@ -74,12 +63,12 @@ class InternalServer {
 
 	public function __invoke() {
 		$path      = false;
-		$aliasPath = self::aliasPath($this->tmpPath, $this->parsedUri['path']);
+		$aliasPath = self::aliasPath($this->tmpPath, $this->request->getParsedUri()['path']);
 		if( file_exists($aliasPath) ) {
 			if( $path = file_get_contents($aliasPath) ) {
 				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
 			}
-		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $this->server['REQUEST_URI'], $matches) ) {
+		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $this->request->getRequestUri(), $matches) ) {
 			$path = $this->tmpPath . DIRECTORY_SEPARATOR . $matches[1];
 		}
 
@@ -92,9 +81,9 @@ class InternalServer {
 
 				foreach( $response[MockWebServer::RESPONSE_HEADERS] as $key => $header ) {
 					if( is_int($key) ) {
-						header($header);
+						($this->header)($header);
 					} else {
-						header("{$key}: {$header}");
+						($this->header)("{$key}: {$header}");
 					}
 				}
 
@@ -115,6 +104,5 @@ class InternalServer {
 
 		echo json_encode($this->request, JSON_PRETTY_PRINT);
 	}
-
 
 }
