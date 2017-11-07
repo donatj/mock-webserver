@@ -18,6 +18,11 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		$url     = self::$server->getServerRoot() . '/endpoint?get=foobar';
 		$content = file_get_contents($url);
 
+		// Some versions of PHP send it with file_get_contents, others do not.
+		// Might be removable with a context but until I figure that out, terrible hack
+		$content = preg_replace('/,\s*"Connection": "close"/', '', $content);
+
+
 		$this->assertJsonStringEqualsJsonString($content, sprintf(<<<EOF
 {
     "_GET": {
@@ -27,8 +32,7 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
     "_FILES": [],
     "_COOKIE": [],
     "HEADERS": {
-        "Host": "127.0.0.1:%d",
-        "Connection": "close"
+        "Host": "127.0.0.1:%d"
     },
     "METHOD": "GET",
     "INPUT": "",
