@@ -2,6 +2,8 @@
 
 namespace donatj\MockWebServer;
 
+use donatj\MockWebServer\Exceptions\ServerException;
+
 /**
  * Class InternalServer
  *
@@ -62,24 +64,19 @@ class InternalServer {
 	}
 
 	public function __invoke() {
-		$path      = false;
-		$aliasPath = self::aliasPath($this->tmpPath, $this->request->getParsedUri()['path']);
-		if( file_exists($aliasPath) ) {
-			if( $path = file_get_contents($aliasPath) ) {
-				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
-			}
-		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $this->request->getRequestUri(), $matches) ) {
-			$path = $this->tmpPath . DIRECTORY_SEPARATOR . $matches[1];
-		}
+		$path = $this->getDataPath();
 
 		if( $path !== false ) {
 			if( is_readable($path) ) {
 				$content  = file_get_contents($path);
-				$response = json_decode($content, true);
+				$response = unserialize($content);
+				if( !$response instanceof ResponseInterface ) {
+					throw new ServerException('invalid serialized response');
+				}
 
-				http_response_code($response[MockWebServer::RESPONSE_STATUS]);
+				http_response_code($response->getStatus());
 
-				foreach( $response[MockWebServer::RESPONSE_HEADERS] as $key => $header ) {
+				foreach( $response->getHeaders() as $key => $header ) {
 					if( is_int($key) ) {
 						($this->header)($header);
 					} else {
@@ -87,8 +84,8 @@ class InternalServer {
 					}
 				}
 
-				if( $response[MockWebServer::RESPONSE_BODY] !== false ) {
-					echo $response[MockWebServer::RESPONSE_BODY];
+				if( $response->getBody() ) {
+					echo $response->getBody();
 
 					return;
 				}
@@ -103,6 +100,25 @@ class InternalServer {
 		}
 
 		echo json_encode($this->request, JSON_PRETTY_PRINT);
+	}
+
+	/**
+	 * @return false|string
+	 */
+	protected function getDataPath() {
+		$path = false;
+
+		$uriPath   = $this->request->getParsedUri()['path'];
+		$aliasPath = self::aliasPath($this->tmpPath, $uriPath);
+		if( file_exists($aliasPath) ) {
+			if( $path = file_get_contents($aliasPath) ) {
+				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
+			}
+		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $uriPath, $matches) ) {
+			$path = $this->tmpPath . DIRECTORY_SEPARATOR . $matches[1];
+		}
+
+		return $path;
 	}
 
 }

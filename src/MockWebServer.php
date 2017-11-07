@@ -146,13 +146,11 @@ class MockWebServer {
 	/**
 	 * Get a URL providing the specified response.
 	 *
-	 * @param string $body
-	 * @param array  $headers
-	 * @param int    $status
+	 * @param \donatj\MockWebServer\Response $response
 	 * @return string URL where response can be found
 	 */
-	public function getUrlOfResponse( $body, array $headers = [], $status = 200 ) {
-		$ref = $this->storeResponse($body, $headers, $status);
+	public function getUrlOfResponse( Response $response ) {
+		$ref = $this->storeResponse($response);
 
 		return $this->getServerRoot() . '/' . self::VND . '/' . $ref;
 	}
@@ -160,14 +158,12 @@ class MockWebServer {
 	/**
 	 * Set a specified path to provide a specific response
 	 *
-	 * @param string $path
-	 * @param string $body
-	 * @param array  $headers
-	 * @param int    $status
+	 * @param string                         $path
+	 * @param \donatj\MockWebServer\Response $response
 	 * @return string
 	 */
-	public function setResponseOfPath( $path, $body, array $headers = [], $status = 200 ) {
-		$ref = $this->storeResponse($body, $headers, $status);
+	public function setResponseOfPath( $path, Response $response ) {
+		$ref = $this->storeResponse($response);
 
 		$aliasPath = InternalServer::aliasPath($this->tmpDir, $path);
 
@@ -179,19 +175,12 @@ class MockWebServer {
 	}
 
 	/**
-	 * @param string $body
-	 * @param array  $headers
-	 * @param int    $status
+	 * @param \donatj\MockWebServer\Response $response
 	 * @return string
 	 */
-	private function storeResponse( $body, array $headers, $status ) {
-		$content = json_encode([
-			self::RESPONSE_BODY    => $body,
-			self::RESPONSE_STATUS  => $status,
-			self::RESPONSE_HEADERS => $headers,
-		]);
-
-		$ref = md5($content);
+	private function storeResponse( Response $response ) {
+		$ref     = $response->getRef();
+		$content = serialize($response);
 
 		if( !file_put_contents($this->tmpDir . DIRECTORY_SEPARATOR . $ref, $content) ) {
 			throw new Exceptions\RuntimeException('Failed to write temporary content');
