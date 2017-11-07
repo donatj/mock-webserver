@@ -8,9 +8,8 @@ namespace donatj\MockWebServer;
 
 class MockWebServer {
 	const VND = 'VND.DonatStudios.MockWebServer';
-	const RESPONSE_BODY = 'body';
-	const RESPONSE_STATUS = 'status';
-	const RESPONSE_HEADERS = 'headers';
+	const LAST_REQUEST_FILE = 'last.request';
+	const REQUEST_COUNT_FILE = 'count.request';
 	const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
 }
 ```
@@ -82,16 +81,14 @@ Get the HTTP root of the webserver
 ### Method: MockWebServer->getUrlOfResponse
 
 ```php
-function getUrlOfResponse($body [, $headers = array() [, $status = 200]])
+function getUrlOfResponse($response)
 ```
 
 Get a URL providing the specified response.
 
 #### Parameters:
 
-- ***string*** `$body`
-- ***array*** `$headers`
-- ***int*** `$status`
+- ***\donatj\MockWebServer\ResponseInterface*** `$response`
 
 #### Returns:
 
@@ -102,7 +99,7 @@ Get a URL providing the specified response.
 ### Method: MockWebServer->setResponseOfPath
 
 ```php
-function setResponseOfPath($path, $body [, $headers = array() [, $status = 200]])
+function setResponseOfPath($path, $response)
 ```
 
 Set a specified path to provide a specific response
@@ -110,9 +107,7 @@ Set a specified path to provide a specific response
 #### Parameters:
 
 - ***string*** `$path`
-- ***string*** `$body`
-- ***array*** `$headers`
-- ***int*** `$status`
+- ***\donatj\MockWebServer\ResponseInterface*** `$response`
 
 #### Returns:
 
@@ -127,6 +122,26 @@ function getLastRequest()
 ```
 
 Get the previous requests associated request data.
+
+#### Returns:
+
+- ***array*** | ***null***
+
+---
+
+### Method: MockWebServer->getRequestByOffset
+
+```php
+function getRequestByOffset($offset)
+```
+
+Get request by offset  
+If offset is non-negative, the request will be the index from the start of the server.  
+If offset is negative, the request will be that from the end of the requests.
+
+#### Parameters:
+
+- ***int*** `$offset`
 
 #### Returns:
 
@@ -159,3 +174,146 @@ Get the port the network server is to be ran on.
 #### Returns:
 
 - ***int***
+
+## Class: \donatj\MockWebServer\Response
+
+```php
+<?php
+namespace donatj\MockWebServer;
+
+class Response {
+	const RESPONSE_BODY = 'body';
+	const RESPONSE_STATUS = 'status';
+	const RESPONSE_HEADERS = 'headers';
+}
+```
+
+### Method: Response->__construct
+
+```php
+function __construct($body [, $headers = array() [, $status = 200]])
+```
+
+Response constructor.
+
+#### Parameters:
+
+- ***string*** `$body`
+- ***array*** `$headers`
+- ***int*** `$status`
+
+---
+
+### Method: Response->getRef
+
+```php
+function getRef()
+```
+
+Get a unique identifier for the response.  
+Expected to be 32 characters of hexadecimal
+
+---
+
+### Method: Response->getBody
+
+```php
+function getBody()
+```
+
+Get the body of the response
+
+---
+
+### Method: Response->getHeaders
+
+```php
+function getHeaders()
+```
+
+Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
+
+---
+
+### Method: Response->getStatus
+
+```php
+function getStatus()
+```
+
+Get the HTTP Status Code
+
+## Class: \donatj\MockWebServer\ResponseStack
+
+```php
+<?php
+namespace donatj\MockWebServer;
+
+class ResponseStack {
+	const RESPONSE_BODY = 'body';
+	const RESPONSE_STATUS = 'status';
+	const RESPONSE_HEADERS = 'headers';
+}
+```
+
+### Method: ResponseStack->__construct
+
+```php
+function __construct()
+```
+
+ResponseStack constructor.  
+Accepts a variable number of RequestInterface objects
+
+---
+
+### Method: ResponseStack->next
+
+```php
+function next()
+```
+
+#### Returns:
+
+- ***bool***
+
+---
+
+### Method: ResponseStack->getRef
+
+```php
+function getRef()
+```
+
+Get a unique identifier for the response.  
+Expected to be 32 characters of hexadecimal
+
+---
+
+### Method: ResponseStack->getBody
+
+```php
+function getBody()
+```
+
+Get the body of the response
+
+---
+
+### Method: ResponseStack->getHeaders
+
+```php
+function getHeaders()
+```
+
+Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
+
+---
+
+### Method: ResponseStack->getStatus
+
+```php
+function getStatus()
+```
+
+Get the HTTP Status Code

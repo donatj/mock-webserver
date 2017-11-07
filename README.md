@@ -35,9 +35,11 @@ The following example shows the most basic usage. If you do not define a path, t
 ```php
 <?php
 
+use donatj\MockWebServer\MockWebServer;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-$server = new \donatj\MockWebServer\MockWebServer;
+$server = new MockWebServer;
 $server->start();
 
 $url = $server->getServerRoot() . '/endpoint?get=foobar';
@@ -78,17 +80,22 @@ Requesting: http://127.0.0.1:8123/endpoint?get=foobar
 ```php
 <?php
 
+use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Response;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-$server = new \donatj\MockWebServer\MockWebServer;
+$server = new MockWebServer;
 $server->start();
 
 // We define the servers response to requests of the /definedPath endpoint
 $url = $server->setResponseOfPath(
 	'/definedPath',
-	'This is our http body response',
-	[ 'Cache-Control' => 'no-cache' ],
-	200
+	new Response(
+		'This is our http body response',
+		[ 'Cache-Control' => 'no-cache' ],
+		200
+	)
 );
 
 echo "Requesting: $url\n\n";
@@ -122,6 +129,7 @@ This is our http body response
 <?php
 
 use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Response;
 
 class ExampleTest extends PHPUnit_Framework_TestCase {
 
@@ -141,7 +149,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 
 	public function testGetSetPath() {
 		// $url = http://127.0.0.1:8123/definedEndPoint
-		$url    = self::$server->setResponseOfPath('/definedEndPoint', 'foo bar content');
+		$url    = self::$server->setResponseOfPath('/definedEndPoint', new Response('foo bar content'));
 		$result = file_get_contents($url);
 		$this->assertSame('foo bar content', $result);
 	}
@@ -152,4 +160,49 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 	}
 
 }
+```
+
+## Multiple Responses to the Same Endpoint
+
+If you need to test multiple, *different* responses to the same endpoint it supports that as well.
+
+```php
+<?php
+
+use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Response;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$server = new MockWebServer;
+$server->start();
+
+// We define the servers response to requests of the /definedPath endpoint
+$url = $server->setResponseOfPath(
+	'/definedPath',
+	new Response(
+		'This is our http body response',
+		[ 'Cache-Control' => 'no-cache' ],
+		200
+	)
+);
+
+echo "Requesting: $url\n\n";
+
+$content = file_get_contents($url);
+
+// $http_response_header is a little known variable magically defined
+// in the current scope by file_get_contents with the response headers
+echo implode("\n", $http_response_header) . "\n\n";
+echo $content . "\n";
+```
+
+Outputs:
+
+```
+Requesting: http://127.0.0.1:60515/definedPath
+
+Response One
+Response Two
+Past the end of the Response Stack
 ```

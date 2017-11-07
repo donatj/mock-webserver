@@ -16,6 +16,8 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 						 autoloader-root-namespace="donatj\MockWebServer">
 					<section title="Documentation">
 						<file name="src/MockWebServer.php"/>
+						<file name="src/Response.php"/>
+						<file name="src/ResponseStack.php"/>
 					</section>
 				</docpage>
 			</section>
@@ -71,6 +73,16 @@ This is our http body response]]></source>
 				<section title="PHPUnit">
 					<source name="example/phpunit.php" lang="php"/>
 				</section>
+			</section>
+			<section title="Multiple Responses to the Same Endpoint">
+				<text>If you need to test multiple, *different* responses to the same endpoint it supports that as well.</text>
+				<source name="example/simple.php" lang="php"/>
+				<text>Outputs:</text>
+				<source><![CDATA[Requesting: http://127.0.0.1:60515/definedPath
+
+Response One
+Response Two
+Past the end of the Response Stack]]></source>
 			</section>
 		</section>
 	</docpage>
