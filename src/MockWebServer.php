@@ -8,10 +8,6 @@ class MockWebServer {
 
 	const VND = 'VND.DonatStudios.MockWebServer';
 
-	const RESPONSE_BODY    = 'body';
-	const RESPONSE_STATUS  = 'status';
-	const RESPONSE_HEADERS = 'headers';
-
 	const LAST_REQUEST_FILE  = 'last.request';
 	const REQUEST_COUNT_FILE = 'count.request';
 
