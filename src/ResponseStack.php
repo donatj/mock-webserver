@@ -63,7 +63,7 @@ class ResponseStack implements MultiResponseInterface {
 	 * @inheritdoc
 	 */
 	public function getBody() {
-		return $this->currentResponse ? $this->currentResponse->getBody() : 'Past the end of the Response Stack';
+		return $this->currentResponse ? $this->currentResponse->getBody() : 'Past the end of the ResponseStack';
 	}
 
 	/**
