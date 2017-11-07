@@ -70,8 +70,6 @@ EOF
 
 		$ctx = stream_context_create([ 'http' => [ 'ignore_errors' => true ] ]);
 
-		echo "Requesting: $url\n\n";
-
 		$content = file_get_contents($url, false, $ctx);
 		$this->assertContains('HTTP/1.0 500 Internal Server Error', $http_response_header);
 		$this->assertContains('X-Boop-Bat: Sauce', $http_response_header);
