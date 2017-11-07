@@ -76,7 +76,7 @@ This is our http body response]]></source>
 			</section>
 			<section title="Multiple Responses to the Same Endpoint">
 				<text>If you need to test multiple, *different* responses to the same endpoint it supports that as well.</text>
-				<source name="example/simple.php" lang="php"/>
+				<source name="example/multi.php" lang="php"/>
 				<text>Outputs:</text>
 				<source><![CDATA[Requesting: http://127.0.0.1:60515/definedPath
 
