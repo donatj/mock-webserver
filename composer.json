@@ -12,6 +12,7 @@
 		}
 	],
 	"require": {
+		"php": ">=5.4",
 		"ext-sockets": "*",
 		"ralouphie/getallheaders": "~2.0"
 	},
