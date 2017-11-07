@@ -169,10 +169,9 @@ class MockWebServer {
 	public function setResponseOfPath( $path, $body, array $headers = [], $status = 200 ) {
 		$ref = $this->storeResponse($body, $headers, $status);
 
-		$path  = '/' . ltrim($path, '/');
-		$alias = 'alias.' . md5($path);
+		$aliasPath = InternalServer::aliasPath($this->tmpDir, $path);
 
-		if( !file_put_contents($this->tmpDir . DIRECTORY_SEPARATOR . $alias, $ref) ) {
+		if( !file_put_contents($aliasPath, $ref) ) {
 			throw new \RuntimeException('Failed to store path alias');
 		}
 
