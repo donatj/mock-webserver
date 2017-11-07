@@ -1,7 +1,10 @@
 # Mock Web Server
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/donatj/mock-webserver/version)](https://packagist.org/packages/donatj/mock-webserver)
 [![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver)
+[![Build Status](https://travis-ci.org/donatj/mock-webserver.svg?branch=master)](https://travis-ci.org/donatj/mock-webserver)
+
 
 Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
 
@@ -16,15 +19,17 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 
 ## Requirements
 
-- PHP 5.4+
+- **php**: >=5.4
+- **ext-sockets**: *
+- **ralouphie/getallheaders**: ~2.0
 
 ## Installing
 
-```php
-composer require "donatj/mock-webserver" --dev
-```
+Install the latest version with:
 
-Omitting the `--dev` will add this to `require` rather than `require-dev`
+```bash
+composer require --dev 'donatj/mock-webserver'
+```
 
 ## Examples
 

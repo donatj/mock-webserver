@@ -2,10 +2,12 @@
 	<docpage target="README.md" autoloader="psr4" autoloader-root="src"
 			 autoloader-root-namespace="donatj\MockWebServer">
 		<section title="Mock Web Server">
-			<text><![CDATA[[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver/?branch=master)
-[![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
-
-Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
+			<badge-poser type="version"/>
+			<badge-poser type="license"/>
+			<badge-scrutinizer name="donatj/mock-webserver" type="quality"/>
+			<!--<badge-scrutinizer name="donatj/mock-webserver" type="coverage"/>-->
+			<badge-travis name="donatj/mock-webserver"/>
+			<text><![CDATA[Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
 
 Unit testing HTTP requests can be difficult, especially in cases where injecting a request library is difficult or not ideal. This helps greatly simplify the process.
 
@@ -22,11 +24,10 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 				</docpage>
 			</section>
 			<section title="Requirements">
-				<text>- PHP 5.4+</text>
+				<composer-requires/>
 			</section>
 			<section title="Installing">
-				<source lang="php">composer require "donatj/mock-webserver" --dev</source>
-				<text>Omitting the `--dev` will add this to `require` rather than `require-dev`</text>
+				<composer-install dev="true"/>
 			</section>
 			<section title="Examples">
 				<section title="Basic Usage">
