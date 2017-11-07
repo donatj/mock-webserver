@@ -12,7 +12,8 @@ class MockWebServer {
 	const RESPONSE_STATUS  = 'status';
 	const RESPONSE_HEADERS = 'headers';
 
-	const LAST_REQUEST_FILE = 'last.request';
+	const LAST_REQUEST_FILE  = 'last.request';
+	const REQUEST_COUNT_FILE = 'count.request';
 
 	const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
 
@@ -76,6 +77,8 @@ class MockWebServer {
 			escapeshellcmd($cmd),
 			escapeshellarg($stdout)
 		);
+
+		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
 		$this->pid = exec(
 			$fullCmd,

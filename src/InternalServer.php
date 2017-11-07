@@ -45,16 +45,38 @@ class InternalServer {
 
 		$this->tmpPath = $tmpPath;
 
-		$this->logRequest($request);
+		$count = self::incrementRequestCounter($this->tmpPath);
+		$this->logRequest($request, $count);
 
 		$this->header  = $header;
 		$this->request = $request;
 	}
 
-	private function logRequest( RequestInfo $request ) {
+	/**
+	 * @param string   $tmpPath
+	 * @param null|int $int
+	 * @return int
+	 */
+	public static function incrementRequestCounter( $tmpPath, $int = null ) {
+		$countFile = $tmpPath . DIRECTORY_SEPARATOR . MockWebServer::REQUEST_COUNT_FILE;
+
+		if( is_null($int) ) {
+			$int = file_get_contents($countFile);
+			if( !is_string($int) ) {
+				throw new ServerException('failed to fetch request count');
+			}
+			$int += 1;
+		}
+
+		file_put_contents($countFile, strval($int));
+
+		return intval($int);
+	}
+
+	private function logRequest( RequestInfo $request, $count ) {
 		$reqStr = json_encode($request);
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . MockWebServer::LAST_REQUEST_FILE, $reqStr);
-		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . microtime(true), $reqStr);
+		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . $count, $reqStr);
 	}
 
 	public static function aliasPath( $tmpPath, $path ) {
