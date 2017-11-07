@@ -38,7 +38,7 @@ class ResponseStack implements MultiResponseInterface {
 
 		$this->ref = md5($refBase);
 
-		$this->currentResponse = reset($this->responses);
+		$this->currentResponse = reset($this->responses) ?: null;
 	}
 
 
@@ -47,7 +47,7 @@ class ResponseStack implements MultiResponseInterface {
 	 */
 	public function next() {
 		array_shift($this->responses);
-		$this->currentResponse = reset($this->responses) ?: false;
+		$this->currentResponse = reset($this->responses) ?: null;
 
 		return (bool)$this->currentResponse;
 	}

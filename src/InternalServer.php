@@ -38,7 +38,7 @@ class InternalServer {
 	 * @internal param array $HEADERS
 	 * @internal param string $INPUT
 	 */
-	function __construct( $tmpPath, RequestInfo $request, callable $header = null ) {
+	public function __construct( $tmpPath, RequestInfo $request, callable $header = null ) {
 		if( is_null($header) ) {
 			$header = "\\header";
 		}

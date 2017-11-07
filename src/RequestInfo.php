@@ -49,7 +49,7 @@ class RequestInfo implements \JsonSerializable {
 	 */
 	private $INPUT;
 	/**
-	 * @var array
+	 * @var array|null
 	 */
 	private $PARSED_INPUT;
 
