@@ -85,7 +85,7 @@ EOF
 		// this is expected to fail as we only have two responses in said stack
 		$content = file_get_contents($url, false, $ctx);
 		$this->assertContains('HTTP/1.0 404 Not Found', $http_response_header);
-		$this->assertEquals("Past the end of the Response Stack", $content);
+		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
 
 }
