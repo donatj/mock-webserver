@@ -4,6 +4,18 @@ namespace donatj\MockWebServer;
 
 class RequestInfo implements \JsonSerializable {
 
+	const JSON_KEY_GET          = '_GET';
+	const JSON_KEY_POST         = '_POST';
+	const JSON_KEY_FILES        = '_FILES';
+	const JSON_KEY_COOKIE       = '_COOKIE';
+	const JSON_KEY_HEADERS      = 'HEADERS';
+	const JSON_KEY_METHOD       = 'METHOD';
+	const JSON_KEY_INPUT        = 'INPUT';
+	const JSON_KEY_PARSED_INPUT = 'PARSED_INPUT';
+	const JSON_KEY_REQUEST_URI  = 'REQUEST_URI';
+
+	const JSON_KEY_PARSED_REQUEST_URI = 'PARSED_REQUEST_URI';
+
 	/**
 	 * @var mixed
 	 */
@@ -65,7 +77,6 @@ class RequestInfo implements \JsonSerializable {
 		$this->parsedUri = parse_url($server['REQUEST_URI']);
 	}
 
-
 	/**
 	 * Specify data which should be serialized to JSON
 	 *
@@ -76,17 +87,17 @@ class RequestInfo implements \JsonSerializable {
 	 */
 	public function jsonSerialize() {
 		return [
-			'_GET'         => $this->get,
-			'_POST'        => $this->post,
-			'_FILES'       => $this->files,
-			'_COOKIE'      => $this->cookie,
-			'HEADERS'      => $this->HEADERS,
-			'METHOD'       => $this->getRequestMethod(),
-			'INPUT'        => $this->INPUT,
-			'PARSED_INPUT' => $this->PARSED_INPUT,
-			'REQUEST_URI'  => $this->getRequestUri(),
+			self::JSON_KEY_GET          => $this->get,
+			self::JSON_KEY_POST         => $this->post,
+			self::JSON_KEY_FILES        => $this->files,
+			self::JSON_KEY_COOKIE       => $this->cookie,
+			self::JSON_KEY_HEADERS      => $this->HEADERS,
+			self::JSON_KEY_METHOD       => $this->getRequestMethod(),
+			self::JSON_KEY_INPUT        => $this->INPUT,
+			self::JSON_KEY_PARSED_INPUT => $this->PARSED_INPUT,
+			self::JSON_KEY_REQUEST_URI  => $this->getRequestUri(),
 
-			'PARSED_REQUEST_URI' => $this->parsedUri,
+			self::JSON_KEY_PARSED_REQUEST_URI => $this->parsedUri,
 		];
 	}
 
