@@ -1,8 +1,10 @@
 <?php
 
+use donatj\MockWebServer\MockWebServer;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-$server = new \donatj\MockWebServer\MockWebServer;
+$server = new MockWebServer;
 $server->start();
 
 $url = $server->getServerRoot() . '/endpoint?get=foobar';

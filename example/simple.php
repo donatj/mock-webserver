@@ -1,16 +1,21 @@
 <?php
 
+use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Response;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-$server = new \donatj\MockWebServer\MockWebServer;
+$server = new MockWebServer;
 $server->start();
 
 // We define the servers response to requests of the /definedPath endpoint
 $url = $server->setResponseOfPath(
 	'/definedPath',
-	'This is our http body response',
-	[ 'Cache-Control' => 'no-cache' ],
-	200
+	new Response(
+		'This is our http body response',
+		[ 'Cache-Control' => 'no-cache' ],
+		200
+	)
 );
 
 echo "Requesting: $url\n\n";
