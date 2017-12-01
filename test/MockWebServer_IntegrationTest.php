@@ -22,30 +22,29 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		// Might be removable with a context but until I figure that out, terrible hack
 		$content = preg_replace('/,\s*"Connection": "close"/', '', $content);
 
+		$body = [
+			'_GET'               => [ 'get' => 'foobar', ],
+			'_POST'              => [],
+			'_FILES'             => [],
+			'_COOKIE'            => [],
+			'HEADERS'            => [ 'Host' => '127.0.0.1:' . self::$server->getPort(), ],
+			'METHOD'             => 'GET',
+			'INPUT'              => '',
+			'PARSED_INPUT'       => [],
+			'REQUEST_URI'        => '/endpoint?get=foobar',
+			'PARSED_REQUEST_URI' => [ 'path' => '/endpoint', 'query' => 'get=foobar', ],
+		];
 
-		$this->assertJsonStringEqualsJsonString($content, sprintf(<<<EOF
-{
-    "_GET": {
-        "get": "foobar"
-    },
-    "_POST": [],
-    "_FILES": [],
-    "_COOKIE": [],
-    "HEADERS": {
-        "Host": "127.0.0.1:%d"
-    },
-    "METHOD": "GET",
-    "INPUT": "",
-    "PARSED_INPUT": [],
-    "REQUEST_URI": "\/endpoint?get=foobar",
-    "PARSED_REQUEST_URI": {
-        "path": "\/endpoint",
-        "query": "get=foobar"
-    }
-}
+		$this->assertJsonStringEqualsJsonString($content, json_encode($body));
 
-EOF
-			, self::$server->getPort()));
+		$lastReq = self::$server->getLastRequest();
+		foreach( $body as $key => $val ) {
+			if( $key == 'HEADERS' ) {
+				// This is the same horrible connection hack as above. Fix in time.
+				unset($lastReq[$key]['Connection']);
+			}
+			$this->assertSame($lastReq[$key], $val);
+		}
 	}
 
 	public function testSimple() {

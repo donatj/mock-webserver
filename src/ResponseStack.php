@@ -19,6 +19,11 @@ class ResponseStack implements MultiResponseInterface {
 	protected $currentResponse;
 
 	/**
+	 * @var \donatj\MockWebServer\ResponseInterface
+	 */
+	protected $pastEndResponse;
+
+	/**
 	 * ResponseStack constructor.
 	 *
 	 * Accepts a variable number of RequestInterface objects
@@ -39,6 +44,7 @@ class ResponseStack implements MultiResponseInterface {
 		$this->ref = md5($refBase);
 
 		$this->currentResponse = reset($this->responses) ?: null;
+		$this->pastEndResponse = new Response('Past the end of the ResponseStack', [], 404);
 	}
 
 
@@ -63,20 +69,34 @@ class ResponseStack implements MultiResponseInterface {
 	 * @inheritdoc
 	 */
 	public function getBody() {
-		return $this->currentResponse ? $this->currentResponse->getBody() : 'Past the end of the ResponseStack';
+		return ($this->currentResponse ?: $this->pastEndResponse)->getBody();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public function getHeaders() {
-		return $this->currentResponse ? $this->currentResponse->getHeaders() : [];
+		return ($this->currentResponse ?: $this->pastEndResponse)->getHeaders();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public function getStatus() {
-		return $this->currentResponse ? $this->currentResponse->getStatus() : 404;
+		return ($this->currentResponse ?: $this->pastEndResponse)->getStatus();
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getPastEndResponse() {
+		return $this->pastEndResponse;
+	}
+
+	/**
+	 * @param ResponseInterface $pastEndResponse
+	 */
+	public function setPastEndResponse( ResponseInterface $pastEndResponse ) {
+		$this->pastEndResponse = $pastEndResponse;
 	}
 }
