@@ -47,7 +47,6 @@ class ResponseStack implements MultiResponseInterface {
 		$this->pastEndResponse = new Response('Past the end of the ResponseStack', [], 404);
 	}
 
-
 	/**
 	 * @return bool
 	 */
