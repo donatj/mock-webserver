@@ -8,6 +8,8 @@
 
 Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
 
+**Please Note**: The following docs are for the 1.x BETA version. For the stable 0.x release please see [this branch](https://github.com/donatj/mock-webserver/tree/v0.5.0).
+
 Unit testing HTTP requests can be difficult, especially in cases where injecting a request library is difficult or not ideal. This helps greatly simplify the process.
 
 Mock Web Server creates a local Web Server you can make predefined requests against.
