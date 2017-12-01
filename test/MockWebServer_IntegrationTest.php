@@ -90,4 +90,12 @@ EOF
 		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
 
+	/**
+	 * Regression Test - Was a problem in 1.0.0-beta.2
+	 */
+	public function testEmptySingle() {
+		$url = self::$server->getUrlOfResponse(new Response(''));
+		$this->assertSame('', file_get_contents($url));
+	}
+
 }

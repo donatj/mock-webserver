@@ -112,11 +112,9 @@ class InternalServer {
 					InternalServer::storeResponse($this->tmpPath, $response);
 				}
 
-				if( $body ) {
-					echo $body;
+				echo $body;
 
-					return;
-				}
+				return;
 			} else {
 				http_response_code(404);
 				echo MockWebServer::VND . ": Resource '{$path}' not found!\n";
