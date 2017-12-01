@@ -69,32 +69,38 @@ class ResponseStack implements MultiResponseInterface {
 	 * @inheritdoc
 	 */
 	public function getBody() {
-		return ($this->currentResponse ?: $this->pastEndResponse)->getBody();
+		return $this->currentResponse ?
+			$this->currentResponse->getBody() :
+			$this->pastEndResponse->getBody();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public function getHeaders() {
-		return ($this->currentResponse ?: $this->pastEndResponse)->getHeaders();
+		return $this->currentResponse ?
+			$this->currentResponse->getHeaders() :
+			$this->pastEndResponse->getHeaders();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
 	public function getStatus() {
-		return ($this->currentResponse ?: $this->pastEndResponse)->getStatus();
+		return $this->currentResponse ?
+			$this->currentResponse->getStatus() :
+			$this->pastEndResponse->getStatus();
 	}
 
 	/**
-	 * @return mixed
+	 * @return \donatj\MockWebServer\ResponseInterface
 	 */
 	public function getPastEndResponse() {
 		return $this->pastEndResponse;
 	}
 
 	/**
-	 * @param ResponseInterface $pastEndResponse
+	 * @param \donatj\MockWebServer\ResponseInterface $pastEndResponse
 	 */
 	public function setPastEndResponse( ResponseInterface $pastEndResponse ) {
 		$this->pastEndResponse = $pastEndResponse;

@@ -317,3 +317,27 @@ function getStatus()
 ```
 
 Get the HTTP Status Code
+
+---
+
+### Method: ResponseStack->getPastEndResponse
+
+```php
+function getPastEndResponse()
+```
+
+#### Returns:
+
+- ***\donatj\MockWebServer\ResponseInterface***
+
+---
+
+### Method: ResponseStack->setPastEndResponse
+
+```php
+function setPastEndResponse($pastEndResponse)
+```
+
+#### Parameters:
+
+- ***\donatj\MockWebServer\ResponseInterface*** `$pastEndResponse`
