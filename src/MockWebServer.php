@@ -162,12 +162,10 @@ class MockWebServer {
      * @param string $method HTTP method
 	 * @return string
 	 */
-	public function setResponseOfPath( $path, ResponseInterface $response, $method = 'GET' ) {
+	public function setResponseOfPath( $path, ResponseInterface $response, $method = RequestInfo::GET ) {
 		$ref = InternalServer::storeResponse($this->tmpDir, $response);
 
 		$aliasPath = InternalServer::aliasPath($this->tmpDir, $path, $method);
-
-		echo $aliasPath . PHP_EOL;
 
 		if( !file_put_contents($aliasPath, $ref) ) {
 			throw new \RuntimeException('Failed to store path alias');

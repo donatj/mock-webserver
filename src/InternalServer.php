@@ -79,7 +79,7 @@ class InternalServer {
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . $count, $reqStr);
 	}
 
-	public static function aliasPath( $tmpPath, $path, $method = 'GET' ) {
+	public static function aliasPath( $tmpPath, $path, $method = RequestInfo::GET ) {
 		$path   = '/' . ltrim($path, '/');
         $method = strtoupper($method);
 
@@ -137,8 +137,6 @@ class InternalServer {
 
 		$uriPath   = $this->request->getParsedUri()['path'];
 		$aliasPath = self::aliasPath($this->tmpPath, $uriPath, $this->request->getRequestMethod());
-
-		echo $aliasPath;
 
 		if( file_exists($aliasPath) ) {
 			if( $path = file_get_contents($aliasPath) ) {
