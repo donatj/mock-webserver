@@ -30,6 +30,9 @@ class Response implements ResponseInterface {
 		$this->status  = $status;
 	}
 
+    /**
+     * @inheritdoc
+     */
 	public static function create($data) {
 	    if (is_object($data)) {
 	        $data = (array) $data;

@@ -49,6 +49,9 @@ class ResponseStack implements MultiResponseInterface {
 		$this->pastEndResponse = new Response('Past the end of the ResponseStack', [], 404);
 	}
 
+    /**
+     * @inheritdoc
+     */
     public static function create($data) {
         $responses = [];
 
