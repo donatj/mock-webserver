@@ -133,6 +133,10 @@ class MockWebServer {
 	}
 
 	public function load($json) {
+	    if (is_file($json)) {
+	        $json = file_get_contents($json);
+        }
+
         $object = json_decode($json);
 
         foreach (get_object_vars($object) as $path => $requests)
@@ -143,7 +147,7 @@ class MockWebServer {
                     $response = ResponseStack::create($data);
                 }
                 else $response = Response::create($data);
-
+                
                 $this->setResponseOfPath($path, $response);
             }
         }
