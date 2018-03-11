@@ -89,6 +89,32 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
 
+	public function testHttpMethods() {
+	    $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE'];
+
+	    foreach ($methods as $method)
+	    {
+            $url = self::$server->setResponseOfPath(
+                '/definedPath',
+                new Response(
+                    'This is our http body response',
+                    ['X-Foo-Bar' => 'Baz'],
+                    200
+                ),
+                $method
+            );
+
+            $context = stream_context_create(['http' => ['method'  => $method]]);
+            $content = file_get_contents($url, false, $context);
+
+            $this->assertContains('X-Foo-Bar: Baz', $http_response_header);
+
+            if ($method != 'HEAD') {
+                $this->assertEquals("This is our http body response", $content);
+            }
+        }
+    }
+
 	/**
 	 * Regression Test - Was a problem in 1.0.0-beta.2
 	 */
