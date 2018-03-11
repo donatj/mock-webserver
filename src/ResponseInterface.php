@@ -37,4 +37,6 @@ interface ResponseInterface {
 	 */
 	public function getStatus();
 
+	public static function create($data);
+
 }

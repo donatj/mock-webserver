@@ -10,7 +10,7 @@ $server->start();
 $config = json_encode((object) [
    '/foo/bar' => (object) [
        'GET' => [
-           (object) ['body' => 'Bar!', 'headers' => ['X-Foo-Bar' => 'Baz'], 'status' => 200],
+           (object) ['body' => (object) ['foo' => 'bar'], 'headers' => ['X-Foo-Bar' => 'Baz'], 'status' => 200],
            (object) ['body' => '', 'headers' => ['X-Foo-Bar' => 'Baz Baz'], 'status' => 204]
        ]
    ]
