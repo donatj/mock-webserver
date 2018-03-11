@@ -73,4 +73,25 @@ EOF;
         $this->assertEquals("World, hello!", $content);
         $this->assertContains('X-World: Hello', $http_response_header);
     }
+
+    public function testDeserializationObjectAsBody() {
+        $json = <<<EOF
+{
+    "/endpoint": {
+        "GET": {
+            "body": {
+                "Hello": "world"
+            }
+        }
+    }
+}
+EOF;
+
+        self::$_server->load($json);
+
+        $url     = self::$_server->getServerRoot() . '/endpoint';
+        $content = file_get_contents($url);
+
+        $this->assertJsonStringEqualsJsonString($content, json_encode((object) ['Hello' => 'world']));
+    }
 }
