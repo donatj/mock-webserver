@@ -132,6 +132,27 @@ class MockWebServer {
 		$this->started = false;
 	}
 
+	public function load($json) {
+        $paths = json_decode($json, true);
+
+        foreach ($paths as $path => $requests)
+        {
+            foreach ($requests as $method => $response)
+            {
+                if (!isset($response['headers'])) {
+                    $response['headers'] = [];
+                }
+
+                if (!isset($response->status)) {
+                    $response['status'] = 200;
+                }
+
+                $response = new Response($response['body'], $response['headers'], (int) $response['status']);
+                $this->setResponseOfPath($path, $response);
+            }
+        }
+    }
+
 	/**
 	 * Get the HTTP root of the webserver
 	 *  e.g.: http://127.0.0.1:8123
