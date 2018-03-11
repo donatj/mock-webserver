@@ -10,13 +10,11 @@ $server = new MockWebServer;
 $server->start();
 
 // Create a response for both a POST and GET request to the same URL:
-$urls = [];
-$urls['GET']  = $server->setResponseOfPath('/foo/bar', new Response('This is our http GET response'), RequestInfo::GET);
-$urls['POST'] = $server->setResponseOfPath('/foo/bar', new Response('This is our http POST response'), RequestInfo::POST);
+$methods = [RequestInfo::GET, RequestInfo::POST];
 
-foreach (['GET', 'POST'] as $method)
+foreach ($methods as $method)
 {
-    $url = $urls[$method];
+    $url = $server->setResponseOfPath('/foo/bar', new Response("This is our http $method response"), $method);
 
     echo "$method request to $url:\n";
 

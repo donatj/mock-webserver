@@ -3,6 +3,7 @@
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseStack;
+use donatj\MockWebServer\RequestInfo;
 
 class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
@@ -90,14 +91,23 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testHttpMethods() {
-	    $methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS', 'TRACE'];
+	    $methods = [
+	        RequestInfo::GET,
+            RequestInfo::POST,
+            RequestInfo::PUT,
+            RequestInfo::PATCH,
+            RequestInfo::DELETE,
+            RequestInfo::HEAD,
+            RequestInfo::OPTIONS,
+            RequestInfo::TRACE
+        ];
 
 	    foreach ($methods as $method)
 	    {
             $url = self::$server->setResponseOfPath(
                 '/definedPath',
                 new Response(
-                    'This is our http body response',
+                    "This is our http $method body response",
                     ['X-Foo-Bar' => 'Baz'],
                     200
                 ),
@@ -109,8 +119,8 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
             $this->assertContains('X-Foo-Bar: Baz', $http_response_header);
 
-            if ($method != 'HEAD') {
-                $this->assertEquals("This is our http body response", $content);
+            if ($method != RequestInfo::HEAD) {
+                $this->assertEquals("This is our http $method body response", $content);
             }
         }
     }
