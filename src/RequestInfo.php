@@ -24,7 +24,6 @@ class RequestInfo implements \JsonSerializable {
 	const HEAD    = 'HEAD';
 	const OPTIONS = 'OPTIONS';
 	const TRACE   = 'TRACE';
-	const CONNECT = 'CONNECT';
 
 	/**
 	 * @var mixed
