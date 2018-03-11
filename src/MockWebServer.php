@@ -4,6 +4,8 @@ namespace donatj\MockWebServer;
 
 use donatj\MockWebServer\Exceptions;
 
+use ReflectionClass;
+
 class MockWebServer {
 
 	const VND = 'VND.DonatStudios.MockWebServer';
@@ -137,17 +139,32 @@ class MockWebServer {
 
         foreach ($paths as $path => $requests)
         {
-            foreach ($requests as $method => $response)
+            foreach ($requests as $method => $data)
             {
-                if (!isset($response['headers'])) {
-                    $response['headers'] = [];
+                if (is_array($data))
+                {
+                    $responses = [];
+
+                    foreach ($data as $item) {
+                        $responses[] = new Response($item['body'], $item['headers'], (int) $item['status']);
+                    }
+
+                    $reflector = new ReflectionClass('donatj\MockWebServer\ResponseStack');
+                    $response = $reflector->newInstanceArgs($responses);
+                }
+                else
+                {
+                    if (!isset($data['headers'])) {
+                        $data['headers'] = [];
+                    }
+
+                    if (!isset($data->status)) {
+                        $data['status'] = 200;
+                    }
+
+                    $response = new Response($data['body'], $data['headers'], (int) $data['status']);
                 }
 
-                if (!isset($response->status)) {
-                    $response['status'] = 200;
-                }
-
-                $response = new Response($response['body'], $response['headers'], (int) $response['status']);
                 $this->setResponseOfPath($path, $response);
             }
         }
