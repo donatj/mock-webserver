@@ -199,14 +199,14 @@ class MockWebServer {
 	/**
 	 * Get the previous requests associated request data.
 	 *
-	 * @return array|null
+	 * @return RequestInfo|null
 	 */
 	public function getLastRequest() {
 		$path = $this->tmpDir . DIRECTORY_SEPARATOR . self::LAST_REQUEST_FILE;
 		if( file_exists($path) ) {
 			$content = file_get_contents($path);
-			$data    = @json_decode($content, true);
-			if( json_last_error() === JSON_ERROR_NONE ) {
+			$data    = @unserialize($content);
+			if( $data instanceof RequestInfo ) {
 				return $data;
 			}
 		}
