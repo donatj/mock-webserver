@@ -99,7 +99,7 @@ Get a URL providing the specified response.
 ### Method: MockWebServer->setResponseOfPath
 
 ```php
-function setResponseOfPath($path, $response [, $method = null])
+function setResponseOfPath($path, $response)
 ```
 
 Set a specified path to provide a specific response
@@ -108,7 +108,6 @@ Set a specified path to provide a specific response
 
 - ***string*** `$path`
 - ***\donatj\MockWebServer\ResponseInterface*** `$response`
-- ***string*** | ***null*** `$method` - HTTP Method. If null, responds to any method.
 
 #### Returns:
 
@@ -219,7 +218,7 @@ Expected to be 32 characters of hexadecimal
 ### Method: Response->getBody
 
 ```php
-function getBody()
+function getBody($request)
 ```
 
 Get the body of the response
@@ -229,7 +228,7 @@ Get the body of the response
 ### Method: Response->getHeaders
 
 ```php
-function getHeaders()
+function getHeaders($request)
 ```
 
 Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
@@ -239,7 +238,7 @@ Get the headers as either an array of key => value or ["Full: Header","OtherFull
 ### Method: Response->getStatus
 
 ```php
-function getStatus()
+function getStatus($request)
 ```
 
 Get the HTTP Status Code
@@ -294,7 +293,7 @@ Expected to be 32 characters of hexadecimal
 ### Method: ResponseStack->getBody
 
 ```php
-function getBody()
+function getBody($request)
 ```
 
 Get the body of the response
@@ -304,7 +303,7 @@ Get the body of the response
 ### Method: ResponseStack->getHeaders
 
 ```php
-function getHeaders()
+function getHeaders($request)
 ```
 
 Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
@@ -314,7 +313,7 @@ Get the headers as either an array of key => value or ["Full: Header","OtherFull
 ### Method: ResponseStack->getStatus
 
 ```php
-function getStatus()
+function getStatus($request)
 ```
 
 Get the HTTP Status Code
