@@ -21,22 +21,25 @@ interface ResponseInterface {
 	/**
 	 * Get the body of the response
 	 *
+	 * @param \donatj\MockWebServer\RequestInfo $request
 	 * @return string
 	 */
-	public function getBody();
+	public function getBody(RequestInfo $request);
 
 	/**
 	 * Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
 	 *
+	 * @param \donatj\MockWebServer\RequestInfo $request
 	 * @return array
 	 */
-	public function getHeaders();
+	public function getHeaders(RequestInfo $request);
 
 	/**
 	 * Get the HTTP Status Code
 	 *
+	 * @param \donatj\MockWebServer\RequestInfo $request
 	 * @return int
 	 */
-	public function getStatus();
+	public function getStatus(RequestInfo $request);
 
 }

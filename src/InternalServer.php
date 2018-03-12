@@ -101,16 +101,16 @@ class InternalServer {
 					throw new ServerException('invalid serialized response');
 				}
 
-				http_response_code($response->getStatus());
+				http_response_code($response->getStatus($this->request));
 
-				foreach( $response->getHeaders() as $key => $header ) {
+				foreach( $response->getHeaders($this->request) as $key => $header ) {
 					if( is_int($key) ) {
 						call_user_func($this->header, $header);
 					} else {
 						call_user_func($this->header, "{$key}: {$header}");
 					}
 				}
-				$body = $response->getBody();
+				$body = $response->getBody($this->request);
 
 				if( $response instanceof MultiResponseInterface ) {
 					$response->next();

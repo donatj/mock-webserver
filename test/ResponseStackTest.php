@@ -1,15 +1,18 @@
 <?php
 
+use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\ResponseStack;
 
 class ResponseStackTest extends \PHPUnit_Framework_TestCase {
 
 	public function testEmpty() {
+		$mock = $this->getMockBuilder(RequestInfo::class)->disableOriginalConstructor()->getMock();
+
 		$x = new ResponseStack();
 
-		$this->assertSame('Past the end of the ResponseStack', $x->getBody());
-		$this->assertSame(404, $x->getStatus());
-		$this->assertSame([], $x->getHeaders());
+		$this->assertSame('Past the end of the ResponseStack', $x->getBody($mock));
+		$this->assertSame(404, $x->getStatus($mock));
+		$this->assertSame([], $x->getHeaders($mock));
 		$this->assertSame(false, $x->next());
 	}
 
@@ -17,12 +20,14 @@ class ResponseStackTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider customResponseProvider
 	 */
 	public function testCustomPastEndResponse( $body, $headers, $status ) {
+		$mock = $this->getMockBuilder(RequestInfo::class)->disableOriginalConstructor()->getMock();
+
 		$x = new ResponseStack();
 		$x->setPastEndResponse(new \donatj\MockWebServer\Response($body, $headers, $status));
 
-		$this->assertSame($body, $x->getBody());
-		$this->assertSame($status, $x->getStatus());
-		$this->assertSame($headers, $x->getHeaders());
+		$this->assertSame($body, $x->getBody($mock));
+		$this->assertSame($status, $x->getStatus($mock));
+		$this->assertSame($headers, $x->getHeaders($mock));
 		$this->assertSame(false, $x->next());
 	}
 
