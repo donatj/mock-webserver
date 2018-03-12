@@ -26,6 +26,7 @@ I would be happy to accept pull requests that correct this.
 						<file name="src/MockWebServer.php"/>
 						<file name="src/Response.php"/>
 						<file name="src/ResponseStack.php"/>
+						<file name="src/ResponseByMethod.php"/>
 					</section>
 				</docpage>
 			</section>

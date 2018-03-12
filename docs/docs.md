@@ -257,3 +257,61 @@ function setPastEndResponse($pastEndResponse)
 #### Parameters:
 
 - ***\donatj\MockWebServer\ResponseInterface*** `$pastEndResponse`
+
+## Class: \donatj\MockWebServer\ResponseByMethod
+
+```php
+<?php
+namespace donatj\MockWebServer;
+
+class ResponseByMethod {
+	const METHOD_GET = 'GET';
+	const METHOD_POST = 'POST';
+	const METHOD_PUT = 'PUT';
+	const METHOD_PATCH = 'PATCH';
+	const METHOD_DELETE = 'DELETE';
+	const METHOD_HEAD = 'HEAD';
+	const METHOD_OPTIONS = 'OPTIONS';
+	const METHOD_TRACE = 'TRACE';
+	const RESPONSE_BODY = 'body';
+	const RESPONSE_STATUS = 'status';
+	const RESPONSE_HEADERS = 'headers';
+}
+```
+
+### Method: ResponseByMethod->__construct
+
+```php
+function __construct([ $responses = array() [, $defaultResponse = null]])
+```
+
+MethodResponse constructor.
+
+#### Parameters:
+
+- ***\donatj\MockWebServer\ResponseInterface[]*** `$responses` - An array of responses keyed by their method.
+- ***\donatj\MockWebServer\ResponseInterface*** | ***null*** `$defaultResponse` - The fallthrough response to return if a response for a given
+method is not found. If this is not defined the server will return an HTTP 501 error.
+
+
+
+
+
+
+
+
+
+---
+
+### Method: ResponseByMethod->setMethodResponse
+
+```php
+function setMethodResponse($method, $response)
+```
+
+Set the Response for the Given Method
+
+#### Parameters:
+
+- ***string*** `$method`
+- ***\donatj\MockWebServer\ResponseInterface*** `$response`
