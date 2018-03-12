@@ -2,24 +2,28 @@
 
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
-use donatj\MockWebServer\RequestInfo;
+use donatj\MockWebServer\ResponseByMethod;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $server = new MockWebServer;
 $server->start();
 
-// Create a response for both a POST and GET request to the same URL:
-$methods = [RequestInfo::GET, RequestInfo::POST];
 
-foreach ($methods as $method)
-{
-    $url = $server->setResponseOfPath('/foo/bar', new Response("This is our http $method response"), $method);
+// Create a response for both a POST and GET request to the same URL
 
-    echo "$method request to $url:\n";
+$response = new ResponseByMethod([
+	ResponseByMethod::METHOD_GET  => new Response("This is our http GET response"),
+	ResponseByMethod::METHOD_POST => new Response("This is our http POST response", [], 201),
+]);
 
-    $context = stream_context_create(['http' => ['method'  => $method]]);
-    $content = file_get_contents($url, false, $context);
+$url = $server->setResponseOfPath('/foo/bar', $response);
 
-    echo $content . "\n\n";
+foreach( [ ResponseByMethod::METHOD_GET, ResponseByMethod::METHOD_POST ] as $method ) {
+	echo "$method request to $url:\n";
+
+	$context = stream_context_create([ 'http' => [ 'method' => $method ] ]);
+	$content = file_get_contents($url, false, $context);
+
+	echo $content . "\n\n";
 }

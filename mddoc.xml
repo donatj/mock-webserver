@@ -40,56 +40,30 @@ I would be happy to accept pull requests that correct this.
 					<text><![CDATA[The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.]]></text>
 					<source name="example/basic.php" lang="php"/>
 					<text>Outputs:</text>
-					<source><![CDATA[Requesting: http://127.0.0.1:8123/endpoint?get=foobar
-
-{
-    "_GET": {
-        "get": "foobar"
-    },
-    "_POST": [],
-    "_FILES": [],
-    "_COOKIE": [],
-    "HEADERS": {
-        "Host": "127.0.0.1:8123",
-        "Connection": "close"
-    },
-    "METHOD": "GET",
-    "INPUT": "",
-    "PARSED_INPUT": [],
-    "REQUEST_URI": "\/endpoint?get=foobar",
-    "PARSED_REQUEST_URI": {
-        "path": "\/endpoint",
-        "query": "get=foobar"
-    }
-}]]></source>
+					<exec cmd="php example/basic.php" format="code-block" />
 				</section>
 				<section title="Simple">
 					<source name="example/simple.php" lang="php"/>
 					<text>Outputs:</text>
-					<source><![CDATA[Requesting: http://127.0.0.1:8123/definedPath
-
-HTTP/1.0 200 OK
-Host: 127.0.0.1:8123
-Connection: close
-X-Powered-By: PHP/5.6.30
-Cache-Control: no-cache
-Content-type: text/html; charset=UTF-8
-
-This is our http body response]]></source>
+					<exec cmd="php example/simple.php" format="code-block" />
 				</section>
 				<section title="PHPUnit">
 					<source name="example/phpunit.php" lang="php"/>
 				</section>
 			</section>
-			<section title="Multiple Responses to the Same Endpoint">
-				<text>If you need to test multiple, *different* responses to the same endpoint it supports that as well.</text>
-				<source name="example/multi.php" lang="php"/>
-				<text>Outputs:</text>
-				<source><![CDATA[Requesting: http://127.0.0.1:60515/definedPath
-
-Response One
-Response Two
-Past the end of the Response Stack]]></source>
+			<section title="Multiple Responses from the Same Endpoint">
+				<section title="Response Stack">
+					<text>If you need an ordered set of responses, that can be done using the ResponseStack.</text>
+					<source name="example/multi.php" lang="php"/>
+					<text>Outputs:</text>
+					<exec cmd="php example/multi.php" format="code-block" />
+				</section>
+				<section title="Response by Method">
+					<text>If you need to vary responses to a single endpoint by method, you can do that using the ResponseByMethod response object.</text>
+					<source name="example/multi.php" lang="php"/>
+					<text>Outputs:</text>
+					<exec cmd="php example/multi.php" format="code-block" />
+				</section>
 			</section>
 		</section>
 	</docpage>

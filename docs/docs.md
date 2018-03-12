@@ -99,16 +99,15 @@ Get a URL providing the specified response.
 ### Method: MockWebServer->setResponseOfPath
 
 ```php
-function setResponseOfPath($path, $response, $method)
+function setResponseOfPath($path, $response)
 ```
 
-Set a specified path to provide a specific response for a specified HTTP method.
+Set a specified path to provide a specific response
 
 #### Parameters:
 
 - ***string*** `$path`
 - ***\donatj\MockWebServer\ResponseInterface*** `$response`
-- ***string*** `$method`
 
 #### Returns:
 
@@ -203,47 +202,6 @@ Response constructor.
 - ***array*** `$headers`
 - ***int*** `$status`
 
----
-
-### Method: Response->getRef
-
-```php
-function getRef()
-```
-
-Get a unique identifier for the response.  
-Expected to be 32 characters of hexadecimal
-
----
-
-### Method: Response->getBody
-
-```php
-function getBody()
-```
-
-Get the body of the response
-
----
-
-### Method: Response->getHeaders
-
-```php
-function getHeaders()
-```
-
-Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
-
----
-
-### Method: Response->getStatus
-
-```php
-function getStatus()
-```
-
-Get the HTTP Status Code
-
 ## Class: \donatj\MockWebServer\ResponseStack
 
 ```php
@@ -266,58 +224,15 @@ function __construct()
 ResponseStack constructor.  
 Accepts a variable number of RequestInterface objects
 
----
 
-### Method: ResponseStack->next
 
-```php
-function next()
-```
 
-#### Returns:
 
-- ***bool***
 
----
 
-### Method: ResponseStack->getRef
 
-```php
-function getRef()
-```
 
-Get a unique identifier for the response.  
-Expected to be 32 characters of hexadecimal
 
----
-
-### Method: ResponseStack->getBody
-
-```php
-function getBody()
-```
-
-Get the body of the response
-
----
-
-### Method: ResponseStack->getHeaders
-
-```php
-function getHeaders()
-```
-
-Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
-
----
-
-### Method: ResponseStack->getStatus
-
-```php
-function getStatus()
-```
-
-Get the HTTP Status Code
 
 ---
 

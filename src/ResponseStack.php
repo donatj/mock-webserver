@@ -67,28 +67,28 @@ class ResponseStack implements MultiResponseInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function getBody() {
+	public function getBody(RequestInfo $request) {
 		return $this->currentResponse ?
-			$this->currentResponse->getBody() :
-			$this->pastEndResponse->getBody();
+			$this->currentResponse->getBody($request) :
+			$this->pastEndResponse->getBody($request);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function getHeaders() {
+	public function getHeaders(RequestInfo $request) {
 		return $this->currentResponse ?
-			$this->currentResponse->getHeaders() :
-			$this->pastEndResponse->getHeaders();
+			$this->currentResponse->getHeaders($request) :
+			$this->pastEndResponse->getHeaders($request);
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function getStatus() {
+	public function getStatus(RequestInfo $request) {
 		return $this->currentResponse ?
-			$this->currentResponse->getStatus() :
-			$this->pastEndResponse->getStatus();
+			$this->currentResponse->getStatus($request) :
+			$this->pastEndResponse->getStatus($request);
 	}
 
 	/**

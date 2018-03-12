@@ -2,8 +2,8 @@
 
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
+use donatj\MockWebServer\ResponseByMethod;
 use donatj\MockWebServer\ResponseStack;
-use donatj\MockWebServer\RequestInfo;
 
 class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
@@ -91,39 +91,46 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testHttpMethods() {
-	    $methods = [
-	        RequestInfo::GET,
-            RequestInfo::POST,
-            RequestInfo::PUT,
-            RequestInfo::PATCH,
-            RequestInfo::DELETE,
-            RequestInfo::HEAD,
-            RequestInfo::OPTIONS,
-            RequestInfo::TRACE
-        ];
+		$methods = [
+			ResponseByMethod::METHOD_GET,
+			ResponseByMethod::METHOD_POST,
+			ResponseByMethod::METHOD_PUT,
+			ResponseByMethod::METHOD_PATCH,
+			ResponseByMethod::METHOD_DELETE,
+			ResponseByMethod::METHOD_HEAD,
+			ResponseByMethod::METHOD_OPTIONS,
+			ResponseByMethod::METHOD_TRACE,
+		];
 
-	    foreach ($methods as $method)
-	    {
-            $url = self::$server->setResponseOfPath(
-                '/definedPath',
-                new Response(
-                    "This is our http $method body response",
-                    ['X-Foo-Bar' => 'Baz'],
-                    200
-                ),
-                $method
-            );
+		$response = new ResponseByMethod();
 
-            $context = stream_context_create(['http' => ['method'  => $method]]);
-            $content = file_get_contents($url, false, $context);
+		foreach( $methods as $method ) {
+			$response->setMethodResponse($method, new Response(
+				"This is our http $method body response",
+				[ 'X-Foo-Bar' => 'Baz ' . $method ],
+				200
+			));
+		}
 
-            $this->assertContains('X-Foo-Bar: Baz', $http_response_header);
+		$url = self::$server->setResponseOfPath('/definedPath', $response);
 
-            if ($method != RequestInfo::HEAD) {
-                $this->assertEquals("This is our http $method body response", $content);
-            }
-        }
-    }
+		foreach( $methods as $method ) {
+			$context = stream_context_create([ 'http' => [ 'method' => $method ] ]);
+			$content = file_get_contents($url, false, $context);
+
+			$this->assertContains('X-Foo-Bar: Baz ' . $method, $http_response_header);
+
+			if( $method != ResponseByMethod::METHOD_HEAD ) {
+				$this->assertEquals("This is our http $method body response", $content);
+			}
+		}
+
+		$context = stream_context_create([ 'http' => [ 'method' => 'PROPFIND' ] ]);
+		$content = @file_get_contents($url, false, $context);
+
+		$this->assertSame(false, $content);
+		$this->assertContains('501 Not Implemented', $http_response_header[0]);
+	}
 
 	/**
 	 * Regression Test - Was a problem in 1.0.0-beta.2

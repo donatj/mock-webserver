@@ -62,7 +62,7 @@ echo file_get_contents($url);
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:8123/endpoint?get=foobar
+Requesting: http://127.0.0.1:52142/endpoint?get=foobar
 
 {
     "_GET": {
@@ -72,7 +72,7 @@ Requesting: http://127.0.0.1:8123/endpoint?get=foobar
     "_FILES": [],
     "_COOKIE": [],
     "HEADERS": {
-        "Host": "127.0.0.1:8123",
+        "Host": "127.0.0.1:52142",
         "Connection": "close"
     },
     "METHOD": "GET",
@@ -122,12 +122,13 @@ echo $content . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:8123/definedPath
+Requesting: http://127.0.0.1:52152/definedPath
 
 HTTP/1.0 200 OK
-Host: 127.0.0.1:8123
+Host: 127.0.0.1:52152
+Date: Mon, 12 Mar 2018 18:11:33 +0000
 Connection: close
-X-Powered-By: PHP/5.6.30
+X-Powered-By: PHP/7.1.7
 Cache-Control: no-cache
 Content-type: text/html; charset=UTF-8
 
@@ -173,9 +174,11 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 }
 ```
 
-## Multiple Responses to the Same Endpoint
+## Multiple Responses from the Same Endpoint
 
-If you need to test multiple, *different* responses to the same endpoint it supports that as well.
+### Response Stack
+
+If you need an ordered set of responses, that can be done using the ResponseStack.
 
 ```php
 <?php
@@ -215,9 +218,58 @@ echo $contentThree . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:60515/definedPath
+Requesting: http://127.0.0.1:52155/definedPath
 
 Response One
 Response Two
-Past the end of the Response Stack
+Past the end of the ResponseStack
+```
+
+### Response by Method
+
+If you need to vary responses to a single endpoint by method, you can do that using the ResponseByMethod response object.
+
+```php
+<?php
+
+use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Response;
+use donatj\MockWebServer\ResponseStack;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$server = new MockWebServer;
+$server->start();
+
+// We define the servers response to requests of the /definedPath endpoint
+$url = $server->setResponseOfPath(
+	'/definedPath',
+	new ResponseStack(
+		new Response("Response One"),
+		new Response("Response Two")
+	)
+);
+
+echo "Requesting: $url\n\n";
+
+$contentOne = file_get_contents($url);
+$contentTwo = file_get_contents($url);
+// This third request is expected to 404 which will error if errors are not ignored
+$contentThree = file_get_contents($url, false, stream_context_create([ 'http' => [ 'ignore_errors' => true ] ]));
+
+// $http_response_header is a little known variable magically defined
+// in the current scope by file_get_contents with the response headers
+echo $contentOne . "\n";
+echo $contentTwo . "\n";
+echo $contentThree . "\n";
+```
+
+Outputs:
+
+```
+Requesting: http://127.0.0.1:52159/definedPath
+
+Response One
+Response Two
+Past the end of the ResponseStack
 ```

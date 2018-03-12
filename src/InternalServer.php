@@ -79,11 +79,15 @@ class InternalServer {
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . $count, $reqStr);
 	}
 
-	public static function aliasPath( $tmpPath, $path, $method = RequestInfo::GET ) {
+	public static function aliasPath( $tmpPath, $path, $method ) {
 		$path   = '/' . ltrim($path, '/');
-        $method = strtoupper($method);
+		$method = $method ?: '';
 
-		return sprintf('%s%salias.%s.%s', $tmpPath, DIRECTORY_SEPARATOR, md5($path), $method);
+		return sprintf('%s%salias.%s',
+			$tmpPath,
+			DIRECTORY_SEPARATOR,
+			md5($path . "\0" . $method)
+		);
 	}
 
 	public function __invoke() {
@@ -97,16 +101,16 @@ class InternalServer {
 					throw new ServerException('invalid serialized response');
 				}
 
-				http_response_code($response->getStatus());
+				http_response_code($response->getStatus($this->request));
 
-				foreach( $response->getHeaders() as $key => $header ) {
+				foreach( $response->getHeaders($this->request) as $key => $header ) {
 					if( is_int($key) ) {
 						call_user_func($this->header, $header);
 					} else {
 						call_user_func($this->header, "{$key}: {$header}");
 					}
 				}
-				$body = $response->getBody();
+				$body = $response->getBody($this->request);
 
 				if( $response instanceof MultiResponseInterface ) {
 					$response->next();
@@ -135,10 +139,15 @@ class InternalServer {
 	protected function getDataPath() {
 		$path = false;
 
-		$uriPath   = $this->request->getParsedUri()['path'];
-		$aliasPath = self::aliasPath($this->tmpPath, $uriPath, $this->request->getRequestMethod());
+		$uriPath         = $this->request->getParsedUri()['path'];
+		$aliasMethodPath = self::aliasPath($this->tmpPath, $uriPath, $this->request->getRequestMethod());
+		$aliasPath       = self::aliasPath($this->tmpPath, $uriPath, null);
 
-		if( file_exists($aliasPath) ) {
+		if( file_exists($aliasMethodPath) ) {
+			if( $path = file_get_contents($aliasMethodPath) ) {
+				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
+			}
+		} elseif( file_exists($aliasPath) ) {
 			if( $path = file_get_contents($aliasPath) ) {
 				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
 			}

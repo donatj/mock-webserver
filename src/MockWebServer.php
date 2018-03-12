@@ -159,10 +159,10 @@ class MockWebServer {
 	 *
 	 * @param string                                  $path
 	 * @param \donatj\MockWebServer\ResponseInterface $response
-     * @param string $method HTTP method
+	 * @param string|null                             $method HTTP Method. If null, responds to any method.
 	 * @return string
 	 */
-	public function setResponseOfPath( $path, ResponseInterface $response, $method = RequestInfo::GET ) {
+	public function setResponseOfPath( $path, ResponseInterface $response, $method = null ) {
 		$ref = InternalServer::storeResponse($this->tmpDir, $response);
 
 		$aliasPath = InternalServer::aliasPath($this->tmpDir, $path, $method);
