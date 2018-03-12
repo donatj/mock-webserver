@@ -1,8 +1,8 @@
 <?php
 
 use donatj\MockWebServer\MockWebServer;
-use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\Response;
+use donatj\MockWebServer\ResponseByMethod;
 use donatj\MockWebServer\ResponseStack;
 
 class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
@@ -92,46 +92,44 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
 	public function testHttpMethods() {
 		$methods = [
-			RequestInfo::METHOD_GET,
-			RequestInfo::METHOD_POST,
-			RequestInfo::METHOD_PUT,
-			RequestInfo::METHOD_PATCH,
-			RequestInfo::METHOD_DELETE,
-			RequestInfo::METHOD_HEAD,
-			RequestInfo::METHOD_OPTIONS,
-			RequestInfo::METHOD_TRACE,
+			ResponseByMethod::METHOD_GET,
+			ResponseByMethod::METHOD_POST,
+			ResponseByMethod::METHOD_PUT,
+			ResponseByMethod::METHOD_PATCH,
+			ResponseByMethod::METHOD_DELETE,
+			ResponseByMethod::METHOD_HEAD,
+			ResponseByMethod::METHOD_OPTIONS,
+			ResponseByMethod::METHOD_TRACE,
 		];
 
-		$url = self::$server->setResponseOfPath('/definedPath',
-			new Response('Fallthrough')
-		);
+		$response = new ResponseByMethod();
 
 		foreach( $methods as $method ) {
-			$url = self::$server->setResponseOfPath(
-				'/definedPath',
-				new Response(
-					"This is our http $method body response",
-					[ 'X-Foo-Bar' => 'Baz' ],
-					200
-				),
-				$method
-			);
+			$response->setMethodResponse($method, new Response(
+				"This is our http $method body response",
+				[ 'X-Foo-Bar' => 'Baz ' . $method ],
+				200
+			));
 		}
+
+		$url = self::$server->setResponseOfPath('/definedPath', $response);
 
 		foreach( $methods as $method ) {
 			$context = stream_context_create([ 'http' => [ 'method' => $method ] ]);
 			$content = file_get_contents($url, false, $context);
 
-			$this->assertContains('X-Foo-Bar: Baz', $http_response_header);
+			$this->assertContains('X-Foo-Bar: Baz ' . $method, $http_response_header);
 
-			if( $method != RequestInfo::METHOD_HEAD ) {
+			if( $method != ResponseByMethod::METHOD_HEAD ) {
 				$this->assertEquals("This is our http $method body response", $content);
 			}
 		}
 
 		$context = stream_context_create([ 'http' => [ 'method' => 'PROPFIND' ] ]);
-		$content = file_get_contents($url, false, $context);
-		$this->assertEquals("Fallthrough", $content);
+		$content = @file_get_contents($url, false, $context);
+
+		$this->assertSame(false, $content);
+		$this->assertContains('501 Not Implemented', $http_response_header[0]);
 	}
 
 	/**
