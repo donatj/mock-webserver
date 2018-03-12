@@ -3,6 +3,7 @@
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseStack;
+use donatj\MockWebServer\RequestInfo;
 
 class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
@@ -88,6 +89,41 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		$this->assertContains('HTTP/1.0 404 Not Found', $http_response_header);
 		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
+
+	public function testHttpMethods() {
+	    $methods = [
+	        RequestInfo::GET,
+            RequestInfo::POST,
+            RequestInfo::PUT,
+            RequestInfo::PATCH,
+            RequestInfo::DELETE,
+            RequestInfo::HEAD,
+            RequestInfo::OPTIONS,
+            RequestInfo::TRACE
+        ];
+
+	    foreach ($methods as $method)
+	    {
+            $url = self::$server->setResponseOfPath(
+                '/definedPath',
+                new Response(
+                    "This is our http $method body response",
+                    ['X-Foo-Bar' => 'Baz'],
+                    200
+                ),
+                $method
+            );
+
+            $context = stream_context_create(['http' => ['method'  => $method]]);
+            $content = file_get_contents($url, false, $context);
+
+            $this->assertContains('X-Foo-Bar: Baz', $http_response_header);
+
+            if ($method != RequestInfo::HEAD) {
+                $this->assertEquals("This is our http $method body response", $content);
+            }
+        }
+    }
 
 	/**
 	 * Regression Test - Was a problem in 1.0.0-beta.2
