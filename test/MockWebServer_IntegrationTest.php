@@ -102,6 +102,10 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 			RequestInfo::METHOD_TRACE,
 		];
 
+		$url = self::$server->setResponseOfPath('/definedPath',
+			new Response('Fallthrough')
+		);
+
 		foreach( $methods as $method ) {
 			$url = self::$server->setResponseOfPath(
 				'/definedPath',
@@ -112,7 +116,9 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 				),
 				$method
 			);
+		}
 
+		foreach( $methods as $method ) {
 			$context = stream_context_create([ 'http' => [ 'method' => $method ] ]);
 			$content = file_get_contents($url, false, $context);
 
@@ -122,6 +128,10 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 				$this->assertEquals("This is our http $method body response", $content);
 			}
 		}
+
+		$context = stream_context_create([ 'http' => [ 'method' => 'SEARCH' ] ]);
+		$content = file_get_contents($url, false, $context);
+		$this->assertEquals("Fallthrough", $content);
 	}
 
 	/**
