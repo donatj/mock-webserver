@@ -121,4 +121,61 @@ class RequestInfo implements \JsonSerializable {
 	public function getRequestMethod() {
 		return $this->server['REQUEST_METHOD'];
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getServer() {
+		return $this->server;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getGet() {
+		return $this->get;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getPost() {
+		return $this->post;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getFiles() {
+		return $this->files;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCookie() {
+		return $this->cookie;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getHeaders() {
+		return $this->HEADERS;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getInput() {
+		return $this->INPUT;
+	}
+
+	/**
+	 * @return array|null
+	 */
+	public function getParsedInput() {
+		return $this->PARSED_INPUT;
+	}
+
 }
