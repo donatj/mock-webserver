@@ -159,7 +159,7 @@ class MockWebServer {
 	 *
 	 * @param string                                  $path
 	 * @param \donatj\MockWebServer\ResponseInterface $response
-     * @param string $method HTTP method
+	 * @param string                                  $method HTTP method
 	 * @return string
 	 */
 	public function setResponseOfPath( $path, ResponseInterface $response, $method = RequestInfo::GET ) {
