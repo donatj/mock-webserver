@@ -35,9 +35,9 @@ class Response implements ResponseInterface {
 	 */
 	public function getRef() {
 		$content = json_encode([
-			self::RESPONSE_BODY    => $this->body,
-			self::RESPONSE_STATUS  => $this->status,
-			self::RESPONSE_HEADERS => $this->headers,
+			$this->body,
+			$this->status,
+			$this->headers,
 		]);
 
 		return md5($content);

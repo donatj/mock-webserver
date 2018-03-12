@@ -4,10 +4,6 @@ namespace donatj\MockWebServer;
 
 interface ResponseInterface {
 
-	const RESPONSE_BODY    = 'body';
-	const RESPONSE_STATUS  = 'status';
-	const RESPONSE_HEADERS = 'headers';
-
 	/**
 	 * Get a unique identifier for the response.
 	 *
