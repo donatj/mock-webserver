@@ -162,7 +162,7 @@ class MockWebServer {
 	 * @param string                                  $method HTTP method
 	 * @return string
 	 */
-	public function setResponseOfPath( $path, ResponseInterface $response, $method = RequestInfo::GET ) {
+	public function setResponseOfPath( $path, ResponseInterface $response, $method = RequestInfo::METHOD_GET ) {
 		$ref = InternalServer::storeResponse($this->tmpDir, $response);
 
 		$aliasPath = InternalServer::aliasPath($this->tmpDir, $path, $method);

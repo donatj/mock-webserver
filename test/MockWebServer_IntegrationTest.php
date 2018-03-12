@@ -92,14 +92,14 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
 	public function testHttpMethods() {
 	    $methods = [
-	        RequestInfo::GET,
-            RequestInfo::POST,
-            RequestInfo::PUT,
-            RequestInfo::PATCH,
-            RequestInfo::DELETE,
-            RequestInfo::HEAD,
-            RequestInfo::OPTIONS,
-            RequestInfo::TRACE
+	        RequestInfo::METHOD_GET,
+            RequestInfo::METHOD_POST,
+            RequestInfo::METHOD_PUT,
+            RequestInfo::METHOD_PATCH,
+            RequestInfo::METHOD_DELETE,
+            RequestInfo::METHOD_HEAD,
+            RequestInfo::METHOD_OPTIONS,
+            RequestInfo::METHOD_TRACE
         ];
 
 	    foreach ($methods as $method)
@@ -119,7 +119,7 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
             $this->assertContains('X-Foo-Bar: Baz', $http_response_header);
 
-            if ($method != RequestInfo::HEAD) {
+            if ($method != RequestInfo::METHOD_HEAD) {
                 $this->assertEquals("This is our http $method body response", $content);
             }
         }

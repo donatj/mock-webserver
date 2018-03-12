@@ -79,7 +79,7 @@ class InternalServer {
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . $count, $reqStr);
 	}
 
-	public static function aliasPath( $tmpPath, $path, $method = RequestInfo::GET ) {
+	public static function aliasPath( $tmpPath, $path, $method = RequestInfo::METHOD_GET ) {
 		$path   = '/' . ltrim($path, '/');
 		$method = strtoupper($method);
 
