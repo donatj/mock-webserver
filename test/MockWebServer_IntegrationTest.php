@@ -129,7 +129,7 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 			}
 		}
 
-		$context = stream_context_create([ 'http' => [ 'method' => 'SEARCH' ] ]);
+		$context = stream_context_create([ 'http' => [ 'method' => 'PROPFIND' ] ]);
 		$content = file_get_contents($url, false, $context);
 		$this->assertEquals("Fallthrough", $content);
 	}
