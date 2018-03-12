@@ -83,7 +83,11 @@ class InternalServer {
 		$path   = '/' . ltrim($path, '/');
 		$method = $method ?: '';
 
-		return sprintf('%s%salias.%s.%s', $tmpPath, DIRECTORY_SEPARATOR, md5($path), $method);
+		return sprintf('%s%salias.%s',
+			$tmpPath,
+			DIRECTORY_SEPARATOR,
+			md5($path . "\0" . $method)
+		);
 	}
 
 	public function __invoke() {
