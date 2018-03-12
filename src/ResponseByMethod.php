@@ -33,7 +33,12 @@ class ResponseByMethod implements ResponseInterface {
 	}
 
 	public function getRef() {
-		return md5('juice');
+		$refBase = $this->default->getRef();
+		foreach( $this->responses as $response ) {
+			$refBase .= $response->getRef();
+		}
+
+		return md5($refBase);
 	}
 
 	public function getBody( RequestInfo $request ) {
