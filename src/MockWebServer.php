@@ -159,13 +159,12 @@ class MockWebServer {
 	 *
 	 * @param string                                  $path
 	 * @param \donatj\MockWebServer\ResponseInterface $response
-	 * @param string|null                             $method HTTP Method. If null, responds to any method.
 	 * @return string
 	 */
-	public function setResponseOfPath( $path, ResponseInterface $response, $method = null ) {
+	public function setResponseOfPath( $path, ResponseInterface $response ) {
 		$ref = InternalServer::storeResponse($this->tmpDir, $response);
 
-		$aliasPath = InternalServer::aliasPath($this->tmpDir, $path, $method);
+		$aliasPath = InternalServer::aliasPath($this->tmpDir, $path);
 
 		if( !file_put_contents($aliasPath, $ref) ) {
 			throw new \RuntimeException('Failed to store path alias');
