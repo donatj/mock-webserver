@@ -16,6 +16,15 @@ class RequestInfo implements \JsonSerializable {
 
 	const JSON_KEY_PARSED_REQUEST_URI = 'PARSED_REQUEST_URI';
 
+	const GET     = 'GET';
+	const POST    = 'POST';
+	const PUT     = 'PUT';
+	const PATCH   = 'PATCH';
+	const DELETE  = 'DELETE';
+	const HEAD    = 'HEAD';
+	const OPTIONS = 'OPTIONS';
+	const TRACE   = 'TRACE';
+
 	/**
 	 * @var mixed
 	 */

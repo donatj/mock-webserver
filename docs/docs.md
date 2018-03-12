@@ -99,15 +99,16 @@ Get a URL providing the specified response.
 ### Method: MockWebServer->setResponseOfPath
 
 ```php
-function setResponseOfPath($path, $response)
+function setResponseOfPath($path, $response, $method)
 ```
 
-Set a specified path to provide a specific response
+Set a specified path to provide a specific response for a specified HTTP method.
 
 #### Parameters:
 
 - ***string*** `$path`
 - ***\donatj\MockWebServer\ResponseInterface*** `$response`
+- ***string*** `$method`
 
 #### Returns:
 
