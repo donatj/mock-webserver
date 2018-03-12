@@ -33,7 +33,7 @@ class ResponseByMethod implements ResponseInterface {
 
 		if( $defaultResponse instanceof ResponseInterface ) {
 			$this->default = $defaultResponse;
-		}else {
+		} else {
 			$this->default = new Response('MethodResponse - Method Not Defined', [], 501);
 		}
 	}

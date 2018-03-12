@@ -46,21 +46,21 @@ class Response implements ResponseInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function getBody(RequestInfo $request) {
+	public function getBody( RequestInfo $request ) {
 		return $this->body;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function getHeaders(RequestInfo $request) {
+	public function getHeaders( RequestInfo $request ) {
 		return $this->headers;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function getStatus(RequestInfo $request) {
+	public function getStatus( RequestInfo $request ) {
 		return $this->status;
 	}
 }

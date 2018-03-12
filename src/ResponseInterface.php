@@ -21,7 +21,7 @@ interface ResponseInterface {
 	 * @param RequestInfo $request
 	 * @return string
 	 */
-	public function getBody(RequestInfo $request);
+	public function getBody( RequestInfo $request );
 
 	/**
 	 * Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
@@ -30,7 +30,7 @@ interface ResponseInterface {
 	 * @param RequestInfo $request
 	 * @return array
 	 */
-	public function getHeaders(RequestInfo $request);
+	public function getHeaders( RequestInfo $request );
 
 	/**
 	 * Get the HTTP Status Code
@@ -39,6 +39,6 @@ interface ResponseInterface {
 	 * @param RequestInfo $request
 	 * @return int
 	 */
-	public function getStatus(RequestInfo $request);
+	public function getStatus( RequestInfo $request );
 
 }

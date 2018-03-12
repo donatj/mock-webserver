@@ -67,7 +67,7 @@ class ResponseStack implements MultiResponseInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function getBody(RequestInfo $request) {
+	public function getBody( RequestInfo $request ) {
 		return $this->currentResponse ?
 			$this->currentResponse->getBody($request) :
 			$this->pastEndResponse->getBody($request);
@@ -76,7 +76,7 @@ class ResponseStack implements MultiResponseInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function getHeaders(RequestInfo $request) {
+	public function getHeaders( RequestInfo $request ) {
 		return $this->currentResponse ?
 			$this->currentResponse->getHeaders($request) :
 			$this->pastEndResponse->getHeaders($request);
@@ -85,7 +85,7 @@ class ResponseStack implements MultiResponseInterface {
 	/**
 	 * @inheritdoc
 	 */
-	public function getStatus(RequestInfo $request) {
+	public function getStatus( RequestInfo $request ) {
 		return $this->currentResponse ?
 			$this->currentResponse->getStatus($request) :
 			$this->pastEndResponse->getStatus($request);
