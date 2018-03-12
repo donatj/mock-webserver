@@ -22,14 +22,20 @@ class ResponseByMethod implements ResponseInterface {
 	/**
 	 * MethodResponse constructor.
 	 *
-	 * @param ResponseInterface[] $responses An array of responses keyed by their method.
+	 * @param ResponseInterface[]    $responses An array of responses keyed by their method.
+	 * @param ResponseInterface|null $defaultResponse The fallthrough response to return if a response for a given
+	 * method is not found. If this is not defined the server will return an HTTP 501 error.
 	 */
-	public function __construct( array $responses = [] ) {
+	public function __construct( array $responses = [], ResponseInterface $defaultResponse = null ) {
 		foreach( $responses as $method => $response ) {
 			$this->setMethodResponse($method, $response);
 		}
 
-		$this->default = new Response('MethodResponse - Method Not Defined', [], 501);
+		if( $defaultResponse instanceof ResponseInterface ) {
+			$this->default = $defaultResponse;
+		}else {
+			$this->default = new Response('MethodResponse - Method Not Defined', [], 501);
+		}
 	}
 
 	public function getRef() {
