@@ -1,12 +1,11 @@
 <?php
 
-use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\ResponseStack;
 
 class ResponseStackTest extends \PHPUnit_Framework_TestCase {
 
 	public function testEmpty() {
-		$mock = $this->getMockBuilder(RequestInfo::class)->disableOriginalConstructor()->getMock();
+		$mock = $this->getMockBuilder('\donatj\MockWebServer\RequestInfo')->disableOriginalConstructor()->getMock();
 
 		$x = new ResponseStack();
 
@@ -20,7 +19,7 @@ class ResponseStackTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider customResponseProvider
 	 */
 	public function testCustomPastEndResponse( $body, $headers, $status ) {
-		$mock = $this->getMockBuilder(RequestInfo::class)->disableOriginalConstructor()->getMock();
+		$mock = $this->getMockBuilder('\donatj\MockWebServer\RequestInfo')->disableOriginalConstructor()->getMock();
 
 		$x = new ResponseStack();
 		$x->setPastEndResponse(new \donatj\MockWebServer\Response($body, $headers, $status));
