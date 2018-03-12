@@ -1,6 +1,7 @@
 <?php
 
 use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseStack;
 
@@ -87,6 +88,50 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		$content = file_get_contents($url, false, $ctx);
 		$this->assertContains('HTTP/1.0 404 Not Found', $http_response_header);
 		$this->assertEquals("Past the end of the ResponseStack", $content);
+	}
+
+	public function testHttpMethods() {
+		$methods = [
+			RequestInfo::METHOD_GET,
+			RequestInfo::METHOD_POST,
+			RequestInfo::METHOD_PUT,
+			RequestInfo::METHOD_PATCH,
+			RequestInfo::METHOD_DELETE,
+			RequestInfo::METHOD_HEAD,
+			RequestInfo::METHOD_OPTIONS,
+			RequestInfo::METHOD_TRACE,
+		];
+
+		$url = self::$server->setResponseOfPath('/definedPath',
+			new Response('Fallthrough')
+		);
+
+		foreach( $methods as $method ) {
+			$url = self::$server->setResponseOfPath(
+				'/definedPath',
+				new Response(
+					"This is our http $method body response",
+					[ 'X-Foo-Bar' => 'Baz' ],
+					200
+				),
+				$method
+			);
+		}
+
+		foreach( $methods as $method ) {
+			$context = stream_context_create([ 'http' => [ 'method' => $method ] ]);
+			$content = file_get_contents($url, false, $context);
+
+			$this->assertContains('X-Foo-Bar: Baz', $http_response_header);
+
+			if( $method != RequestInfo::METHOD_HEAD ) {
+				$this->assertEquals("This is our http $method body response", $content);
+			}
+		}
+
+		$context = stream_context_create([ 'http' => [ 'method' => 'PROPFIND' ] ]);
+		$content = file_get_contents($url, false, $context);
+		$this->assertEquals("Fallthrough", $content);
 	}
 
 	/**

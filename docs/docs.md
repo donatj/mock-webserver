@@ -99,7 +99,7 @@ Get a URL providing the specified response.
 ### Method: MockWebServer->setResponseOfPath
 
 ```php
-function setResponseOfPath($path, $response)
+function setResponseOfPath($path, $response [, $method = null])
 ```
 
 Set a specified path to provide a specific response
@@ -108,6 +108,7 @@ Set a specified path to provide a specific response
 
 - ***string*** `$path`
 - ***\donatj\MockWebServer\ResponseInterface*** `$response`
+- ***string*** | ***null*** `$method` - HTTP Method. If null, responds to any method.
 
 #### Returns:
 
