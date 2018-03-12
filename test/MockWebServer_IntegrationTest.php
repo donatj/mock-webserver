@@ -1,9 +1,9 @@
 <?php
 
 use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseStack;
-use donatj\MockWebServer\RequestInfo;
 
 class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
@@ -91,39 +91,38 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testHttpMethods() {
-	    $methods = [
-	        RequestInfo::METHOD_GET,
-            RequestInfo::METHOD_POST,
-            RequestInfo::METHOD_PUT,
-            RequestInfo::METHOD_PATCH,
-            RequestInfo::METHOD_DELETE,
-            RequestInfo::METHOD_HEAD,
-            RequestInfo::METHOD_OPTIONS,
-            RequestInfo::METHOD_TRACE
-        ];
+		$methods = [
+			RequestInfo::METHOD_GET,
+			RequestInfo::METHOD_POST,
+			RequestInfo::METHOD_PUT,
+			RequestInfo::METHOD_PATCH,
+			RequestInfo::METHOD_DELETE,
+			RequestInfo::METHOD_HEAD,
+			RequestInfo::METHOD_OPTIONS,
+			RequestInfo::METHOD_TRACE,
+		];
 
-	    foreach ($methods as $method)
-	    {
-            $url = self::$server->setResponseOfPath(
-                '/definedPath',
-                new Response(
-                    "This is our http $method body response",
-                    ['X-Foo-Bar' => 'Baz'],
-                    200
-                ),
-                $method
-            );
+		foreach( $methods as $method ) {
+			$url = self::$server->setResponseOfPath(
+				'/definedPath',
+				new Response(
+					"This is our http $method body response",
+					[ 'X-Foo-Bar' => 'Baz' ],
+					200
+				),
+				$method
+			);
 
-            $context = stream_context_create(['http' => ['method'  => $method]]);
-            $content = file_get_contents($url, false, $context);
+			$context = stream_context_create([ 'http' => [ 'method' => $method ] ]);
+			$content = file_get_contents($url, false, $context);
 
-            $this->assertContains('X-Foo-Bar: Baz', $http_response_header);
+			$this->assertContains('X-Foo-Bar: Baz', $http_response_header);
 
-            if ($method != RequestInfo::METHOD_HEAD) {
-                $this->assertEquals("This is our http $method body response", $content);
-            }
-        }
-    }
+			if( $method != RequestInfo::METHOD_HEAD ) {
+				$this->assertEquals("This is our http $method body response", $content);
+			}
+		}
+	}
 
 	/**
 	 * Regression Test - Was a problem in 1.0.0-beta.2
