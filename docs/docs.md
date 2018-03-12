@@ -177,17 +177,6 @@ Get the port the network server is to be ran on.
 
 ## Class: \donatj\MockWebServer\Response
 
-```php
-<?php
-namespace donatj\MockWebServer;
-
-class Response {
-	const RESPONSE_BODY = 'body';
-	const RESPONSE_STATUS = 'status';
-	const RESPONSE_HEADERS = 'headers';
-}
-```
-
 ### Method: Response->__construct
 
 ```php
@@ -203,17 +192,6 @@ Response constructor.
 - ***int*** `$status`
 
 ## Class: \donatj\MockWebServer\ResponseStack
-
-```php
-<?php
-namespace donatj\MockWebServer;
-
-class ResponseStack {
-	const RESPONSE_BODY = 'body';
-	const RESPONSE_STATUS = 'status';
-	const RESPONSE_HEADERS = 'headers';
-}
-```
 
 ### Method: ResponseStack->__construct
 
@@ -273,9 +251,6 @@ class ResponseByMethod {
 	const METHOD_HEAD = 'HEAD';
 	const METHOD_OPTIONS = 'OPTIONS';
 	const METHOD_TRACE = 'TRACE';
-	const RESPONSE_BODY = 'body';
-	const RESPONSE_STATUS = 'status';
-	const RESPONSE_HEADERS = 'headers';
 }
 ```
 
