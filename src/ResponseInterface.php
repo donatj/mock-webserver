@@ -37,4 +37,12 @@ interface ResponseInterface {
 	 */
 	public function getStatus();
 
+    /**
+     * Instantiate a new ResponseInterface object from the given object or array.
+     *
+     * @param  array|object $data
+     * @return string
+     */
+	public static function create($data);
+
 }

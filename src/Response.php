@@ -30,6 +30,37 @@ class Response implements ResponseInterface {
 		$this->status  = $status;
 	}
 
+    /**
+     * @inheritdoc
+     */
+	public static function create($data) {
+	    if (is_object($data)) {
+	        $data = (array) $data;
+        }
+
+        if (!isset($data['headers'])) {
+            $data['headers'] = [];
+        }
+
+        if (is_object($data['headers'])) {
+	        $data['headers'] = (array) $data['headers'];
+        }
+
+        if (!isset($data['status'])) {
+            $data['status'] = 200;
+        }
+
+        if (!isset($data['body'])) {
+            $data['body'] = '';
+        }
+
+        if (!is_string($data['body'])) {
+            $data['body'] = json_encode($data['body']);
+        }
+
+        return new self($data['body'], $data['headers'], (int) $data['status']);
+    }
+
 	/**
 	 * @inheritdoc
 	 */

@@ -132,6 +132,39 @@ class MockWebServer {
 		$this->started = false;
 	}
 
+    /**
+     * Registers paths and their responses from a JSON object.
+     *
+     * The $json argument can either be a string or the file
+     * path to a JSON file containing the JSON object.
+     *
+     * @param $json
+     */
+	public function load($json) {
+	    if (is_file($json)) {
+	        $json = file_get_contents($json);
+        }
+
+        $object = json_decode($json);
+
+	    if (is_null($object)) {
+	        return;
+        }
+
+        foreach (get_object_vars($object) as $path => $requests)
+        {
+            foreach ($requests as $method => $data)
+            {
+                if (is_array($data)) {
+                    $response = ResponseStack::create($data);
+                }
+                else $response = Response::create($data);
+
+                $this->setResponseOfPath($path, $response);
+            }
+        }
+    }
+
 	/**
 	 * Get the HTTP root of the webserver
 	 *  e.g.: http://127.0.0.1:8123

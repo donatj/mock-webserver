@@ -4,6 +4,8 @@ namespace donatj\MockWebServer;
 
 use donatj\MockWebServer\Exceptions\RuntimeException;
 
+use ReflectionClass;
+
 class ResponseStack implements MultiResponseInterface {
 
 	private $ref;
@@ -46,6 +48,22 @@ class ResponseStack implements MultiResponseInterface {
 		$this->currentResponse = reset($this->responses) ?: null;
 		$this->pastEndResponse = new Response('Past the end of the ResponseStack', [], 404);
 	}
+
+    /**
+     * @inheritdoc
+     */
+    public static function create($data) {
+        $responses = [];
+
+        foreach ($data as $item) {
+            $responses[] = Response::create($item);
+        }
+
+        $reflector = new ReflectionClass('donatj\MockWebServer\ResponseStack');
+        $response = $reflector->newInstanceArgs($responses);
+
+        return $response;
+    }
 
 	/**
 	 * @return bool
