@@ -21,7 +21,8 @@ interface ResponseInterface {
 	/**
 	 * Get the body of the response
 	 *
-	 * @param \donatj\MockWebServer\RequestInfo $request
+	 * @internal
+	 * @param RequestInfo $request
 	 * @return string
 	 */
 	public function getBody(RequestInfo $request);
@@ -29,7 +30,8 @@ interface ResponseInterface {
 	/**
 	 * Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
 	 *
-	 * @param \donatj\MockWebServer\RequestInfo $request
+	 * @internal
+	 * @param RequestInfo $request
 	 * @return array
 	 */
 	public function getHeaders(RequestInfo $request);
@@ -37,7 +39,8 @@ interface ResponseInterface {
 	/**
 	 * Get the HTTP Status Code
 	 *
-	 * @param \donatj\MockWebServer\RequestInfo $request
+	 * @internal
+	 * @param RequestInfo $request
 	 * @return int
 	 */
 	public function getStatus(RequestInfo $request);
