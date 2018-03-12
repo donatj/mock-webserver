@@ -81,7 +81,7 @@ class InternalServer {
 
 	public static function aliasPath( $tmpPath, $path, $method ) {
 		$path   = '/' . ltrim($path, '/');
-		$method = strtoupper($method ?: '');
+		$method = $method ?: '';
 
 		return sprintf('%s%salias.%s.%s', $tmpPath, DIRECTORY_SEPARATOR, md5($path), $method);
 	}
