@@ -12,6 +12,7 @@ interface ResponseInterface {
 	 * Get a unique identifier for the response.
 	 *
 	 * Expected to be 32 characters of hexadecimal
+	 *
 	 * @internal
 	 * @return string
 	 */
@@ -33,6 +34,7 @@ interface ResponseInterface {
 
 	/**
 	 * Get the HTTP Status Code
+	 *
 	 * @return int
 	 */
 	public function getStatus();
