@@ -10,7 +10,7 @@ $server = new MockWebServer;
 $server->start();
 
 // Create a response for both a POST and GET request to the same URL:
-$methods = [RequestInfo::GET, RequestInfo::POST];
+$methods = [RequestInfo::METHOD_GET, RequestInfo::METHOD_POST];
 
 foreach ($methods as $method)
 {
