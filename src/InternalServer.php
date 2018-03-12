@@ -79,9 +79,9 @@ class InternalServer {
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . $count, $reqStr);
 	}
 
-	public static function aliasPath( $tmpPath, $path, $method = RequestInfo::METHOD_GET ) {
+	public static function aliasPath( $tmpPath, $path, $method ) {
 		$path   = '/' . ltrim($path, '/');
-		$method = strtoupper($method);
+		$method = strtoupper($method ?: '');
 
 		return sprintf('%s%salias.%s.%s', $tmpPath, DIRECTORY_SEPARATOR, md5($path), $method);
 	}
@@ -135,10 +135,15 @@ class InternalServer {
 	protected function getDataPath() {
 		$path = false;
 
-		$uriPath   = $this->request->getParsedUri()['path'];
-		$aliasPath = self::aliasPath($this->tmpPath, $uriPath, $this->request->getRequestMethod());
+		$uriPath         = $this->request->getParsedUri()['path'];
+		$aliasMethodPath = self::aliasPath($this->tmpPath, $uriPath, $this->request->getRequestMethod());
+		$aliasPath       = self::aliasPath($this->tmpPath, $uriPath, null);
 
-		if( file_exists($aliasPath) ) {
+		if( file_exists($aliasMethodPath) ) {
+			if( $path = file_get_contents($aliasMethodPath) ) {
+				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
+			}
+		} elseif( file_exists($aliasPath) ) {
 			if( $path = file_get_contents($aliasPath) ) {
 				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
 			}
