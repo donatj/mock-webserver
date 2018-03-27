@@ -221,7 +221,7 @@ class MockWebServer {
 	 * If offset is negative, the request will be that from the end of the requests.
 	 *
 	 * @param int $offset
-	 * @return array|null
+	 * @return RequestInfo|null
 	 */
 	public function getRequestByOffset( $offset ) {
 		$reqs = glob($this->tmpDir . DIRECTORY_SEPARATOR . 'request.*');
@@ -234,8 +234,8 @@ class MockWebServer {
 
 		$path    = reset($item);
 		$content = file_get_contents($path);
-		$data    = @json_decode($content, true);
-		if( json_last_error() === JSON_ERROR_NONE ) {
+		$data    = @unserialize($content);
+		if( $data instanceof RequestInfo ) {
 			return $data;
 		}
 
