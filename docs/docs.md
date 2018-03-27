@@ -125,7 +125,7 @@ Get the previous requests associated request data.
 
 #### Returns:
 
-- ***array*** | ***null***
+- ***\donatj\MockWebServer\RequestInfo*** | ***null***
 
 ---
 
@@ -145,7 +145,7 @@ If offset is negative, the request will be that from the end of the requests.
 
 #### Returns:
 
-- ***array*** | ***null***
+- ***\donatj\MockWebServer\RequestInfo*** | ***null***
 
 ---
 
