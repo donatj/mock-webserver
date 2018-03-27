@@ -74,7 +74,7 @@ class InternalServer {
 	}
 
 	private function logRequest( RequestInfo $request, $count ) {
-		$reqStr = json_encode($request);
+		$reqStr = serialize($request);
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . MockWebServer::LAST_REQUEST_FILE, $reqStr);
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . $count, $reqStr);
 	}

@@ -38,7 +38,7 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertJsonStringEqualsJsonString($content, json_encode($body));
 
-		$lastReq = self::$server->getLastRequest();
+		$lastReq = self::$server->getLastRequest()->jsonSerialize();
 		foreach( $body as $key => $val ) {
 			if( $key == 'HEADERS' ) {
 				// This is the same horrible connection hack as above. Fix in time.
@@ -138,6 +138,134 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 	public function testEmptySingle() {
 		$url = self::$server->getUrlOfResponse(new Response(''));
 		$this->assertSame('', file_get_contents($url));
+	}
+
+
+	/**
+	 * @dataProvider requestInfoProvider
+	 */
+	public function testRequestInfo( $method, $uri, $respBody, $reqBody, array $headers, $status, $query, array $expectedCookies, array $serverVars ) {
+		$url = self::$server->setResponseOfPath($uri, new Response($respBody, $headers, $status));
+
+		// Get cURL resource
+		$ch = curl_init();
+
+		// Set url
+		curl_setopt($ch, CURLOPT_URL, $url . '?' . $query);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+		$xheaders = [];
+		foreach( $headers as $hkey => $hval ) {
+			$xheaders[] = "{$hkey}: $hval";
+		}
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $xheaders);
+		// Create body
+
+		if( is_array($reqBody) ) {
+			$encReqBody = http_build_query($reqBody);
+		} else {
+			$encReqBody = $reqBody ?: '';
+		}
+
+		if( $encReqBody ) {
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $encReqBody);
+		}
+
+		// Send the request & save response to $resp
+		$resp = curl_exec($ch);
+
+		if( !$resp ) {
+			$this->fail("request failed");
+
+			return;
+		}
+
+		$this->assertSame($status, curl_getinfo($ch, CURLINFO_HTTP_CODE));
+
+		// Close request to clear up some resources
+		curl_close($ch);
+
+
+		$request = self::$server->getLastRequest();
+
+		$this->assertSame($uri . '?' . $query, $request->getRequestUri());
+		$this->assertSame([ 'path' => $uri, 'query' => ltrim($query, '?') ], $request->getParsedUri());
+		$this->assertContains(self::$server->getHost() . ':' . self::$server->getPort(),
+			$request->getHeaders());
+
+		$reqHeaders = $request->getHeaders();
+		foreach( $headers as $hkey => $hval ) {
+			$this->assertSame($reqHeaders[$hkey], $hval);
+		}
+
+		$this->assertSame($query, http_build_query($request->getGet()));
+		$this->assertSame($method, $request->getRequestMethod());
+
+		$this->assertSame($expectedCookies, $request->getCookie());
+
+		$this->assertSame($encReqBody, $request->getInput());
+
+		parse_str($encReqBody, $decReqBody);
+		$this->assertSame($decReqBody, $request->getParsedInput());
+		if( $method == 'POST' ) {
+			$this->assertSame($decReqBody, $request->getPost());
+		}
+
+		$server = $request->getServer();
+
+		$this->assertEquals(self::$server->getHost(), $server['SERVER_NAME']);
+		$this->assertEquals(self::$server->getPort(), $server['SERVER_PORT']);
+
+		foreach( $serverVars as $sKey => $sVal ) {
+			$this->assertSame($server[$sKey], $sVal);
+		}
+	}
+
+	public function requestInfoProvider() {
+		return [
+			[
+				'GET',
+				'/requestInfoPath',
+				'This is our http body response',
+				null,
+				[ 'X-Foo-Bar' => 'BazBazBaz', 'Accept' => 'Juice' ],
+				200,
+				'foo=bar',
+				[],
+				[ 'HTTP_ACCEPT' => 'Juice', 'QUERY_STRING' => 'foo=bar' ],
+			],
+			[
+				'POST',
+				'/requestInfoPath',
+				'This is my POST response',
+				[ 'a' => 1 ],
+				[ 'X-Boo-Bop' => 'Beep Boop', 'Cookie' => 'juice=mango' ],
+				301,
+				'x=1',
+				[
+					'juice' => 'mango',
+				],
+				[ 'REQUEST_METHOD' => 'POST', 'QUERY_STRING' => 'x=1' ],
+			],
+			[
+				'PUT',
+				'/put/path/90210',
+				'Put put put',
+				[ 'a' => 1 ],
+				[ 'X-Boo-Bop' => 'Beep Boop', 'Cookie' => 'a=b; c=d; e=f; what="soup"' ],
+				301,
+				'x=1',
+				[
+					'a'    => 'b',
+					'c'    => 'd',
+					'e'    => 'f',
+					'what' => '"soup"',
+				],
+				[ 'REQUEST_METHOD' => 'PUT', 'QUERY_STRING' => 'x=1'],
+			],
+		];
 	}
 
 }
