@@ -38,7 +38,7 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertJsonStringEqualsJsonString($content, json_encode($body));
 
-		$lastReq = self::$server->getLastRequest();
+		$lastReq = self::$server->getLastRequest()->jsonSerialize();
 		foreach( $body as $key => $val ) {
 			if( $key == 'HEADERS' ) {
 				// This is the same horrible connection hack as above. Fix in time.
