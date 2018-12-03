@@ -358,4 +358,12 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		];
 	}
 
+	public function testServerIsRunning() {
+		$this->assertTrue(self::$server->isRunning());
+	}
+
+	public function testStopServer() {
+		self::$server->stop();
+		$this->assertFalse(self::$server->isRunning());
+	}
 }

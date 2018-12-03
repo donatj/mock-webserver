@@ -13,8 +13,6 @@ class MockWebServer {
 
 	const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
 
-	private $pid;
-
 	/**
 	 * @var string
 	 */
@@ -25,17 +23,18 @@ class MockWebServer {
 	 */
 	private $port;
 
-	/**
-	 * Indicates whether or not the server was successfully started
-	 *
-	 * @var bool
-	 */
-	private $started = false;
 
 	/**
 	 * @var string
 	 */
 	private $tmpDir;
+
+	/**
+	 * Contain link to opened process resource
+	 *
+	 * @var resource
+	 */
+	private $process;
 
 	/**
 	 * TestWebServer constructor.
@@ -64,26 +63,22 @@ class MockWebServer {
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd    = "php -S {$this->host}:{$this->port} " . escapeshellarg($script);
+		$cmd = "php -S {$this->host}:{$this->port} " . $script;
 
 		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
 			throw new Exceptions\RuntimeException('Unable to put environmental variable');
 		}
-		$fullCmd = sprintf('%s > %s 2>&1 & echo $!',
-			escapeshellcmd($cmd),
-			escapeshellarg($stdout)
+		$fullCmd = sprintf('%s > %s 2>&1',
+			$cmd,
+			$stdout
 		);
 
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
-		$this->pid = exec(
-			$fullCmd,
-			$o,
-			$ret
-		);
+		$this->process = $this->startServer($fullCmd);
 
-		if( !ctype_digit($this->pid) ) {
-			throw new Exceptions\ServerException("Error starting server, received '{$this->pid}', expected int PID");
+		if( !$this->process ) {
+			throw new Exceptions\ServerException("Error starting server");
 		}
 
 		for( $i = 0; $i <= 20; $i++ ) {
@@ -100,8 +95,6 @@ class MockWebServer {
 			throw new Exceptions\ServerException("Failed to start server. Is something already running on port {$this->port}?");
 		}
 
-		$this->started = true;
-
 		register_shutdown_function(function () {
 			if( $this->isRunning() ) {
 				$this->stop();
@@ -115,26 +108,27 @@ class MockWebServer {
 	 * @return bool
 	 */
 	public function isRunning() {
-		if( !$this->pid ) {
+		if( !is_resource($this->process) ) {
 			return false;
 		}
 
-		$result = shell_exec(sprintf('ps %d',
-			$this->pid));
+		$processStatus = proc_get_status($this->process);
 
-		return count(explode("\n", $result)) > 2;
+		if( !$processStatus ) {
+			return false;
+		}
+
+		return $processStatus['running'];
 	}
 
 	/**
 	 * Stop the Web Server
 	 */
 	public function stop() {
-		if( $this->started ) {
-			exec(sprintf('kill %d',
-				$this->pid));
+		if( $this->isRunning() ) {
+			proc_terminate($this->process);
+			sleep(1);
 		}
-
-		$this->started = false;
 	}
 
 	/**
@@ -301,5 +295,30 @@ class MockWebServer {
 		}
 
 		throw new Exceptions\RuntimeException('Failed to find open port');
+	}
+
+	private function isWindowsPlatform() {
+		return defined('PHP_WINDOWS_VERSION_MAJOR');
+	}
+
+	private function startServer($fullCmd) {
+		if( !$this->isWindowsPlatform() ) {
+			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
+			$fullCmd = 'exec ' . $fullCmd;
+		}
+		$pipes = [];
+		$env = null;
+		$cwd = null;
+		$process = proc_open($fullCmd, [], $pipes, $cwd, $env, [
+			'suppress_errors' => false,
+			'bypass_shell' => true,
+		]);
+
+		sleep(1);
+
+		if( !is_resource($process) ) {
+			return false;
+		}
+		return $process;
 	}
 }

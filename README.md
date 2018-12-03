@@ -11,13 +11,6 @@ Unit testing HTTP requests can be difficult, especially in cases where injecting
 
 Mock Web Server creates a local Web Server you can make predefined requests against.
 
-
-## Limitations
-
-Unfortunately, Mock Web Server does not currently support Windows natively. It does work in [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10), and that would be my recommended route for Windows users currently.
-
-There has been work [started to implement this](https://github.com/donatj/mock-webserver/pull/15) but I need help finishing it. If anyone is interested in helping, comment on [the pull request](https://github.com/donatj/mock-webserver/pull/15).
-
 ## Documentation
 
 [See: docs/docs.md](docs/docs.md)
