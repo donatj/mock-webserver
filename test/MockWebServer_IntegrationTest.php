@@ -268,4 +268,12 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		];
 	}
 
+	public function testServerIsRunning() {
+		$this->assertTrue(self::$server->isRunning());
+	}
+
+	public function testStopServer() {
+		self::$server->stop();
+		$this->assertFalse(self::$server->isRunning());
+	}
 }
