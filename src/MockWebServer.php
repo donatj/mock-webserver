@@ -122,7 +122,15 @@ class MockWebServer {
 	public function stop() {
 		if( $this->isRunning() ) {
 			proc_terminate($this->process);
-			sleep(1);
+
+			$attempts = 0;
+			while( $this->isRunning() ) {
+				if( ++$attempts > 1000 ) {
+					throw new Exceptions\ServerException('Failed to stop server.');
+				}
+
+				usleep(10000);
+			}
 		}
 	}
 
