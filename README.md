@@ -12,6 +12,7 @@ Unit testing HTTP requests can be difficult, especially in cases where injecting
 
 Mock Web Server creates a local Web Server you can make predefined requests against.
 
+
 ## Documentation
 
 [See: docs/docs.md](docs/docs.md)
@@ -20,6 +21,8 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 
 - **php**: >=5.4
 - **ext-sockets**: *
+- **ext-json**: *
+- **ext-curl**: *
 - **ralouphie/getallheaders**: ~2.0
 
 ## Installing
