@@ -54,7 +54,7 @@ class InternalServer {
 
 	/**
 	 * @param string   $tmpPath
-	 * @param null|int $int
+	 * @param int|null $int
 	 * @return int
 	 */
 	public static function incrementRequestCounter( $tmpPath, $int = null ) {
@@ -119,15 +119,15 @@ class InternalServer {
 				echo $body;
 
 				return;
-			} else {
-				http_response_code(404);
-				echo MockWebServer::VND . ": Resource '{$path}' not found!\n";
-
-				return;
 			}
-		} else {
-			header('Content-Type: application/json');
+
+			http_response_code(404);
+			echo MockWebServer::VND . ": Resource '{$path}' not found!\n";
+
+			return;
 		}
+
+		header('Content-Type: application/json');
 
 		echo json_encode($this->request, JSON_PRETTY_PRINT);
 	}
