@@ -51,7 +51,7 @@ class InternalServer {
 
 	/**
 	 * @param string   $tmpPath
-	 * @param null|int $int
+	 * @param int|null $int
 	 * @return int
 	 */
 	public static function incrementRequestCounter( $tmpPath, $int = null ) {

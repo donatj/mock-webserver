@@ -23,7 +23,6 @@ class MockWebServer {
 	 */
 	private $port;
 
-
 	/**
 	 * @var string
 	 */
@@ -63,7 +62,7 @@ class MockWebServer {
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd = "php -S {$this->host}:{$this->port} " . $script;
+		$cmd    = "php -S {$this->host}:{$this->port} " . $script;
 
 		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
 			throw new Exceptions\RuntimeException('Unable to put environmental variable');
@@ -301,17 +300,17 @@ class MockWebServer {
 		return defined('PHP_WINDOWS_VERSION_MAJOR');
 	}
 
-	private function startServer($fullCmd) {
+	private function startServer( $fullCmd ) {
 		if( !$this->isWindowsPlatform() ) {
 			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
 			$fullCmd = 'exec ' . $fullCmd;
 		}
-		$pipes = [];
-		$env = null;
-		$cwd = null;
+		$pipes   = [];
+		$env     = null;
+		$cwd     = null;
 		$process = proc_open($fullCmd, [], $pipes, $cwd, $env, [
 			'suppress_errors' => false,
-			'bypass_shell' => true,
+			'bypass_shell'    => true,
 		]);
 
 		sleep(1);
@@ -319,6 +318,7 @@ class MockWebServer {
 		if( !is_resource($process) ) {
 			return false;
 		}
+
 		return $process;
 	}
 }

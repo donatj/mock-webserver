@@ -277,7 +277,6 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		// Close request to clear up some resources
 		curl_close($ch);
 
-
 		$request = self::$server->getLastRequest();
 
 		$this->assertSame($uri . '?' . $query, $request->getRequestUri());
