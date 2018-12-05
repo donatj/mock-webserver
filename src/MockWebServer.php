@@ -76,10 +76,6 @@ class MockWebServer {
 
 		$this->process = $this->startServer($fullCmd);
 
-		if( !$this->process ) {
-			throw new Exceptions\ServerException("Error starting server");
-		}
-
 		sleep(1); // just to make sure it's fully started up, maybe not necessary
 
 		if( !$this->isRunning() ) {
@@ -277,25 +273,29 @@ class MockWebServer {
 		return defined('PHP_WINDOWS_VERSION_MAJOR');
 	}
 
+	/**
+	 * @param string $fullCmd
+	 * @return resource
+	 */
 	private function startServer( $fullCmd ) {
 		if( !$this->isWindowsPlatform() ) {
 			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
 			$fullCmd = 'exec ' . $fullCmd;
 		}
-		$pipes   = [];
-		$env     = null;
-		$cwd     = null;
+
+		$pipes = [];
+		$env   = null;
+		$cwd   = null;
+
 		$process = proc_open($fullCmd, [], $pipes, $cwd, $env, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);
 
-		sleep(1);
-
-		if( !is_resource($process) ) {
-			return false;
+		if( is_resource($process) ) {
+			return $process;
 		}
 
-		return $process;
+		throw new Exceptions\ServerException("Error starting server");
 	}
 }
