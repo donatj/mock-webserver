@@ -161,7 +161,6 @@ class MockWebServer {
 
 	/**
 	 * @return string
-	 * @internal
 	 */
 	private function getTmpDir() {
 		$tmpDir = sys_get_temp_dir() ?: '/tmp';
@@ -269,6 +268,9 @@ class MockWebServer {
 		throw new Exceptions\RuntimeException('Failed to find open port');
 	}
 
+	/**
+	 * @return bool
+	 */
 	private function isWindowsPlatform() {
 		return defined('PHP_WINDOWS_VERSION_MAJOR');
 	}
