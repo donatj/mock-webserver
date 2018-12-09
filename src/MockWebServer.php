@@ -59,18 +59,7 @@ class MockWebServer {
 			return;
 		}
 
-		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
-
-		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd    = "php -S {$this->host}:{$this->port} " . $script;
-
-		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
-			throw new Exceptions\RuntimeException('Unable to put environmental variable');
-		}
-		$fullCmd = sprintf('%s > %s 2>&1',
-			$cmd,
-			$stdout
-		);
+		$fullCmd = $this->makeStartCmd();
 
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
@@ -302,10 +291,36 @@ class MockWebServer {
 			'bypass_shell'    => true,
 		]);
 
-		if( is_resource($process) ) {
-			return $process;
+		sleep(1);
+
+		return $process;
+	}
+
+	private function makeStartCmd() {
+		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
+			throw new Exceptions\RuntimeException('Unable to put environmental variable');
+		}
+		// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
+		$cmdPrefix = 'exec ';
+		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
+		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
+
+		if( $this->isWindowsPlatform() ) {
+			$cmdPrefix = '';
+			$cmd = "php -S {$this->host}:{$this->port} \"" . $script . "\"";
+			$fullCmd = sprintf('%s > "%s" 2>&1',
+				$cmd,
+				$stdout
+			);
+			return $fullCmd;
 		}
 
-		throw new Exceptions\ServerException("Error starting server");
+		$cmd = $cmdPrefix . "php -S {$this->host}:{$this->port} " . escapeshellarg($script);
+		$fullCmd = sprintf('%s > %s 2>&1',
+			escapeshellcmd($cmd),
+			escapeshellarg($stdout)
+		);
+
+		return $fullCmd;
 	}
 }
