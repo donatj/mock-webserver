@@ -113,11 +113,8 @@ class MockWebServer {
 
 		$result = shell_exec(sprintf('ps %d',
 			$this->pid));
-		if( count(preg_split("/\n/", $result)) > 2 ) {
-			return true;
-		}
 
-		return false;
+		return count(explode("\n", $result)) > 2;
 	}
 
 	/**
