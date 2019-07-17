@@ -44,13 +44,13 @@ class MockWebServer {
 	 * @param string $host Listening hostname
 	 */
 	public function __construct( $port = 0, $host = '127.0.0.1' ) {
-		$this->port   = $port;
-		$this->host   = $host;
-		$this->tmpDir = $this->getTmpDir();
-
+		$this->host = $host;
+		$this->port = $port;
 		if( $this->port == 0 ) {
 			$this->port = $this->findOpenPort();
 		}
+
+		$this->tmpDir = $this->getTmpDir();
 	}
 
 	/**
@@ -188,7 +188,12 @@ class MockWebServer {
 			mkdir($tmpPath);
 		}
 
-		$tmpPath .= DIRECTORY_SEPARATOR . md5(microtime() . ':' . rand(0, 100000));
+		$tmpPath = $tmpDir . DIRECTORY_SEPARATOR . $this->port;
+		if( !is_dir($tmpPath) ) {
+			mkdir($tmpPath);
+		}
+
+		$tmpPath .= DIRECTORY_SEPARATOR . md5(microtime(true) . ':' . rand(0, 100000));
 		if( !is_dir($tmpPath) ) {
 			mkdir($tmpPath);
 		}
