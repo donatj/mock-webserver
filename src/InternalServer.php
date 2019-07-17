@@ -60,7 +60,7 @@ class InternalServer {
 	public static function incrementRequestCounter( $tmpPath, $int = null ) {
 		$countFile = $tmpPath . DIRECTORY_SEPARATOR . MockWebServer::REQUEST_COUNT_FILE;
 
-		if( is_null($int) ) {
+		if( $int === null ) {
 			$int = file_get_contents($countFile);
 			if( !is_string($int) ) {
 				throw new ServerException('failed to fetch request count');
@@ -113,21 +113,21 @@ class InternalServer {
 
 				if( $response instanceof MultiResponseInterface ) {
 					$response->next();
-					InternalServer::storeResponse($this->tmpPath, $response);
+					self::storeResponse($this->tmpPath, $response);
 				}
 
 				echo $body;
 
 				return;
-			} else {
-				http_response_code(404);
-				echo MockWebServer::VND . ": Resource '{$path}' not found!\n";
-
-				return;
 			}
-		} else {
-			header('Content-Type: application/json');
+
+			http_response_code(404);
+			echo MockWebServer::VND . ": Resource '{$path}' not found!\n";
+
+			return;
 		}
+
+		header('Content-Type: application/json');
 
 		echo json_encode($this->request, JSON_PRETTY_PRINT);
 	}
