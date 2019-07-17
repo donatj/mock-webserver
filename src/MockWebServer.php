@@ -13,7 +13,7 @@ class MockWebServer {
 
 	const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
 
-	private $pid = null;
+	private $pid;
 
 	/**
 	 * @var string
