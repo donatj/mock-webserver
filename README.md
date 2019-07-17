@@ -27,6 +27,7 @@ I would be happy to accept pull requests that correct this.
 
 - **php**: >=5.4
 - **ext-sockets**: *
+- **ext-json**: *
 - **ralouphie/getallheaders**: ~2.0
 
 ## Installing
