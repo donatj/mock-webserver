@@ -38,12 +38,20 @@ class MockWebServer {
 	private $tmpDir;
 
 	/**
+	 * Contains the name for initializing server process with debugKey for avoiding conflicts when debugging
+	 *
+	 * @var string
+	 */
+	private $debugKey;
+
+	/**
 	 * TestWebServer constructor.
 	 *
-	 * @param int    $port Network port to run on
+	 * @param int $port Network port to run on
 	 * @param string $host Listening hostname
+	 * @param string $debugKey Key for xDebug configuration
 	 */
-	public function __construct( $port = 0, $host = '127.0.0.1' ) {
+	public function __construct($port = 0, $host = '127.0.0.1', $debugKey = 'mock' ) {
 		$this->host = $host;
 		$this->port = $port;
 		if( $this->port == 0 ) {
@@ -51,6 +59,7 @@ class MockWebServer {
 		}
 
 		$this->tmpDir = $this->getTmpDir();
+		$this->debugKey = $debugKey;
 	}
 
 	/**
@@ -64,7 +73,7 @@ class MockWebServer {
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd    = "php -S {$this->host}:{$this->port} " . escapeshellarg($script);
+		$cmd    = "env XDEBUG_CONFIG='idekey=mock' php -S {$this->host}:{$this->port} " . escapeshellarg($script);
 
 		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
 			throw new Exceptions\RuntimeException('Unable to put environmental variable');
