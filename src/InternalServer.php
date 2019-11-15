@@ -30,16 +30,9 @@ class InternalServer {
 	 * @param string                            $tmpPath
 	 * @param \donatj\MockWebServer\RequestInfo $request
 	 * @param callable|null                     $header
-	 * @internal param array $server
-	 * @internal param array $get
-	 * @internal param array $post
-	 * @internal param array $files
-	 * @internal param array $cookie
-	 * @internal param array $HEADERS
-	 * @internal param string $INPUT
 	 */
 	public function __construct( $tmpPath, RequestInfo $request, callable $header = null ) {
-		if( is_null($header) ) {
+		if( $header === null ) {
 			$header = "\\header";
 		}
 
@@ -61,16 +54,16 @@ class InternalServer {
 		$countFile = $tmpPath . DIRECTORY_SEPARATOR . MockWebServer::REQUEST_COUNT_FILE;
 
 		if( $int === null ) {
-			$int = file_get_contents($countFile);
-			if( !is_string($int) ) {
+			$newInt = file_get_contents($countFile);
+			if( !is_string($newInt) ) {
 				throw new ServerException('failed to fetch request count');
 			}
-			$int += 1;
+			$int = (int)$newInt + 1;
 		}
 
-		file_put_contents($countFile, strval($int));
+		file_put_contents($countFile, (string)$int);
 
-		return intval($int);
+		return (int)$int;
 	}
 
 	private function logRequest( RequestInfo $request, $count ) {
