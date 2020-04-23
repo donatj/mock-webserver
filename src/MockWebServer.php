@@ -100,10 +100,13 @@ class MockWebServer {
 			return false;
 		}
 
-		$result = shell_exec(sprintf('ps %d',
-			$this->pid));
+		$processStatus = proc_get_status($this->process);
 
-		return count(explode("\n", $result)) > 2;
+		if( !$processStatus ) {
+			return false;
+		}
+
+		return $processStatus['running'];
 	}
 
 	/**
