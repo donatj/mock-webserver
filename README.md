@@ -23,7 +23,7 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 - **ext-sockets**: *
 - **ext-json**: *
 - **ext-curl**: *
-- **ralouphie/getallheaders**: ~2.0
+- **ralouphie/getallheaders**: ~2.0 || ~3.0
 
 ## Installing
 

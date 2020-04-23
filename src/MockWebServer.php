@@ -42,13 +42,14 @@ class MockWebServer {
 	 * @param string $host Listening hostname
 	 */
 	public function __construct( $port = 0, $host = '127.0.0.1' ) {
-		$this->port   = $port;
-		$this->host   = $host;
-		$this->tmpDir = $this->getTmpDir();
+		$this->port = $port;
+		$this->host = $host;
 
 		if( $this->port == 0 ) {
 			$this->port = $this->findOpenPort();
 		}
+
+		$this->tmpDir = $this->getTmpDir();
 	}
 
 	/**
@@ -99,13 +100,10 @@ class MockWebServer {
 			return false;
 		}
 
-		$processStatus = proc_get_status($this->process);
+		$result = shell_exec(sprintf('ps %d',
+			$this->pid));
 
-		if( !$processStatus ) {
-			return false;
-		}
-
-		return $processStatus['running'];
+		return count(explode("\n", $result)) > 2;
 	}
 
 	/**
@@ -181,7 +179,12 @@ class MockWebServer {
 			mkdir($tmpPath);
 		}
 
-		$tmpPath .= DIRECTORY_SEPARATOR . md5(microtime() . ':' . rand(0, 100000));
+		$tmpPath = $tmpDir . DIRECTORY_SEPARATOR . $this->port;
+		if( !is_dir($tmpPath) ) {
+			mkdir($tmpPath);
+		}
+
+		$tmpPath .= DIRECTORY_SEPARATOR . md5(microtime(true) . ':' . rand(0, 100000));
 		if( !is_dir($tmpPath) ) {
 			mkdir($tmpPath);
 		}

@@ -140,6 +140,27 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		$this->assertSame('', file_get_contents($url));
 	}
 
+	public function testIsRunning() {
+		$server = new MockWebServer();
+
+		$server->start();
+		$this->assertTrue($server->isRunning());
+		$server->stop();
+		$this->assertFalse($server->isRunning());
+
+		$server->start();
+
+		$reflectionClass = new \ReflectionClass($server);
+		$property        = $reflectionClass->getProperty('pid');
+		$property->setAccessible(true);
+		$pid = $property->getValue($server);
+
+		$this->assertTrue(ctype_digit($pid));
+		exec(sprintf('kill %d', $pid));
+
+		$this->assertFalse($server->isRunning());
+	}
+
 
 	/**
 	 * @dataProvider requestInfoProvider
@@ -262,7 +283,7 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 					'e'    => 'f',
 					'what' => '"soup"',
 				],
-				[ 'REQUEST_METHOD' => 'PUT', 'QUERY_STRING' => 'x=1'],
+				[ 'REQUEST_METHOD' => 'PUT', 'QUERY_STRING' => 'x=1' ],
 			],
 		];
 	}

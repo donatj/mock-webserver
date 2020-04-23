@@ -30,16 +30,9 @@ class InternalServer {
 	 * @param string                            $tmpPath
 	 * @param \donatj\MockWebServer\RequestInfo $request
 	 * @param callable|null                     $header
-	 * @internal param array $server
-	 * @internal param array $get
-	 * @internal param array $post
-	 * @internal param array $files
-	 * @internal param array $cookie
-	 * @internal param array $HEADERS
-	 * @internal param string $INPUT
 	 */
 	public function __construct( $tmpPath, RequestInfo $request, callable $header = null ) {
-		if( is_null($header) ) {
+		if( $header === null ) {
 			$header = "\\header";
 		}
 
@@ -60,17 +53,17 @@ class InternalServer {
 	public static function incrementRequestCounter( $tmpPath, $int = null ) {
 		$countFile = $tmpPath . DIRECTORY_SEPARATOR . MockWebServer::REQUEST_COUNT_FILE;
 
-		if( is_null($int) ) {
-			$int = file_get_contents($countFile);
-			if( !is_string($int) ) {
+		if( $int === null ) {
+			$newInt = file_get_contents($countFile);
+			if( !is_string($newInt) ) {
 				throw new ServerException('failed to fetch request count');
 			}
-			$int += 1;
+			$int = (int)$newInt + 1;
 		}
 
-		file_put_contents($countFile, strval($int));
+		file_put_contents($countFile, (string)$int);
 
-		return intval($int);
+		return (int)$int;
 	}
 
 	private function logRequest( RequestInfo $request, $count ) {
@@ -113,7 +106,7 @@ class InternalServer {
 
 				if( $response instanceof MultiResponseInterface ) {
 					$response->next();
-					InternalServer::storeResponse($this->tmpPath, $response);
+					self::storeResponse($this->tmpPath, $response);
 				}
 
 				echo $body;
