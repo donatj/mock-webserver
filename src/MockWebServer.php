@@ -185,7 +185,7 @@ class MockWebServer {
 			mkdir($tmpPath);
 		}
 
-		$tmpPath = $tmpDir . DIRECTORY_SEPARATOR . $this->port;
+		$tmpPath .= DIRECTORY_SEPARATOR . $this->port;
 		if( !is_dir($tmpPath) ) {
 			mkdir($tmpPath);
 		}
