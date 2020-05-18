@@ -2,7 +2,7 @@
 
 use donatj\MockWebServer\ResponseStack;
 
-class ResponseStackTest extends \PHPUnit_Framework_TestCase {
+class ResponseStackTest extends \PHPUnit\Framework\TestCase {
 
 	public function testEmpty() {
 		$mock = $this->getMockBuilder('\donatj\MockWebServer\RequestInfo')->disableOriginalConstructor()->getMock();

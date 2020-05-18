@@ -5,7 +5,7 @@ use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseByMethod;
 use donatj\MockWebServer\ResponseStack;
 
-class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
+class MockWebServer_IntegrationTest extends \PHPUnit\Framework\TestCase {
 
 	/** @var MockWebServer */
 	protected static $server;
