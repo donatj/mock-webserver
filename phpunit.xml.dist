@@ -2,6 +2,7 @@
 	<testsuites>
 		<testsuite name="Library">
 			<directory>test</directory>
+			<exclude>test/BaseServerTest</exclude>
 		</testsuite>
 	</testsuites>
 

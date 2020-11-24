@@ -4,33 +4,14 @@ use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseByMethod;
 use donatj\MockWebServer\ResponseStack;
-use PHPUnit\Framework\TestCase;
 
 if( class_exists('\PHPUnit\Runner\Version') ) {
-	abstract class MockWebServer_IntegrationTest_Base extends TestCase {
-
-		/** @var MockWebServer */
-		protected static $server;
-
-		public static function setUpBeforeClass() : void {
-			self::$server = new MockWebServer;
-			self::$server->start();
-		}
-	}
+	require __DIR__ . '/BaseServerTest/BaseServerTest_phpunit9.php';
 } else {
-	abstract class MockWebServer_IntegrationTest_Base extends TestCase {
-
-		/** @var MockWebServer */
-		protected static $server;
-
-		public static function setUpBeforeClass() {
-			self::$server = new MockWebServer;
-			self::$server->start();
-		}
-	}
+	require __DIR__ . '/BaseServerTest/BaseServerTest_phpunit4.php';
 }
 
-class MockWebServer_IntegrationTest extends MockWebServer_IntegrationTest_Base {
+class MockWebServer_IntegrationTest extends BaseServerTest {
 
 
 	public function testBasic() {
