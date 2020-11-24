@@ -6,15 +6,32 @@ use donatj\MockWebServer\ResponseByMethod;
 use donatj\MockWebServer\ResponseStack;
 use PHPUnit\Framework\TestCase;
 
-class MockWebServer_IntegrationTest extends TestCase {
+if( class_exists('\PHPUnit\Runner\Version') ) {
+	abstract class MockWebServer_IntegrationTest_Base extends TestCase {
 
-	/** @var MockWebServer */
-	protected static $server;
+		/** @var MockWebServer */
+		protected static $server;
 
-	public static function setUpBeforeClass() {
-		self::$server = new MockWebServer;
-		self::$server->start();
+		public static function setUpBeforeClass() : void {
+			self::$server = new MockWebServer;
+			self::$server->start();
+		}
 	}
+} else {
+	abstract class MockWebServer_IntegrationTest_Base extends TestCase {
+
+		/** @var MockWebServer */
+		protected static $server;
+
+		public static function setUpBeforeClass() {
+			self::$server = new MockWebServer;
+			self::$server->start();
+		}
+	}
+}
+
+class MockWebServer_IntegrationTest extends MockWebServer_IntegrationTest_Base {
+
 
 	public function testBasic() {
 		$url     = self::$server->getServerRoot() . '/endpoint?get=foobar';
