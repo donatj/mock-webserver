@@ -130,7 +130,7 @@ class MockWebServer_IntegrationTest extends TestCase {
 		$content = @file_get_contents($url, false, $context);
 
 		$this->assertSame(false, $content);
-		$this->assertContains('501 Not Implemented', $http_response_header[0]);
+		$this->assertStringEndsWith('501 Not Implemented', $http_response_header[0]);
 	}
 
 	/**
