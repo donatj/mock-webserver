@@ -74,18 +74,34 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$ctx = stream_context_create([ 'http' => [ 'ignore_errors' => true ] ]);
 
 		$content = file_get_contents($url, false, $ctx);
-		$this->assertContains('HTTP/1.0 500 Internal Server Error', $http_response_header);
+
+		if( !(
+			in_array('HTTP/1.0 500 Internal Server Error', $http_response_header, true) ||
+			in_array('HTTP/1.1 500 Internal Server Error', $http_response_header, true))
+		) {
+			$this->fail('must contain 500 Internal Server Error');
+		}
 		$this->assertContains('X-Boop-Bat: Sauce', $http_response_header);
 		$this->assertEquals("Response One", $content);
 
 		$content = file_get_contents($url, false, $ctx);
-		$this->assertContains('HTTP/1.0 400 Bad Request', $http_response_header);
+		if( !(
+			in_array('HTTP/1.0 400 Bad Request', $http_response_header, true) ||
+			in_array('HTTP/1.1 400 Bad Request', $http_response_header, true))
+		) {
+			$this->fail('must contain 400 Bad Request');
+		}
 		$this->assertContains('X-Slaw-Dawg: FranCran', $http_response_header);
 		$this->assertEquals("Response Two", $content);
 
 		// this is expected to fail as we only have two responses in said stack
 		$content = file_get_contents($url, false, $ctx);
-		$this->assertContains('HTTP/1.0 404 Not Found', $http_response_header);
+		if( !(
+			in_array('HTTP/1.0 404 Not Found', $http_response_header, true) ||
+			in_array('HTTP/1.1 404 Not Found', $http_response_header, true))
+		) {
+			$this->fail('must contain 404 Not Found');
+		}
 		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
 
