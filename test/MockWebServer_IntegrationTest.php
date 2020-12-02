@@ -5,15 +5,14 @@ use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseByMethod;
 use donatj\MockWebServer\ResponseStack;
 
-class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
+if( class_exists('\PHPUnit\Runner\Version') ) {
+	require __DIR__ . '/BaseServerTest/BaseServerTest_phpunit9.php';
+} else {
+	require __DIR__ . '/BaseServerTest/BaseServerTest_phpunit4.php';
+}
 
-	/** @var MockWebServer */
-	protected static $server;
+class MockWebServer_IntegrationTest extends BaseServerTest {
 
-	public static function setUpBeforeClass() {
-		self::$server = new MockWebServer;
-		self::$server->start();
-	}
 
 	public function testBasic() {
 		$url     = self::$server->getServerRoot() . '/endpoint?get=foobar';
@@ -75,18 +74,34 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		$ctx = stream_context_create([ 'http' => [ 'ignore_errors' => true ] ]);
 
 		$content = file_get_contents($url, false, $ctx);
-		$this->assertContains('HTTP/1.0 500 Internal Server Error', $http_response_header);
+
+		if( !(
+			in_array('HTTP/1.0 500 Internal Server Error', $http_response_header, true) ||
+			in_array('HTTP/1.1 500 Internal Server Error', $http_response_header, true))
+		) {
+			$this->fail('must contain 500 Internal Server Error');
+		}
 		$this->assertContains('X-Boop-Bat: Sauce', $http_response_header);
 		$this->assertEquals("Response One", $content);
 
 		$content = file_get_contents($url, false, $ctx);
-		$this->assertContains('HTTP/1.0 400 Bad Request', $http_response_header);
+		if( !(
+			in_array('HTTP/1.0 400 Bad Request', $http_response_header, true) ||
+			in_array('HTTP/1.1 400 Bad Request', $http_response_header, true))
+		) {
+			$this->fail('must contain 400 Bad Request');
+		}
 		$this->assertContains('X-Slaw-Dawg: FranCran', $http_response_header);
 		$this->assertEquals("Response Two", $content);
 
 		// this is expected to fail as we only have two responses in said stack
 		$content = file_get_contents($url, false, $ctx);
-		$this->assertContains('HTTP/1.0 404 Not Found', $http_response_header);
+		if( !(
+			in_array('HTTP/1.0 404 Not Found', $http_response_header, true) ||
+			in_array('HTTP/1.1 404 Not Found', $http_response_header, true))
+		) {
+			$this->fail('must contain 404 Not Found');
+		}
 		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
 
@@ -129,7 +144,7 @@ class MockWebServer_IntegrationTest extends PHPUnit_Framework_TestCase {
 		$content = @file_get_contents($url, false, $context);
 
 		$this->assertSame(false, $content);
-		$this->assertContains('501 Not Implemented', $http_response_header[0]);
+		$this->assertStringEndsWith('501 Not Implemented', $http_response_header[0]);
 	}
 
 	/**
