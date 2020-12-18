@@ -29,4 +29,4 @@ jobs:
       run: composer install
 
     - name: Test with phpunit
-      run: vendor/bin/phpunit --coverage-text
+      run: vendor/bin/phpunit
