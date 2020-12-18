@@ -6,6 +6,7 @@
 			<badge-poser type="license"/>
 			<badge-scrutinizer name="donatj/mock-webserver" type="quality"/>
 			<!--<badge-scrutinizer name="donatj/mock-webserver" type="coverage"/>-->
+			<badge-github-action name="donatj/mock-webserver" workflow="CI" />
 			<badge-travis name="donatj/mock-webserver"/>
 			<text><![CDATA[Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
 

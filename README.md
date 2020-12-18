@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/donatj/mock-webserver/version)](https://packagist.org/packages/donatj/mock-webserver)
 [![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver)
-![CI](https://github.com/donatj/mock-webserver/workflows/CI/badge.svg)
+[![Build Status](https://github.com/donatj/mock-webserver/workflows/CI/badge.svg?)](https://github.com/donatj/mock-webserver/actions?query=workflow%3ACI)
 [![Build Status](https://travis-ci.org/donatj/mock-webserver.svg?branch=master)](https://travis-ci.org/donatj/mock-webserver)
 
 
@@ -64,7 +64,7 @@ echo file_get_contents($url);
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:52142/endpoint?get=foobar
+Requesting: http://127.0.0.1:58933/endpoint?get=foobar
 
 {
     "_GET": {
@@ -74,7 +74,7 @@ Requesting: http://127.0.0.1:52142/endpoint?get=foobar
     "_FILES": [],
     "_COOKIE": [],
     "HEADERS": {
-        "Host": "127.0.0.1:52142",
+        "Host": "127.0.0.1:58933",
         "Connection": "close"
     },
     "METHOD": "GET",
@@ -124,13 +124,13 @@ echo $content . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:52152/definedPath
+Requesting: http://127.0.0.1:58935/definedPath
 
 HTTP/1.0 200 OK
-Host: 127.0.0.1:52152
-Date: Mon, 12 Mar 2018 18:11:33 +0000
+Host: 127.0.0.1:58935
+Date: Fri, 18 Dec 2020 06:14:01 GMT
 Connection: close
-X-Powered-By: PHP/7.1.7
+X-Powered-By: PHP/7.3.25
 Cache-Control: no-cache
 Content-type: text/html; charset=UTF-8
 
@@ -220,7 +220,7 @@ echo $contentThree . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:52155/definedPath
+Requesting: http://127.0.0.1:58937/definedPath
 
 Response One
 Response Two
@@ -269,7 +269,7 @@ echo $contentThree . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:52159/definedPath
+Requesting: http://127.0.0.1:58941/definedPath
 
 Response One
 Response Two
