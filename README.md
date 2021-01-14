@@ -236,42 +236,39 @@ If you need to vary responses to a single endpoint by method, you can do that us
 
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
-use donatj\MockWebServer\ResponseStack;
+use donatj\MockWebServer\ResponseByMethod;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $server = new MockWebServer;
 $server->start();
 
-// We define the servers response to requests of the /definedPath endpoint
-$url = $server->setResponseOfPath(
-	'/definedPath',
-	new ResponseStack(
-		new Response("Response One"),
-		new Response("Response Two")
-	)
-);
 
-echo "Requesting: $url\n\n";
+// Create a response for both a POST and GET request to the same URL
 
-$contentOne = file_get_contents($url);
-$contentTwo = file_get_contents($url);
-// This third request is expected to 404 which will error if errors are not ignored
-$contentThree = file_get_contents($url, false, stream_context_create([ 'http' => [ 'ignore_errors' => true ] ]));
+$response = new ResponseByMethod([
+	ResponseByMethod::METHOD_GET  => new Response("This is our http GET response"),
+	ResponseByMethod::METHOD_POST => new Response("This is our http POST response", [], 201),
+]);
 
-// $http_response_header is a little known variable magically defined
-// in the current scope by file_get_contents with the response headers
-echo $contentOne . "\n";
-echo $contentTwo . "\n";
-echo $contentThree . "\n";
+$url = $server->setResponseOfPath('/foo/bar', $response);
+
+foreach( [ ResponseByMethod::METHOD_GET, ResponseByMethod::METHOD_POST ] as $method ) {
+	echo "$method request to $url:\n";
+
+	$context = stream_context_create([ 'http' => [ 'method' => $method ] ]);
+	$content = file_get_contents($url, false, $context);
+
+	echo $content . "\n\n";
+}
 ```
 
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:58941/definedPath
+GET request to http://127.0.0.1:58941/foo/bar
 
-Response One
-Response Two
+This is our http GET response
+This is our http POST response
 Past the end of the ResponseStack
 ```
