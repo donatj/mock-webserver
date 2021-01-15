@@ -62,9 +62,9 @@ I would be happy to accept pull requests that correct this.
 				</section>
 				<section title="Response by Method">
 					<text>If you need to vary responses to a single endpoint by method, you can do that using the ResponseByMethod response object.</text>
-					<source name="example/multi.php" lang="php"/>
+					<source name="example/methods.php" lang="php"/>
 					<text>Outputs:</text>
-					<exec cmd="php example/multi.php" format="code-block" />
+					<exec cmd="php example/methods.php" format="code-block" />
 				</section>
 			</section>
 		</section>
