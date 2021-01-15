@@ -64,7 +64,7 @@ echo file_get_contents($url);
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:58933/endpoint?get=foobar
+Requesting: http://127.0.0.1:61874/endpoint?get=foobar
 
 {
     "_GET": {
@@ -74,7 +74,7 @@ Requesting: http://127.0.0.1:58933/endpoint?get=foobar
     "_FILES": [],
     "_COOKIE": [],
     "HEADERS": {
-        "Host": "127.0.0.1:58933",
+        "Host": "127.0.0.1:61874",
         "Connection": "close"
     },
     "METHOD": "GET",
@@ -124,11 +124,11 @@ echo $content . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:58935/definedPath
+Requesting: http://127.0.0.1:61880/definedPath
 
 HTTP/1.0 200 OK
-Host: 127.0.0.1:58935
-Date: Fri, 18 Dec 2020 06:14:01 GMT
+Host: 127.0.0.1:61880
+Date: Fri, 15 Jan 2021 15:43:40 GMT
 Connection: close
 X-Powered-By: PHP/7.3.25
 Cache-Control: no-cache
@@ -220,7 +220,7 @@ echo $contentThree . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:58937/definedPath
+Requesting: http://127.0.0.1:61886/definedPath
 
 Response One
 Response Two
@@ -266,9 +266,10 @@ foreach( [ ResponseByMethod::METHOD_GET, ResponseByMethod::METHOD_POST ] as $met
 Outputs:
 
 ```
-GET request to http://127.0.0.1:58941/foo/bar
-
+GET request to http://127.0.0.1:61894/foo/bar:
 This is our http GET response
+
+POST request to http://127.0.0.1:61894/foo/bar:
 This is our http POST response
-Past the end of the ResponseStack
+
 ```
