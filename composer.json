@@ -24,6 +24,7 @@
 	},
 	"require-dev": {
 		"donatj/drop": "^1.0",
-		"phpunit/phpunit": "~4|~9"
+		"phpunit/phpunit": "~4|~9",
+		"donatj/mddoc": "^0.1.0"
 	}
 }
