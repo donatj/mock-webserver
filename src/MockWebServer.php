@@ -86,7 +86,7 @@ class MockWebServer {
 			throw new Exceptions\ServerException("Error starting server, received '{$this->pid}', expected int PID");
 		}
 
-		for ($i=0; $i<=2;$i++) {
+		for ($i=0; $i<=2; $i++) {
 			if( $this->isRunning() ) {
 				break;
 			}
