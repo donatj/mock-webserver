@@ -38,10 +38,8 @@ class InternalServer {
 
 		$this->tmpPath = $tmpPath;
 
-		if ($request->getParsedUri()['path'] !== '/__health_check__') {
-			$count = self::incrementRequestCounter($this->tmpPath);
-			$this->logRequest($request, $count);
-		}
+		$count = self::incrementRequestCounter($this->tmpPath);
+		$this->logRequest($request, $count);
 
 		$this->header  = $header;
 		$this->request = $request;

@@ -86,12 +86,14 @@ class MockWebServer {
 			throw new Exceptions\ServerException("Error starting server, received '{$this->pid}', expected int PID");
 		}
 
-		for ($i=0; $i<=2; $i++) {
-			$output = @file_get_contents("http://{$this->host}:{$this->port}/__health_check__");
-			if( strpos($output, '{') === 0 ) {
+		for( $i = 0; $i <= 20; $i++ ) {
+			usleep(100000);
+
+			$open = @fsockopen($this->host, $this->port);
+			if( is_resource($open) ) {
+				fclose($open);
 				break;
 			}
-			usleep(500000); // just to make sure it's fully started up, maybe not necessary
 		}
 
 		if( !$this->isRunning() ) {
