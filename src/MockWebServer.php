@@ -86,7 +86,15 @@ class MockWebServer {
 			throw new Exceptions\ServerException("Error starting server, received '{$this->pid}', expected int PID");
 		}
 
-		sleep(1); // just to make sure it's fully started up, maybe not necessary
+		for( $i = 0; $i <= 20; $i++ ) {
+			usleep(100000);
+
+			$open = @fsockopen($this->host, $this->port);
+			if( is_resource($open) ) {
+				fclose($open);
+				break;
+			}
+		}
 
 		if( !$this->isRunning() ) {
 			throw new Exceptions\ServerException("Failed to start server. Is something already running on port {$this->port}?");
