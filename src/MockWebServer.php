@@ -87,7 +87,8 @@ class MockWebServer {
 		}
 
 		for ($i=0; $i<=2; $i++) {
-			if( $this->isRunning() ) {
+			$output = @file_get_contents("http://{$this->host}:{$this->port}/__health_check__");
+			if( strpos($output, '{') === 0 ) {
 				break;
 			}
 			usleep(500000); // just to make sure it's fully started up, maybe not necessary
