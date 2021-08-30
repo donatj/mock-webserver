@@ -85,7 +85,7 @@ class InternalServer {
 	public function __invoke() {
 		$path = $this->getDataPath();
 
-		if( $path !== false ) {
+		if( $path !== null ) {
 			if( is_readable($path) ) {
 				$content  = file_get_contents($path);
 				$response = unserialize($content);
@@ -126,7 +126,7 @@ class InternalServer {
 	}
 
 	/**
-	 * @return false|string
+	 * @return string|null
 	 */
 	protected function getDataPath() {
 		$uriPath   = $this->request->getParsedUri()['path'];
@@ -140,7 +140,7 @@ class InternalServer {
 			return $this->tmpPath . DIRECTORY_SEPARATOR . $matches[1];
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
