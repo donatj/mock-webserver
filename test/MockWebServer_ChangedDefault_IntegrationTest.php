@@ -16,7 +16,7 @@ class MockWebServer_ChangedDefault_IntegrationTest extends TestCase {
 
 		$content = file_get_contents($server->getServerRoot() . '/PageDoesNotExist');
 		$result  = json_decode($content, true);
-		$this->assertStringContainsString('200 OK', $http_response_header[0]);
+		$this->assertNotFalse(stripos($http_response_header[0], '200 OK', true) );
 		$this->assertSame('/PageDoesNotExist', $result['PARSED_REQUEST_URI']['path']);
 
 		// try with a 404
@@ -26,8 +26,7 @@ class MockWebServer_ChangedDefault_IntegrationTest extends TestCase {
 			'http' => [ 'ignore_errors' => true ] // allow reading 404s
 		]));
 
-		$this->assertStringContainsString('404 Not Found', $http_response_header[0]);
-		$this->assertContains('HTTP/1.0 404 Not Found', $http_response_header);
+		$this->assertNotFalse(stripos($http_response_header[0], '404 Not Found', true));
 		$this->assertSame("VND.DonatStudios.MockWebServer: Resource '/PageDoesNotExist' not found!\n", $content);
 
 		// try with a custom response
