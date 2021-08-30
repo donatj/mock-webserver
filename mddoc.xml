@@ -49,6 +49,11 @@ I would be happy to accept pull requests that correct this.
 					<text>Outputs:</text>
 					<exec cmd="php example/simple.php" format="code-block" />
 				</section>
+				<section title="Change Default Response">
+					<source name="example/notfound.php" lang="php"/>
+					<text>Outputs:</text>
+					<exec cmd="php example/notfound.php" format="code-block" />
+				</section>
 				<section title="PHPUnit">
 					<source name="example/phpunit.php" lang="php"/>
 				</section>
