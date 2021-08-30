@@ -129,19 +129,18 @@ class InternalServer {
 	 * @return false|string
 	 */
 	protected function getDataPath() {
-		$path = false;
-
 		$uriPath   = $this->request->getParsedUri()['path'];
 		$aliasPath = self::aliasPath($this->tmpPath, $uriPath);
+
 		if( file_exists($aliasPath) ) {
 			if( $path = file_get_contents($aliasPath) ) {
-				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
+				return $this->tmpPath . DIRECTORY_SEPARATOR . $path;
 			}
-		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $uriPath, $matches) ) {
-			$path = $this->tmpPath . DIRECTORY_SEPARATOR . $matches[1];
+		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND, '%') . '/([0-9a-fA-F]{32})$%', $uriPath, $matches) ) {
+			return $this->tmpPath . DIRECTORY_SEPARATOR . $matches[1];
 		}
 
-		return $path;
+		return false;
 	}
 
 	/**
