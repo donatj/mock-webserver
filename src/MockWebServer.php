@@ -179,6 +179,16 @@ class MockWebServer {
 	}
 
 	/**
+	 * Override the default server response, e.g. Fallback or 404
+	 *
+	 * @param \donatj\MockWebServer\ResponseInterface $response
+	 * @return void
+	 */
+	public function setDefaultResponse( ResponseInterface $response ) {
+		InternalServer::storeDefaultResponse($this->tmpDir, $response);
+	}
+
+	/**
 	 * @return string
 	 * @internal
 	 */

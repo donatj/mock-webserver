@@ -28,6 +28,10 @@ I would be happy to accept pull requests that correct this.
 						<file name="src/Response.php"/>
 						<file name="src/ResponseStack.php"/>
 						<file name="src/ResponseByMethod.php"/>
+						<section title="Built-In Responses">
+							<file name="src/Responses/DefaultResponse.php"/>
+							<file name="src/Responses/NotFoundResponse.php"/>
+						</section>
 					</section>
 				</docpage>
 			</section>
@@ -48,6 +52,11 @@ I would be happy to accept pull requests that correct this.
 					<source name="example/simple.php" lang="php"/>
 					<text>Outputs:</text>
 					<exec cmd="php example/simple.php" format="code-block" />
+				</section>
+				<section title="Change Default Response">
+					<source name="example/notfound.php" lang="php"/>
+					<text>Outputs:</text>
+					<exec cmd="php example/notfound.php" format="code-block" />
 				</section>
 				<section title="PHPUnit">
 					<source name="example/phpunit.php" lang="php"/>

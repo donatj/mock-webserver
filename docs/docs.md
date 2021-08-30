@@ -115,6 +115,24 @@ Set a specified path to provide a specific response
 
 ---
 
+### Method: MockWebServer->setDefaultResponse
+
+```php
+function setDefaultResponse(\donatj\MockWebServer\ResponseInterface $response)
+```
+
+Override the default server response, e.g. Fallback or 404
+
+#### Parameters:
+
+- ***\donatj\MockWebServer\ResponseInterface*** `$response`
+
+#### Returns:
+
+- ***void***
+
+---
+
 ### Method: MockWebServer->getLastRequest
 
 ```php
@@ -274,3 +292,15 @@ Set the Response for the Given Method
 
 - ***string*** `$method`
 - ***\donatj\MockWebServer\ResponseInterface*** `$response`
+
+## Built-In Responses
+
+### Class: \donatj\MockWebServer\Responses\DefaultResponse
+
+The Built-In Default Response.
+
+Results in an HTTP 200 with a JSON encoded version of the incoming Request
+
+### Class: \donatj\MockWebServer\Responses\NotFoundResponse
+
+Basic Built-In 404 Response

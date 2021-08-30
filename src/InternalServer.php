@@ -3,6 +3,8 @@
 namespace donatj\MockWebServer;
 
 use donatj\MockWebServer\Exceptions\ServerException;
+use donatj\MockWebServer\Responses\DefaultResponse;
+use donatj\MockWebServer\Responses\NotFoundResponse;
 
 /**
  * Class InternalServer
@@ -23,6 +25,8 @@ class InternalServer {
 	 * @var callable
 	 */
 	private $header;
+
+	const DEFAULT_REF = 'default';
 
 	/**
 	 * InternalServer constructor.
@@ -82,83 +86,121 @@ class InternalServer {
 		);
 	}
 
+	/**
+	 * @param string $ref
+	 * @return ResponseInterface|null
+	 */
+	private function responseForRef( $ref ) {
+		$path = $this->tmpPath . DIRECTORY_SEPARATOR . $ref;
+		if( !is_readable($path) ) {
+			return null;
+		}
+
+		$content  = file_get_contents($path);
+		$response = unserialize($content);
+		if( !$response instanceof ResponseInterface ) {
+			throw new ServerException('invalid serialized response');
+		}
+
+		return $response;
+	}
+
 	public function __invoke() {
-		$path = $this->getDataPath();
+		$ref = $this->getRefForUri($this->request->getParsedUri()['path']);
 
-		if( $path !== false ) {
-			if( is_readable($path) ) {
-				$content  = file_get_contents($path);
-				$response = unserialize($content);
-				if( !$response instanceof ResponseInterface ) {
-					throw new ServerException('invalid serialized response');
-				}
-
-				http_response_code($response->getStatus($this->request));
-
-				foreach( $response->getHeaders($this->request) as $key => $header ) {
-					if( is_int($key) ) {
-						call_user_func($this->header, $header);
-					} else {
-						call_user_func($this->header, "{$key}: {$header}");
-					}
-				}
-				$body = $response->getBody($this->request);
-
-				if( $response instanceof MultiResponseInterface ) {
-					$response->next();
-					self::storeResponse($this->tmpPath, $response);
-				}
-
-				echo $body;
+		if( $ref !== null ) {
+			$response = $this->responseForRef($ref);
+			if( $response ) {
+				$this->sendResponse($response);
 
 				return;
 			}
 
-			http_response_code(404);
-			echo MockWebServer::VND . ": Resource '{$path}' not found!\n";
+			$this->sendResponse(new NotFoundResponse);
 
 			return;
 		}
 
-		header('Content-Type: application/json');
+		$response = $this->responseForRef(self::DEFAULT_REF);
+		if( $response ) {
+			$this->sendResponse($response);
 
-		echo json_encode($this->request, JSON_PRETTY_PRINT);
-	}
-
-	/**
-	 * @return false|string
-	 */
-	protected function getDataPath() {
-		$path = false;
-
-		$uriPath   = $this->request->getParsedUri()['path'];
-		$aliasPath = self::aliasPath($this->tmpPath, $uriPath);
-		if( file_exists($aliasPath) ) {
-			if( $path = file_get_contents($aliasPath) ) {
-				$path = $this->tmpPath . DIRECTORY_SEPARATOR . $path;
-			}
-		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND) . '/([0-9a-fA-F]{32})$%', $uriPath, $matches) ) {
-			$path = $this->tmpPath . DIRECTORY_SEPARATOR . $matches[1];
+			return;
 		}
 
-		return $path;
+		$this->sendResponse(new DefaultResponse);
+	}
+
+	protected function sendResponse( ResponseInterface $response ) {
+		http_response_code($response->getStatus($this->request));
+
+		foreach( $response->getHeaders($this->request) as $key => $header ) {
+			if( is_int($key) ) {
+				call_user_func($this->header, $header);
+			} else {
+				call_user_func($this->header, "{$key}: {$header}");
+			}
+		}
+
+		echo $response->getBody($this->request);
+
+		if( $response instanceof MultiResponseInterface ) {
+			$response->next();
+			self::storeResponse($this->tmpPath, $response);
+		}
 	}
 
 	/**
-	 * @internal
+	 * @return string|null
+	 */
+	protected function getRefForUri( $uriPath ) {
+		$aliasPath = self::aliasPath($this->tmpPath, $uriPath);
+
+		if( file_exists($aliasPath) ) {
+			if( $path = file_get_contents($aliasPath) ) {
+				return $path;
+			}
+		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND, '%') . '/([0-9a-fA-F]{32})$%', $uriPath, $matches) ) {
+			return $matches[1];
+		}
+
+		return null;
+	}
+
+	/**
 	 * @param string                                  $tmpPath
 	 * @param \donatj\MockWebServer\ResponseInterface $response
 	 * @return string
+	 * @internal
 	 */
 	public static function storeResponse( $tmpPath, ResponseInterface $response ) {
-		$ref     = $response->getRef();
+		$ref = $response->getRef();
+		self::storeRef($response, $tmpPath, $ref);
+
+		return $ref;
+	}
+
+	/**
+	 * @param string                                  $tmpPath
+	 * @param \donatj\MockWebServer\ResponseInterface $response
+	 * @return void
+	 * @internal
+	 */
+	public static function storeDefaultResponse( $tmpPath, ResponseInterface $response ) {
+		self::storeRef($response, $tmpPath, self::DEFAULT_REF);
+	}
+
+	/**
+	 * @param \donatj\MockWebServer\ResponseInterface $response
+	 * @param string                                  $tmpPath
+	 * @param string                                  $ref
+	 */
+	private static function storeRef( ResponseInterface $response, $tmpPath, $ref ) {
 		$content = serialize($response);
 
 		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $ref, $content) ) {
 			throw new Exceptions\RuntimeException('Failed to write temporary content');
 		}
-
-		return $ref;
 	}
 
 }

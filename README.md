@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/donatj/mock-webserver/version)](https://packagist.org/packages/donatj/mock-webserver)
 [![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver)
-[![Build Status](https://github.com/donatj/mock-webserver/workflows/CI/badge.svg?)](https://github.com/donatj/mock-webserver/actions?query=workflow%3ACI)
+[![CI](https://github.com/donatj/mock-webserver/workflows/CI/badge.svg?)](https://github.com/donatj/mock-webserver/actions?query=workflow%3ACI)
 [![Build Status](https://travis-ci.org/donatj/mock-webserver.svg?branch=master)](https://travis-ci.org/donatj/mock-webserver)
 
 
@@ -101,7 +101,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $server = new MockWebServer;
 $server->start();
 
-// We define the servers response to requests of the /definedPath endpoint
+// We define the server's response to requests of the /definedPath endpoint
 $url = $server->setResponseOfPath(
 	'/definedPath',
 	new Response(
@@ -135,6 +135,53 @@ Cache-Control: no-cache
 Content-type: text/html; charset=UTF-8
 
 This is our http body response
+```
+
+### Change Default Response
+
+```php
+<?php
+
+use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Responses\NotFoundResponse;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$server = new MockWebServer;
+$server->start();
+
+// The default response is donatj\MockWebServer\Responses\DefaultResponse
+// which returns an HTTP 200 and a descriptive JSON payload.
+//
+// Change the default response to donatj\MockWebServer\Responses\NotFoundResponse
+// to get a standard 404.
+//
+// Any other response may be specified as default as well.
+$server->setDefaultResponse(new NotFoundResponse);
+
+$content = file_get_contents($server->getServerRoot() . '/PageDoesNotExist', false, stream_context_create([
+	'http' => [ 'ignore_errors' => true ] // allow reading 404s
+]));
+
+// $http_response_header is a little known variable magically defined
+// in the current scope by file_get_contents with the response headers
+echo implode("\n", $http_response_header) . "\n\n";
+echo $content . "\n";
+
+```
+
+Outputs:
+
+```
+HTTP/1.0 404 Not Found
+Host: 127.0.0.1:61355
+Date: Mon, 30 Aug 2021 20:02:58 GMT
+Connection: close
+X-Powered-By: PHP/7.3.29
+Content-type: text/html; charset=UTF-8
+
+VND.DonatStudios.MockWebServer: Resource '/PageDoesNotExist' not found!
+
 ```
 
 ### PHPUnit
