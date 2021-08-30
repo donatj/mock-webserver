@@ -6,6 +6,10 @@ use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\ResponseInterface;
 
+/**
+ * The Built-In Default Response.
+ * Results in an HTTP 200 with a JSON encoded version of the incoming Request
+ */
 class DefaultResponse implements ResponseInterface {
 
 	public function getRef() {

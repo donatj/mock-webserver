@@ -6,6 +6,9 @@ use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\ResponseInterface;
 
+/**
+ * Basic Built-In 404 Response
+ */
 class NotFoundResponse implements ResponseInterface {
 
 	public function getRef() {
