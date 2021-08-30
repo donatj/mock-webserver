@@ -17,7 +17,7 @@ class MockWebServer {
 ### Method: MockWebServer->__construct
 
 ```php
-function __construct([ $port = 0 [, $host = '127.0.0.1']])
+function __construct([ int $port = 0 [, string $host = '127.0.0.1']])
 ```
 
 TestWebServer constructor.
@@ -32,7 +32,7 @@ TestWebServer constructor.
 ### Method: MockWebServer->start
 
 ```php
-function start()
+function start() : void
 ```
 
 Start the Web Server on the selected port and host
@@ -42,21 +42,17 @@ Start the Web Server on the selected port and host
 ### Method: MockWebServer->isRunning
 
 ```php
-function isRunning()
+function isRunning() : bool
 ```
 
 Is the Web Server currently running?
-
-#### Returns:
-
-- ***bool***
 
 ---
 
 ### Method: MockWebServer->stop
 
 ```php
-function stop()
+function stop() : void
 ```
 
 Stop the Web Server
@@ -66,22 +62,18 @@ Stop the Web Server
 ### Method: MockWebServer->getServerRoot
 
 ```php
-function getServerRoot()
+function getServerRoot() : string
 ```
 
 Get the HTTP root of the webserver  
  e.g.: http://127.0.0.1:8123
-
-#### Returns:
-
-- ***string***
 
 ---
 
 ### Method: MockWebServer->getUrlOfResponse
 
 ```php
-function getUrlOfResponse(\donatj\MockWebServer\ResponseInterface $response)
+function getUrlOfResponse(\donatj\MockWebServer\ResponseInterface $response) : string
 ```
 
 Get a URL providing the specified response.
@@ -99,58 +91,37 @@ Get a URL providing the specified response.
 ### Method: MockWebServer->setResponseOfPath
 
 ```php
-function setResponseOfPath($path, \donatj\MockWebServer\ResponseInterface $response)
+function setResponseOfPath(string $path, \donatj\MockWebServer\ResponseInterface $response) : string
 ```
 
 Set a specified path to provide a specific response
-
-#### Parameters:
-
-- ***string*** `$path`
-- ***\donatj\MockWebServer\ResponseInterface*** `$response`
-
-#### Returns:
-
-- ***string***
 
 ---
 
 ### Method: MockWebServer->setDefaultResponse
 
 ```php
-function setDefaultResponse(\donatj\MockWebServer\ResponseInterface $response)
+function setDefaultResponse(\donatj\MockWebServer\ResponseInterface $response) : void
 ```
 
 Override the default server response, e.g. Fallback or 404
-
-#### Parameters:
-
-- ***\donatj\MockWebServer\ResponseInterface*** `$response`
-
-#### Returns:
-
-- ***void***
 
 ---
 
 ### Method: MockWebServer->getLastRequest
 
 ```php
-function getLastRequest()
+function getLastRequest() : ?\donatj\MockWebServer\RequestInfo
 ```
 
 Get the previous requests associated request data.
-
-#### Returns:
-
-- ***\donatj\MockWebServer\RequestInfo*** | ***null***
 
 ---
 
 ### Method: MockWebServer->getRequestByOffset
 
 ```php
-function getRequestByOffset($offset)
+function getRequestByOffset(int $offset) : ?\donatj\MockWebServer\RequestInfo
 ```
 
 Get request by offset  
@@ -158,57 +129,35 @@ Get request by offset
 If offset is non-negative, the request will be the index from the start of the server.  
 If offset is negative, the request will be that from the end of the requests.
 
-#### Parameters:
-
-- ***int*** `$offset`
-
-#### Returns:
-
-- ***\donatj\MockWebServer\RequestInfo*** | ***null***
-
 ---
 
 ### Method: MockWebServer->getHost
 
 ```php
-function getHost()
+function getHost() : string
 ```
 
 Get the host of the server.
-
-#### Returns:
-
-- ***string***
 
 ---
 
 ### Method: MockWebServer->getPort
 
 ```php
-function getPort()
+function getPort() : int
 ```
 
 Get the port the network server is to be ran on.
-
-#### Returns:
-
-- ***int***
 
 ## Class: \donatj\MockWebServer\Response
 
 ### Method: Response->__construct
 
 ```php
-function __construct($body [, array $headers = [] [, $status = 200]])
+function __construct(string $body [, array $headers = [] [, int $status = 200]])
 ```
 
 Response constructor.
-
-#### Parameters:
-
-- ***string*** `$body`
-- ***array*** `$headers`
-- ***int*** `$status`
 
 ## Class: \donatj\MockWebServer\ResponseStack
 
@@ -231,14 +180,10 @@ Accepts a variable number of RequestInterface objects
 ### Method: ResponseStack->getPastEndResponse
 
 ```php
-function getPastEndResponse()
+function getPastEndResponse() : \donatj\MockWebServer\ResponseInterface
 ```
 
 Gets the response returned when the stack is exhausted.
-
-#### Returns:
-
-- ***\donatj\MockWebServer\ResponseInterface***
 
 ---
 
@@ -249,10 +194,6 @@ function setPastEndResponse(\donatj\MockWebServer\ResponseInterface $pastEndResp
 ```
 
 Set the response to return when the stack is exhausted.
-
-#### Parameters:
-
-- ***\donatj\MockWebServer\ResponseInterface*** `$pastEndResponse`
 
 ## Class: \donatj\MockWebServer\ResponseByMethod
 
@@ -277,7 +218,7 @@ class ResponseByMethod {
 ### Method: ResponseByMethod->__construct
 
 ```php
-function __construct([ array $responses = [] [, \donatj\MockWebServer\ResponseInterface $defaultResponse = null]])
+function __construct([ array $responses = [] [, ?\donatj\MockWebServer\ResponseInterface $defaultResponse = null]])
 ```
 
 MethodResponse constructor.
@@ -293,15 +234,10 @@ method is not found. If this is not defined the server will return an HTTP 501 e
 ### Method: ResponseByMethod->setMethodResponse
 
 ```php
-function setMethodResponse($method, \donatj\MockWebServer\ResponseInterface $response)
+function setMethodResponse(string $method, \donatj\MockWebServer\ResponseInterface $response) : void
 ```
 
 Set the Response for the Given Method
-
-#### Parameters:
-
-- ***string*** `$method`
-- ***\donatj\MockWebServer\ResponseInterface*** `$response`
 
 ## Class: \donatj\MockWebServer\DelayedResponse
 

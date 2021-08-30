@@ -51,6 +51,7 @@ $url = $server->getServerRoot() . '/endpoint?get=foobar';
 
 echo "Requesting: $url\n\n";
 echo file_get_contents($url);
+
 ```
 
 Outputs:
@@ -111,6 +112,7 @@ $content = file_get_contents($url);
 // in the current scope by file_get_contents with the response headers
 echo implode("\n", $http_response_header) . "\n\n";
 echo $content . "\n";
+
 ```
 
 Outputs:
@@ -118,7 +120,7 @@ Outputs:
 ```
 Requesting: http://127.0.0.1:61355/definedPath
 
-HTTP/1.0 200 OK
+HTTP/1.1 200 OK
 Host: 127.0.0.1:61355
 Connection: close
 Cache-Control: no-cache
@@ -163,7 +165,7 @@ echo $content . "\n";
 Outputs:
 
 ```
-HTTP/1.0 404 Not Found
+HTTP/1.1 404 Not Found
 Host: 127.0.0.1:61355
 Connection: close
 Content-type: text/html; charset=UTF-8
@@ -180,7 +182,7 @@ VND.DonatStudios.MockWebServer: Resource '/PageDoesNotExist' not found!
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 
-class ExampleTest extends PHPUnit_Framework_TestCase {
+class ExampleTest extends PHPUnit\Framework\TestCase {
 
 	/** @var MockWebServer */
 	protected static $server;
@@ -203,12 +205,13 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 		$this->assertSame('foo bar content', $result);
 	}
 
-	static function tearDownAfterClass() {
+	public static function tearDownAfterClass() {
 		// stopping the web server during tear down allows us to reuse the port for later tests
 		self::$server->stop();
 	}
 
 }
+
 ```
 
 ### Delayed Response Usage
@@ -310,6 +313,7 @@ $contentThree = file_get_contents($url, false, stream_context_create([ 'http' =>
 echo $contentOne . "\n";
 echo $contentTwo . "\n";
 echo $contentThree . "\n";
+
 ```
 
 Outputs:
@@ -338,7 +342,6 @@ require __DIR__ . '/../vendor/autoload.php';
 $server = new MockWebServer;
 $server->start();
 
-
 // Create a response for both a POST and GET request to the same URL
 
 $response = new ResponseByMethod([
@@ -356,6 +359,7 @@ foreach( [ ResponseByMethod::METHOD_GET, ResponseByMethod::METHOD_POST ] as $met
 
 	echo $content . "\n\n";
 }
+
 ```
 
 Outputs:
