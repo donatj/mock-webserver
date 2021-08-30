@@ -3,6 +3,8 @@
 namespace donatj\MockWebServer;
 
 use donatj\MockWebServer\Exceptions\ServerException;
+use donatj\MockWebServer\Responses\DefaultResponse;
+use donatj\MockWebServer\Responses\NotFoundResponse;
 
 /**
  * Class InternalServer
@@ -82,42 +84,48 @@ class InternalServer {
 		);
 	}
 
+	/**
+	 * @param string $ref
+	 * @return ResponseInterface|null
+	 */
+	private function responseForRef( $ref ) {
+		$path = $this->tmpPath . DIRECTORY_SEPARATOR . $ref;
+		if( !is_readable($path) ) {
+			return null;
+		}
+
+		$content  = file_get_contents($path);
+		$response = unserialize($content);
+		if( !$response instanceof ResponseInterface ) {
+			throw new ServerException('invalid serialized response');
+		}
+
+		return $response;
+	}
+
 	public function __invoke() {
-		$path = $this->getDataPath();
+		$ref = $this->getRefForUri($this->request->getParsedUri()['path']);
 
-		if( $path !== null ) {
-			if( is_readable($path) ) {
-				$content  = file_get_contents($path);
-				$response = unserialize($content);
-				if( !$response instanceof ResponseInterface ) {
-					throw new ServerException('invalid serialized response');
-				}
-
-				$this->sendResponse($response, $this->request);
-
-				if( $response instanceof MultiResponseInterface ) {
-					$response->next();
-					self::storeResponse($this->tmpPath, $response);
-				}
+		if( $ref !== null ) {
+			$response = $this->responseForRef($ref);
+			if( $response ) {
+				$this->sendResponse($response);
 
 				return;
 			}
 
-			http_response_code(404);
-			echo MockWebServer::VND . ": Resource '{$path}' not found!\n";
+			$this->sendResponse(new NotFoundResponse);
 
 			return;
 		}
 
-		header('Content-Type: application/json');
-
-		echo json_encode($this->request, JSON_PRETTY_PRINT);
+		$this->sendResponse(new DefaultResponse);
 	}
 
-	protected function sendResponse( ResponseInterface $response, RequestInfo $request ) {
-		http_response_code($response->getStatus($request));
+	protected function sendResponse( ResponseInterface $response ) {
+		http_response_code($response->getStatus($this->request));
 
-		foreach( $response->getHeaders($request) as $key => $header ) {
+		foreach( $response->getHeaders($this->request) as $key => $header ) {
 			if( is_int($key) ) {
 				call_user_func($this->header, $header);
 			} else {
@@ -125,22 +133,26 @@ class InternalServer {
 			}
 		}
 
-		echo $response->getBody($request);
+		if( $response instanceof MultiResponseInterface ) {
+			$response->next();
+			self::storeResponse($this->tmpPath, $response);
+		}
+
+		echo $response->getBody($this->request);
 	}
 
 	/**
 	 * @return string|null
 	 */
-	protected function getDataPath() {
-		$uriPath   = $this->request->getParsedUri()['path'];
+	protected function getRefForUri( $uriPath ) {
 		$aliasPath = self::aliasPath($this->tmpPath, $uriPath);
 
 		if( file_exists($aliasPath) ) {
 			if( $path = file_get_contents($aliasPath) ) {
-				return $this->tmpPath . DIRECTORY_SEPARATOR . $path;
+				return $path;
 			}
 		} elseif( preg_match('%^/' . preg_quote(MockWebServer::VND, '%') . '/([0-9a-fA-F]{32})$%', $uriPath, $matches) ) {
-			return $this->tmpPath . DIRECTORY_SEPARATOR . $matches[1];
+			return $matches[1];
 		}
 
 		return null;
