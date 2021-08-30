@@ -26,6 +26,8 @@ class InternalServer {
 	 */
 	private $header;
 
+	const DEFAULT_REF = 'default';
+
 	/**
 	 * InternalServer constructor.
 	 *
@@ -119,6 +121,13 @@ class InternalServer {
 			return;
 		}
 
+		$response = $this->responseForRef(self::DEFAULT_REF);
+		if( $response ) {
+			$this->sendResponse($response);
+
+			return;
+		}
+
 		$this->sendResponse(new DefaultResponse);
 	}
 
@@ -159,20 +168,39 @@ class InternalServer {
 	}
 
 	/**
-	 * @internal
 	 * @param string                                  $tmpPath
 	 * @param \donatj\MockWebServer\ResponseInterface $response
 	 * @return string
+	 * @internal
 	 */
 	public static function storeResponse( $tmpPath, ResponseInterface $response ) {
-		$ref     = $response->getRef();
+		$ref = $response->getRef();
+		self::storeRef($response, $tmpPath, $ref);
+
+		return $ref;
+	}
+
+	/**
+	 * @param string                                  $tmpPath
+	 * @param \donatj\MockWebServer\ResponseInterface $response
+	 * @return void
+	 * @internal
+	 */
+	public static function storeDefaultResponse( $tmpPath, ResponseInterface $response ) {
+		self::storeRef($response, $tmpPath, self::DEFAULT_REF);
+	}
+
+	/**
+	 * @param \donatj\MockWebServer\ResponseInterface $response
+	 * @param string                                  $tmpPath
+	 * @param string                                  $ref
+	 */
+	private static function storeRef( ResponseInterface $response, $tmpPath, $ref ) {
 		$content = serialize($response);
 
 		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $ref, $content) ) {
 			throw new Exceptions\RuntimeException('Failed to write temporary content');
 		}
-
-		return $ref;
 	}
 
 }
