@@ -16,9 +16,9 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 
 ## Limitations
 
-Unfortunately, Mock Web Server does not currently support Windows. While it may work in the [Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10), I do not have a copy of Windows 10 to experiment with.
+Unfortunately, Mock Web Server does not currently support Windows natively. It does work in [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10), and that would be my recommended route for Windows users currently.
 
-I would be happy to accept pull requests that correct this.
+There has been work [started to implement this](https://github.com/donatj/mock-webserver/pull/15) but I need help finishing it. If anyone is interested in helping, comment on [the pull request](https://github.com/donatj/mock-webserver/pull/15).
 
 ## Documentation
 
