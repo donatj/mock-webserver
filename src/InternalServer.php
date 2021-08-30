@@ -93,23 +93,12 @@ class InternalServer {
 					throw new ServerException('invalid serialized response');
 				}
 
-				http_response_code($response->getStatus($this->request));
-
-				foreach( $response->getHeaders($this->request) as $key => $header ) {
-					if( is_int($key) ) {
-						call_user_func($this->header, $header);
-					} else {
-						call_user_func($this->header, "{$key}: {$header}");
-					}
-				}
-				$body = $response->getBody($this->request);
+				$this->sendResponse($response, $this->request);
 
 				if( $response instanceof MultiResponseInterface ) {
 					$response->next();
 					self::storeResponse($this->tmpPath, $response);
 				}
-
-				echo $body;
 
 				return;
 			}
@@ -123,6 +112,20 @@ class InternalServer {
 		header('Content-Type: application/json');
 
 		echo json_encode($this->request, JSON_PRETTY_PRINT);
+	}
+
+	protected function sendResponse( ResponseInterface $response, RequestInfo $request ) {
+		http_response_code($response->getStatus($request));
+
+		foreach( $response->getHeaders($request) as $key => $header ) {
+			if( is_int($key) ) {
+				call_user_func($this->header, $header);
+			} else {
+				call_user_func($this->header, "{$key}: {$header}");
+			}
+		}
+
+		echo $response->getBody($request);
 	}
 
 	/**
