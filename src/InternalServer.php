@@ -142,12 +142,12 @@ class InternalServer {
 			}
 		}
 
+		echo $response->getBody($this->request);
+
 		if( $response instanceof MultiResponseInterface ) {
 			$response->next();
 			self::storeResponse($this->tmpPath, $response);
 		}
-
-		echo $response->getBody($this->request);
 	}
 
 	/**
