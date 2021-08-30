@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleset>
+	<file>src</file>
+	<file>test</file>
+	<file>example</file>
+
+	<rule ref="Corpus"/>
+</ruleset>
