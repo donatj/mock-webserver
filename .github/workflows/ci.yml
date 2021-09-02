@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0']
+        php-versions: ['5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
 
     runs-on: ${{ matrix.operating-system }}
 
@@ -25,8 +25,13 @@ jobs:
         php-version: ${{ matrix.php-versions }}
         extensions: sockets, json, curl
 
-    - name: Install dependencies with composer
+    - name: Install dependencies with composer for PHP <= 8.0
+      if: matrix.php-versions <= '8.0'
       run: composer install
+
+    - name: Install dependencies with composer for PHP 8.1
+      if: matrix.php-versions == '8.1'
+      run: composer req phpspec/prophecy:dev-master@dev --dev
 
     - name: Test with phpunit
       run: vendor/bin/phpunit
