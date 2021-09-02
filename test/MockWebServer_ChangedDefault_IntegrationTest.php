@@ -23,7 +23,7 @@ class MockWebServer_ChangedDefault_IntegrationTest extends TestCase {
 		$server->setDefaultResponse(new NotFoundResponse);
 
 		$content = file_get_contents($server->getServerRoot() . '/PageDoesNotExist', false, stream_context_create([
-			'http' => [ 'ignore_errors' => true ] // allow reading 404s
+			'http' => [ 'ignore_errors' => true ], // allow reading 404s
 		]));
 
 		$this->assertNotFalse(stripos($http_response_header[0], '404 Not Found', true));

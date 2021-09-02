@@ -11,8 +11,7 @@ interface MultiResponseInterface extends ResponseInterface {
 	 * Called after each request is sent
 	 *
 	 * @internal
-	 * @return bool
 	 */
-	public function next();
+	public function next() : bool;
 
 }

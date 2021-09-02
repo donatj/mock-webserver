@@ -3,7 +3,7 @@
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 
-class ExampleTest extends PHPUnit_Framework_TestCase {
+class ExampleTest extends PHPUnit\Framework\TestCase {
 
 	/** @var MockWebServer */
 	protected static $server;
@@ -26,7 +26,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 		$this->assertSame('foo bar content', $result);
 	}
 
-	static function tearDownAfterClass() {
+	public static function tearDownAfterClass() {
 		// stopping the web server during tear down allows us to reuse the port for later tests
 		self::$server->stop();
 	}

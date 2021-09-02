@@ -12,4 +12,5 @@ abstract class BaseServerTest extends TestCase {
 		self::$server = new MockWebServer;
 		self::$server->start();
 	}
+
 }

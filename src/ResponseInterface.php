@@ -10,35 +10,28 @@ interface ResponseInterface {
 	 * Expected to be 32 characters of hexadecimal
 	 *
 	 * @internal
-	 * @return string
 	 */
-	public function getRef();
+	public function getRef() : string;
 
 	/**
 	 * Get the body of the response
 	 *
 	 * @internal
-	 * @param RequestInfo $request
-	 * @return string
 	 */
-	public function getBody( RequestInfo $request );
+	public function getBody( RequestInfo $request ) : string;
 
 	/**
 	 * Get the headers as either an array of key => value or ["Full: Header","OtherFull: Header"]
 	 *
 	 * @internal
-	 * @param RequestInfo $request
-	 * @return array
 	 */
-	public function getHeaders( RequestInfo $request );
+	public function getHeaders( RequestInfo $request ) : array;
 
 	/**
 	 * Get the HTTP Status Code
 	 *
 	 * @internal
-	 * @param RequestInfo $request
-	 * @return int
 	 */
-	public function getStatus( RequestInfo $request );
+	public function getStatus( RequestInfo $request ) : int;
 
 }

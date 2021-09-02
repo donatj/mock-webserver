@@ -12,19 +12,20 @@ use donatj\MockWebServer\ResponseInterface;
  */
 class DefaultResponse implements ResponseInterface {
 
-	public function getRef() {
+	public function getRef() : string {
 		return md5(MockWebServer::VND . '.default-ref');
 	}
 
-	public function getBody( RequestInfo $request ) {
+	public function getBody( RequestInfo $request ) : string {
 		return json_encode($request, JSON_PRETTY_PRINT) . "\n";
 	}
 
-	public function getHeaders( RequestInfo $request ) {
+	public function getHeaders( RequestInfo $request ) : array {
 		return [ 'Content-Type' => 'application/json' ];
 	}
 
-	public function getStatus( RequestInfo $request ) {
+	public function getStatus( RequestInfo $request ) : int {
 		return 200;
 	}
+
 }

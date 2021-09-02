@@ -9,7 +9,6 @@ require __DIR__ . '/../vendor/autoload.php';
 $server = new MockWebServer;
 $server->start();
 
-
 // Create a response for both a POST and GET request to the same URL
 
 $response = new ResponseByMethod([

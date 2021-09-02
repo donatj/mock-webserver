@@ -13,29 +13,16 @@ use donatj\MockWebServer\Responses\NotFoundResponse;
  */
 class InternalServer {
 
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $tmpPath;
-	/**
-	 * @var \donatj\MockWebServer\RequestInfo
-	 */
+	/** @var \donatj\MockWebServer\RequestInfo */
 	private $request;
-	/**
-	 * @var callable
-	 */
+	/** @var callable */
 	private $header;
 
-	const DEFAULT_REF = 'default';
+	private const DEFAULT_REF = 'default';
 
-	/**
-	 * InternalServer constructor.
-	 *
-	 * @param string                            $tmpPath
-	 * @param \donatj\MockWebServer\RequestInfo $request
-	 * @param callable|null                     $header
-	 */
-	public function __construct( $tmpPath, RequestInfo $request, callable $header = null ) {
+	public function __construct( string $tmpPath, RequestInfo $request, ?callable $header = null ) {
 		if( $header === null ) {
 			$header = "\\header";
 		}
@@ -50,11 +37,9 @@ class InternalServer {
 	}
 
 	/**
-	 * @param string   $tmpPath
-	 * @param int|null $int
-	 * @return int
+	 * @internal
 	 */
-	public static function incrementRequestCounter( $tmpPath, $int = null ) {
+	public static function incrementRequestCounter( string $tmpPath, ?int $int = null ) : int {
 		$countFile = $tmpPath . DIRECTORY_SEPARATOR . MockWebServer::REQUEST_COUNT_FILE;
 
 		if( $int === null ) {
@@ -62,6 +47,7 @@ class InternalServer {
 			if( !is_string($newInt) ) {
 				throw new ServerException('failed to fetch request count');
 			}
+
 			$int = (int)$newInt + 1;
 		}
 
@@ -70,13 +56,16 @@ class InternalServer {
 		return (int)$int;
 	}
 
-	private function logRequest( RequestInfo $request, $count ) {
+	private function logRequest( RequestInfo $request, int $count ) : void {
 		$reqStr = serialize($request);
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . MockWebServer::LAST_REQUEST_FILE, $reqStr);
 		file_put_contents($this->tmpPath . DIRECTORY_SEPARATOR . 'request.' . $count, $reqStr);
 	}
 
-	public static function aliasPath( $tmpPath, $path ) {
+	/**
+	 * @internal
+	 */
+	public static function aliasPath( string $tmpPath, string $path ) : string {
 		$path = '/' . ltrim($path, '/');
 
 		return sprintf('%s%salias.%s',
@@ -86,11 +75,7 @@ class InternalServer {
 		);
 	}
 
-	/**
-	 * @param string $ref
-	 * @return ResponseInterface|null
-	 */
-	private function responseForRef( $ref ) {
+	private function responseForRef( string $ref ) : ?ResponseInterface {
 		$path = $this->tmpPath . DIRECTORY_SEPARATOR . $ref;
 		if( !is_readable($path) ) {
 			return null;
@@ -105,7 +90,7 @@ class InternalServer {
 		return $response;
 	}
 
-	public function __invoke() {
+	public function __invoke() : void {
 		$ref = $this->getRefForUri($this->request->getParsedUri()['path']);
 
 		if( $ref !== null ) {
@@ -131,7 +116,7 @@ class InternalServer {
 		$this->sendResponse(new DefaultResponse);
 	}
 
-	protected function sendResponse( ResponseInterface $response ) {
+	protected function sendResponse( ResponseInterface $response ) : void {
 		if( $response instanceof InitializingResponseInterface ) {
 			$response->initialize($this->request);
 		}
@@ -154,10 +139,7 @@ class InternalServer {
 		}
 	}
 
-	/**
-	 * @return string|null
-	 */
-	protected function getRefForUri( $uriPath ) {
+	protected function getRefForUri( $uriPath ) : ?string {
 		$aliasPath = self::aliasPath($this->tmpPath, $uriPath);
 
 		if( file_exists($aliasPath) ) {
@@ -172,12 +154,9 @@ class InternalServer {
 	}
 
 	/**
-	 * @param string                                  $tmpPath
-	 * @param \donatj\MockWebServer\ResponseInterface $response
-	 * @return string
 	 * @internal
 	 */
-	public static function storeResponse( $tmpPath, ResponseInterface $response ) {
+	public static function storeResponse( string $tmpPath, ResponseInterface $response ) : string {
 		$ref = $response->getRef();
 		self::storeRef($response, $tmpPath, $ref);
 
@@ -185,21 +164,13 @@ class InternalServer {
 	}
 
 	/**
-	 * @param string                                  $tmpPath
-	 * @param \donatj\MockWebServer\ResponseInterface $response
-	 * @return void
 	 * @internal
 	 */
-	public static function storeDefaultResponse( $tmpPath, ResponseInterface $response ) {
+	public static function storeDefaultResponse( string $tmpPath, ResponseInterface $response ) : void {
 		self::storeRef($response, $tmpPath, self::DEFAULT_REF);
 	}
 
-	/**
-	 * @param \donatj\MockWebServer\ResponseInterface $response
-	 * @param string                                  $tmpPath
-	 * @param string                                  $ref
-	 */
-	private static function storeRef( ResponseInterface $response, $tmpPath, $ref ) {
+	private static function storeRef( ResponseInterface $response, string $tmpPath, string $ref ) {
 		$content = serialize($response);
 
 		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $ref, $content) ) {

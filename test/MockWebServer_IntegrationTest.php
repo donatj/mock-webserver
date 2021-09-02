@@ -43,6 +43,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 				// This is the same horrible connection hack as above. Fix in time.
 				unset($lastReq[$key]['Connection']);
 			}
+
 			$this->assertSame($lastReq[$key], $val);
 		}
 	}
@@ -76,32 +77,35 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$content = file_get_contents($url, false, $ctx);
 
 		if( !(
-			in_array('HTTP/1.0 500 Internal Server Error', $http_response_header, true) ||
-			in_array('HTTP/1.1 500 Internal Server Error', $http_response_header, true))
+			in_array('HTTP/1.0 500 Internal Server Error', $http_response_header, true)
+			|| in_array('HTTP/1.1 500 Internal Server Error', $http_response_header, true))
 		) {
 			$this->fail('must contain 500 Internal Server Error');
 		}
+
 		$this->assertContains('X-Boop-Bat: Sauce', $http_response_header);
 		$this->assertEquals("Response One", $content);
 
 		$content = file_get_contents($url, false, $ctx);
 		if( !(
-			in_array('HTTP/1.0 400 Bad Request', $http_response_header, true) ||
-			in_array('HTTP/1.1 400 Bad Request', $http_response_header, true))
+			in_array('HTTP/1.0 400 Bad Request', $http_response_header, true)
+			|| in_array('HTTP/1.1 400 Bad Request', $http_response_header, true))
 		) {
 			$this->fail('must contain 400 Bad Request');
 		}
+
 		$this->assertContains('X-Slaw-Dawg: FranCran', $http_response_header);
 		$this->assertEquals("Response Two", $content);
 
 		// this is expected to fail as we only have two responses in said stack
 		$content = file_get_contents($url, false, $ctx);
 		if( !(
-			in_array('HTTP/1.0 404 Not Found', $http_response_header, true) ||
-			in_array('HTTP/1.1 404 Not Found', $http_response_header, true))
+			in_array('HTTP/1.0 404 Not Found', $http_response_header, true)
+			|| in_array('HTTP/1.1 404 Not Found', $http_response_header, true))
 		) {
 			$this->fail('must contain 404 Not Found');
 		}
+
 		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
 
@@ -117,7 +121,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 			ResponseByMethod::METHOD_TRACE,
 		];
 
-		$response = new ResponseByMethod();
+		$response = new ResponseByMethod;
 
 		foreach( $methods as $method ) {
 			$response->setMethodResponse($method, new Response(
@@ -212,7 +216,17 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 	/**
 	 * @dataProvider requestInfoProvider
 	 */
-	public function testRequestInfo( $method, $uri, $respBody, $reqBody, array $headers, $status, $query, array $expectedCookies, array $serverVars ) {
+	public function testRequestInfo(
+		$method,
+		$uri,
+		$respBody,
+		$reqBody,
+		array $headers,
+		$status,
+		$query,
+		array $expectedCookies,
+		array $serverVars
+	) {
 		$url = self::$server->setResponseOfPath($uri, new Response($respBody, $headers, $status));
 
 		// Get cURL resource
@@ -227,6 +241,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		foreach( $headers as $hkey => $hval ) {
 			$xheaders[] = "{$hkey}: $hval";
 		}
+
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $xheaders);
 		// Create body
 
