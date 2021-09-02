@@ -18,7 +18,7 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 
 ## Requirements
 
-- **php**: >=5.4
+- **php**: >=7.1
 - **ext-sockets**: *
 - **ext-json**: *
 - **ralouphie/getallheaders**: ~2.0 || ~3.0

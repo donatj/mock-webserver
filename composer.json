@@ -12,7 +12,7 @@
 		}
 	],
 	"require": {
-		"php": ">=7.2",
+		"php": ">=7.1",
 		"ext-sockets": "*",
 		"ext-json": "*",
 		"ralouphie/getallheaders": "~2.0 || ~3.0"
