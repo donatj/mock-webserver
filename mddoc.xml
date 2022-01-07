@@ -23,16 +23,18 @@ There has been work [started to implement this](https://github.com/donatj/mock-w
 			<section title="Documentation">
 				<docpage target="docs/docs.md" autoloader="psr4" autoloader-root="src"
 						 autoloader-root-namespace="donatj\MockWebServer">
-					<section title="Documentation">
-						<file name="src/MockWebServer.php"/>
-						<file name="src/Response.php"/>
-						<file name="src/ResponseStack.php"/>
-						<file name="src/ResponseByMethod.php"/>
-						<section title="Built-In Responses">
-							<file name="src/Responses/DefaultResponse.php"/>
-							<file name="src/Responses/NotFoundResponse.php"/>
+					<replace regex="true" search="/127\.0\.0\.1:\d+/" replace="127.0.0.1:8123">
+						<section title="Documentation">
+							<file name="src/MockWebServer.php"/>
+							<file name="src/Response.php"/>
+							<file name="src/ResponseStack.php"/>
+							<file name="src/ResponseByMethod.php"/>
+							<section title="Built-In Responses">
+								<file name="src/Responses/DefaultResponse.php"/>
+								<file name="src/Responses/NotFoundResponse.php"/>
+							</section>
 						</section>
-					</section>
+					</replace>
 				</docpage>
 			</section>
 			<section title="Requirements">
@@ -41,41 +43,45 @@ There has been work [started to implement this](https://github.com/donatj/mock-w
 			<section title="Installing">
 				<composer-install dev="true"/>
 			</section>
-			<section title="Examples">
-				<section title="Basic Usage">
-					<text><![CDATA[The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.]]></text>
-					<source name="example/basic.php" lang="php"/>
-					<text>Outputs:</text>
-					<exec cmd="php example/basic.php" format="code-block" />
-				</section>
-				<section title="Simple">
-					<source name="example/simple.php" lang="php"/>
-					<text>Outputs:</text>
-					<exec cmd="php example/simple.php" format="code-block" />
-				</section>
-				<section title="Change Default Response">
-					<source name="example/notfound.php" lang="php"/>
-					<text>Outputs:</text>
-					<exec cmd="php example/notfound.php" format="code-block" />
-				</section>
-				<section title="PHPUnit">
-					<source name="example/phpunit.php" lang="php"/>
-				</section>
-			</section>
-			<section title="Multiple Responses from the Same Endpoint">
-				<section title="Response Stack">
-					<text>If you need an ordered set of responses, that can be done using the ResponseStack.</text>
-					<source name="example/multi.php" lang="php"/>
-					<text>Outputs:</text>
-					<exec cmd="php example/multi.php" format="code-block" />
-				</section>
-				<section title="Response by Method">
-					<text>If you need to vary responses to a single endpoint by method, you can do that using the ResponseByMethod response object.</text>
-					<source name="example/methods.php" lang="php"/>
-					<text>Outputs:</text>
-					<exec cmd="php example/methods.php" format="code-block" />
-				</section>
-			</section>
+			<replace regex="true" search="/127\.0\.0\.1:\d+/" replace="127.0.0.1:61355">
+				<replace regex="true" search="%Date: .*GMT\n|X-Powered-By: PHP/[\d.]+\n%" replace="">
+					<section title="Examples">
+						<section title="Basic Usage">
+							<text><![CDATA[The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.]]></text>
+							<source name="example/basic.php" lang="php"/>
+							<text>Outputs:</text>
+							<exec cmd="php example/basic.php" format="code-block" />
+						</section>
+						<section title="Simple">
+							<source name="example/simple.php" lang="php"/>
+							<text>Outputs:</text>
+							<exec cmd="php example/simple.php" format="code-block" />
+						</section>
+						<section title="Change Default Response">
+							<source name="example/notfound.php" lang="php"/>
+							<text>Outputs:</text>
+							<exec cmd="php example/notfound.php" format="code-block" />
+						</section>
+						<section title="PHPUnit">
+							<source name="example/phpunit.php" lang="php"/>
+						</section>
+					</section>
+					<section title="Multiple Responses from the Same Endpoint">
+						<section title="Response Stack">
+							<text>If you need an ordered set of responses, that can be done using the ResponseStack.</text>
+							<source name="example/multi.php" lang="php"/>
+							<text>Outputs:</text>
+							<exec cmd="php example/multi.php" format="code-block" />
+						</section>
+						<section title="Response by Method">
+							<text>If you need to vary responses to a single endpoint by method, you can do that using the ResponseByMethod response object.</text>
+							<source name="example/methods.php" lang="php"/>
+							<text>Outputs:</text>
+							<exec cmd="php example/methods.php" format="code-block" />
+						</section>
+					</section>
+				</replace>
+			</replace>
 		</section>
 	</docpage>
 </mddoc>
