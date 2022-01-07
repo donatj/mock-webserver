@@ -2,7 +2,6 @@
 
 [![Latest Stable Version](https://poser.pugx.org/donatj/mock-webserver/version)](https://packagist.org/packages/donatj/mock-webserver)
 [![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver)
 [![CI](https://github.com/donatj/mock-webserver/workflows/CI/badge.svg?)](https://github.com/donatj/mock-webserver/actions?query=workflow%3ACI)
 [![Build Status](https://travis-ci.org/donatj/mock-webserver.svg?branch=master)](https://travis-ci.org/donatj/mock-webserver)
 
