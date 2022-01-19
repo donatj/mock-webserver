@@ -25,13 +25,8 @@ jobs:
         php-version: ${{ matrix.php-versions }}
         extensions: sockets, json, curl
 
-    - name: Install dependencies with composer for PHP <= 8.0
-      if: matrix.php-versions <= '8.0'
+    - name: Install dependencies with composer
       run: composer install
-
-    - name: Install dependencies with composer for PHP 8.1
-      if: matrix.php-versions == '8.1'
-      run: composer req phpspec/prophecy:dev-master@dev --dev
 
     - name: Test with phpunit
       run: vendor/bin/phpunit
