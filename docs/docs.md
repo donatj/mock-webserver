@@ -7,17 +7,17 @@
 namespace donatj\MockWebServer;
 
 class MockWebServer {
-	const VND = 'VND.DonatStudios.MockWebServer';
-	const LAST_REQUEST_FILE = 'last.request';
-	const REQUEST_COUNT_FILE = 'count.request';
-	const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
+	public const VND = 'VND.DonatStudios.MockWebServer';
+	public const LAST_REQUEST_FILE = 'last.request';
+	public const REQUEST_COUNT_FILE = 'count.request';
+	public const TMP_ENV = 'MOCK_WEB_SERVER_TMP';
 }
 ```
 
 ### Method: MockWebServer->__construct
 
 ```php
-function __construct($port [, $host = '127.0.0.1'])
+function __construct([ $port = 0 [, $host = '127.0.0.1']])
 ```
 
 TestWebServer constructor.
@@ -81,7 +81,7 @@ Get the HTTP root of the webserver
 ### Method: MockWebServer->getUrlOfResponse
 
 ```php
-function getUrlOfResponse($response)
+function getUrlOfResponse(\donatj\MockWebServer\ResponseInterface $response)
 ```
 
 Get a URL providing the specified response.
@@ -99,7 +99,7 @@ Get a URL providing the specified response.
 ### Method: MockWebServer->setResponseOfPath
 
 ```php
-function setResponseOfPath($path, $response)
+function setResponseOfPath($path, \donatj\MockWebServer\ResponseInterface $response)
 ```
 
 Set a specified path to provide a specific response
@@ -112,6 +112,24 @@ Set a specified path to provide a specific response
 #### Returns:
 
 - ***string***
+
+---
+
+### Method: MockWebServer->setDefaultResponse
+
+```php
+function setDefaultResponse(\donatj\MockWebServer\ResponseInterface $response)
+```
+
+Override the default server response, e.g. Fallback or 404
+
+#### Parameters:
+
+- ***\donatj\MockWebServer\ResponseInterface*** `$response`
+
+#### Returns:
+
+- ***void***
 
 ---
 
@@ -136,6 +154,7 @@ function getRequestByOffset($offset)
 ```
 
 Get request by offset  
+  
 If offset is non-negative, the request will be the index from the start of the server.  
 If offset is negative, the request will be that from the end of the requests.
 
@@ -180,7 +199,7 @@ Get the port the network server is to be ran on.
 ### Method: Response->__construct
 
 ```php
-function __construct($body [, $headers = array() [, $status = 200]])
+function __construct($body [, array $headers = [] [, $status = 200]])
 ```
 
 Response constructor.
@@ -200,17 +219,8 @@ function __construct()
 ```
 
 ResponseStack constructor.  
+  
 Accepts a variable number of RequestInterface objects
-
-
-
-
-
-
-
-
-
-
 
 ---
 
@@ -229,7 +239,7 @@ function getPastEndResponse()
 ### Method: ResponseStack->setPastEndResponse
 
 ```php
-function setPastEndResponse($pastEndResponse)
+function setPastEndResponse(\donatj\MockWebServer\ResponseInterface $pastEndResponse)
 ```
 
 #### Parameters:
@@ -243,21 +253,21 @@ function setPastEndResponse($pastEndResponse)
 namespace donatj\MockWebServer;
 
 class ResponseByMethod {
-	const METHOD_GET = 'GET';
-	const METHOD_POST = 'POST';
-	const METHOD_PUT = 'PUT';
-	const METHOD_PATCH = 'PATCH';
-	const METHOD_DELETE = 'DELETE';
-	const METHOD_HEAD = 'HEAD';
-	const METHOD_OPTIONS = 'OPTIONS';
-	const METHOD_TRACE = 'TRACE';
+	public const METHOD_GET = 'GET';
+	public const METHOD_POST = 'POST';
+	public const METHOD_PUT = 'PUT';
+	public const METHOD_PATCH = 'PATCH';
+	public const METHOD_DELETE = 'DELETE';
+	public const METHOD_HEAD = 'HEAD';
+	public const METHOD_OPTIONS = 'OPTIONS';
+	public const METHOD_TRACE = 'TRACE';
 }
 ```
 
 ### Method: ResponseByMethod->__construct
 
 ```php
-function __construct([ $responses = array() [, $defaultResponse = null]])
+function __construct([ array $responses = [] [, \donatj\MockWebServer\ResponseInterface $defaultResponse = null]])
 ```
 
 MethodResponse constructor.
@@ -268,20 +278,12 @@ MethodResponse constructor.
 - ***\donatj\MockWebServer\ResponseInterface*** | ***null*** `$defaultResponse` - The fallthrough response to return if a response for a given
 method is not found. If this is not defined the server will return an HTTP 501 error.
 
-
-
-
-
-
-
-
-
 ---
 
 ### Method: ResponseByMethod->setMethodResponse
 
 ```php
-function setMethodResponse($method, $response)
+function setMethodResponse($method, \donatj\MockWebServer\ResponseInterface $response)
 ```
 
 Set the Response for the Given Method
@@ -290,3 +292,15 @@ Set the Response for the Given Method
 
 - ***string*** `$method`
 - ***\donatj\MockWebServer\ResponseInterface*** `$response`
+
+## Built-In Responses
+
+### Class: \donatj\MockWebServer\Responses\DefaultResponse
+
+The Built-In Default Response.
+
+Results in an HTTP 200 with a JSON encoded version of the incoming Request
+
+### Class: \donatj\MockWebServer\Responses\NotFoundResponse
+
+Basic Built-In 404 Response

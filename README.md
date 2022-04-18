@@ -2,7 +2,7 @@
 
 [![Latest Stable Version](https://poser.pugx.org/donatj/mock-webserver/version)](https://packagist.org/packages/donatj/mock-webserver)
 [![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/donatj/mock-webserver/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/donatj/mock-webserver)
+[![CI](https://github.com/donatj/mock-webserver/workflows/CI/badge.svg?)](https://github.com/donatj/mock-webserver/actions?query=workflow%3ACI)
 [![Build Status](https://travis-ci.org/donatj/mock-webserver.svg?branch=master)](https://travis-ci.org/donatj/mock-webserver)
 
 
@@ -58,7 +58,7 @@ echo file_get_contents($url);
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:52142/endpoint?get=foobar
+Requesting: http://127.0.0.1:61355/endpoint?get=foobar
 
 {
     "_GET": {
@@ -68,7 +68,7 @@ Requesting: http://127.0.0.1:52142/endpoint?get=foobar
     "_FILES": [],
     "_COOKIE": [],
     "HEADERS": {
-        "Host": "127.0.0.1:52142",
+        "Host": "127.0.0.1:61355",
         "Connection": "close"
     },
     "METHOD": "GET",
@@ -95,7 +95,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $server = new MockWebServer;
 $server->start();
 
-// We define the servers response to requests of the /definedPath endpoint
+// We define the server's response to requests of the /definedPath endpoint
 $url = $server->setResponseOfPath(
 	'/definedPath',
 	new Response(
@@ -118,17 +118,60 @@ echo $content . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:52152/definedPath
+Requesting: http://127.0.0.1:61355/definedPath
 
 HTTP/1.0 200 OK
-Host: 127.0.0.1:52152
-Date: Mon, 12 Mar 2018 18:11:33 +0000
+Host: 127.0.0.1:61355
 Connection: close
-X-Powered-By: PHP/7.1.7
 Cache-Control: no-cache
 Content-type: text/html; charset=UTF-8
 
 This is our http body response
+```
+
+### Change Default Response
+
+```php
+<?php
+
+use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\Responses\NotFoundResponse;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$server = new MockWebServer;
+$server->start();
+
+// The default response is donatj\MockWebServer\Responses\DefaultResponse
+// which returns an HTTP 200 and a descriptive JSON payload.
+//
+// Change the default response to donatj\MockWebServer\Responses\NotFoundResponse
+// to get a standard 404.
+//
+// Any other response may be specified as default as well.
+$server->setDefaultResponse(new NotFoundResponse);
+
+$content = file_get_contents($server->getServerRoot() . '/PageDoesNotExist', false, stream_context_create([
+	'http' => [ 'ignore_errors' => true ], // allow reading 404s
+]));
+
+// $http_response_header is a little known variable magically defined
+// in the current scope by file_get_contents with the response headers
+echo implode("\n", $http_response_header) . "\n\n";
+echo $content . "\n";
+
+```
+
+Outputs:
+
+```
+HTTP/1.0 404 Not Found
+Host: 127.0.0.1:61355
+Connection: close
+Content-type: text/html; charset=UTF-8
+
+VND.DonatStudios.MockWebServer: Resource '/PageDoesNotExist' not found!
+
 ```
 
 ### PHPUnit
@@ -156,7 +199,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetSetPath() {
-		// $url = http://127.0.0.1:8123/definedEndPoint
+		// $url = http://127.0.0.1:61355/definedEndPoint
 		$url    = self::$server->setResponseOfPath('/definedEndPoint', new Response('foo bar content'));
 		$result = file_get_contents($url);
 		$this->assertSame('foo bar content', $result);
@@ -214,7 +257,7 @@ echo $contentThree . "\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:52155/definedPath
+Requesting: http://127.0.0.1:61355/definedPath
 
 Response One
 Response Two
@@ -230,42 +273,40 @@ If you need to vary responses to a single endpoint by method, you can do that us
 
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
-use donatj\MockWebServer\ResponseStack;
+use donatj\MockWebServer\ResponseByMethod;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $server = new MockWebServer;
 $server->start();
 
-// We define the servers response to requests of the /definedPath endpoint
-$url = $server->setResponseOfPath(
-	'/definedPath',
-	new ResponseStack(
-		new Response("Response One"),
-		new Response("Response Two")
-	)
-);
 
-echo "Requesting: $url\n\n";
+// Create a response for both a POST and GET request to the same URL
 
-$contentOne = file_get_contents($url);
-$contentTwo = file_get_contents($url);
-// This third request is expected to 404 which will error if errors are not ignored
-$contentThree = file_get_contents($url, false, stream_context_create([ 'http' => [ 'ignore_errors' => true ] ]));
+$response = new ResponseByMethod([
+	ResponseByMethod::METHOD_GET  => new Response("This is our http GET response"),
+	ResponseByMethod::METHOD_POST => new Response("This is our http POST response", [], 201),
+]);
 
-// $http_response_header is a little known variable magically defined
-// in the current scope by file_get_contents with the response headers
-echo $contentOne . "\n";
-echo $contentTwo . "\n";
-echo $contentThree . "\n";
+$url = $server->setResponseOfPath('/foo/bar', $response);
+
+foreach( [ ResponseByMethod::METHOD_GET, ResponseByMethod::METHOD_POST ] as $method ) {
+	echo "$method request to $url:\n";
+
+	$context = stream_context_create([ 'http' => [ 'method' => $method ] ]);
+	$content = file_get_contents($url, false, $context);
+
+	echo $content . "\n\n";
+}
 ```
 
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:52159/definedPath
+GET request to http://127.0.0.1:61355/foo/bar:
+This is our http GET response
 
-Response One
-Response Two
-Past the end of the ResponseStack
+POST request to http://127.0.0.1:61355/foo/bar:
+This is our http POST response
+
 ```

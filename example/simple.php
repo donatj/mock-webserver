@@ -8,7 +8,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $server = new MockWebServer;
 $server->start();
 
-// We define the servers response to requests of the /definedPath endpoint
+// We define the server's response to requests of the /definedPath endpoint
 $url = $server->setResponseOfPath(
 	'/definedPath',
 	new Response(

@@ -30,3 +30,4 @@ jobs:
 
     - name: Test with phpunit
       run: vendor/bin/phpunit --coverage-text
+

@@ -77,7 +77,15 @@ class MockWebServer {
 
 		$this->process = $this->startServer($fullCmd);
 
-		sleep(1); // just to make sure it's fully started up, maybe not necessary
+		for( $i = 0; $i <= 20; $i++ ) {
+			usleep(100000);
+
+			$open = @fsockopen($this->host, $this->port);
+			if( is_resource($open) ) {
+				fclose($open);
+				break;
+			}
+		}
 
 		if( !$this->isRunning() ) {
 			throw new Exceptions\ServerException("Failed to start server. Is something already running on port {$this->port}?");
@@ -169,6 +177,16 @@ class MockWebServer {
 	}
 
 	/**
+	 * Override the default server response, e.g. Fallback or 404
+	 *
+	 * @param \donatj\MockWebServer\ResponseInterface $response
+	 * @return void
+	 */
+	public function setDefaultResponse( ResponseInterface $response ) {
+		InternalServer::storeDefaultResponse($this->tmpDir, $response);
+	}
+
+	/**
 	 * @return string
 	 */
 	private function getTmpDir() {
@@ -182,7 +200,7 @@ class MockWebServer {
 			mkdir($tmpPath);
 		}
 
-		$tmpPath = $tmpDir . DIRECTORY_SEPARATOR . $this->port;
+		$tmpPath .= DIRECTORY_SEPARATOR . $this->port;
 		if( !is_dir($tmpPath) ) {
 			mkdir($tmpPath);
 		}

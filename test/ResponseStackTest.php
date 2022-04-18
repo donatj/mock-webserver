@@ -1,8 +1,9 @@
 <?php
 
 use donatj\MockWebServer\ResponseStack;
+use PHPUnit\Framework\TestCase;
 
-class ResponseStackTest extends \PHPUnit_Framework_TestCase {
+class ResponseStackTest extends TestCase {
 
 	public function testEmpty() {
 		$mock = $this->getMockBuilder('\donatj\MockWebServer\RequestInfo')->disableOriginalConstructor()->getMock();

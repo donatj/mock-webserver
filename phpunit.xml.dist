@@ -2,10 +2,11 @@
 	<testsuites>
 		<testsuite name="Library">
 			<directory>test</directory>
+			<exclude>test/BaseServerTest</exclude>
 		</testsuite>
 	</testsuites>
 
 	<logging>
-		<log type="coverage-clover" target="coverage.xml"/>
+		<!-- log type="coverage-clover" target="coverage.xml"/ -->
 	</logging>
 </phpunit>

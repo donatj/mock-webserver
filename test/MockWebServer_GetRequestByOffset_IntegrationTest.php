@@ -1,8 +1,9 @@
 <?php
 
 use donatj\MockWebServer\MockWebServer;
+use PHPUnit\Framework\TestCase;
 
-class MockWebServer_GetRequestByOffset_IntegrationTest extends PHPUnit_Framework_TestCase {
+class MockWebServer_GetRequestByOffset_IntegrationTest extends TestCase {
 
 	public function testGetRequestByOffset() {
 		$server = new MockWebServer;
