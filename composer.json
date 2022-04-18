@@ -26,5 +26,10 @@
 		"donatj/drop": "^1.0",
 		"phpunit/phpunit": "~4|~9",
 		"ext-curl": "*"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
 	}
 }

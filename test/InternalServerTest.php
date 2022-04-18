@@ -2,8 +2,9 @@
 
 use donatj\MockWebServer\InternalServer;
 use donatj\MockWebServer\MockWebServer;
+use PHPUnit\Framework\TestCase;
 
-class InternalServerTest extends \PHPUnit_Framework_TestCase {
+class InternalServerTest extends TestCase {
 
 	private $testTmpDir;
 	private $server;
