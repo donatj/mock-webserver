@@ -2,6 +2,7 @@
 
 use donatj\MockWebServer\InternalServer;
 use donatj\MockWebServer\MockWebServer;
+use donatj\MockWebServer\RequestInfo;
 use PHPUnit\Framework\TestCase;
 
 class InternalServerTest extends TestCase {
@@ -9,7 +10,7 @@ class InternalServerTest extends TestCase {
 	private $testTmpDir;
 	private $server;
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		$this->testTmpDir = __DIR__ . DIRECTORY_SEPARATOR . 'testTemp';
@@ -21,7 +22,7 @@ class InternalServerTest extends TestCase {
 		file_put_contents($counterFileName, '0');
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 		$this->removeTempDirectory();
 	}
@@ -70,7 +71,7 @@ class InternalServerTest extends TestCase {
 	}
 
 	public function testShouldLogRequestsOnInstanceCreate() {
-		$fakeReq = new \donatj\MockWebServer\RequestInfo([
+		$fakeReq = new RequestInfo([
 			'REQUEST_URI' => '',
 		],
 			[], [], [], [], [], '');
