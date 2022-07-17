@@ -4,6 +4,8 @@ namespace donatj\MockWebServer;
 
 /**
  * DelayedResponse wraps a response, causing it when called to be delayed by a specified number of microseconds.
+ *
+ * This is useful for simulating slow responses and testing timeouts.
  */
 class DelayedResponse implements InitializingResponseInterface, MultiResponseInterface {
 

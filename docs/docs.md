@@ -212,6 +212,10 @@ Response constructor.
 
 ## Class: \donatj\MockWebServer\ResponseStack
 
+ResponseStack is used to store multiple responses for a request issued by the server in order.
+
+When the stack is empty, the server will return a customizable response defaulting to a 404.
+
 ### Method: ResponseStack->__construct
 
 ```php
@@ -230,6 +234,8 @@ Accepts a variable number of RequestInterface objects
 function getPastEndResponse()
 ```
 
+Gets the response returned when the stack is exhausted.
+
 #### Returns:
 
 - ***\donatj\MockWebServer\ResponseInterface***
@@ -242,11 +248,15 @@ function getPastEndResponse()
 function setPastEndResponse(\donatj\MockWebServer\ResponseInterface $pastEndResponse)
 ```
 
+Set the response to return when the stack is exhausted.
+
 #### Parameters:
 
 - ***\donatj\MockWebServer\ResponseInterface*** `$pastEndResponse`
 
 ## Class: \donatj\MockWebServer\ResponseByMethod
+
+ResponseByMethod is used to vary the response to a request by the called HTTP Method.
 
 ```php
 <?php
@@ -274,7 +284,7 @@ MethodResponse constructor.
 
 #### Parameters:
 
-- ***\donatj\MockWebServer\ResponseInterface[]*** `$responses` - An array of responses keyed by their method.
+- ***\donatj\MockWebServer\ResponseInterface[]*** `$responses` - A map of responses keyed by their method.
 - ***\donatj\MockWebServer\ResponseInterface*** | ***null*** `$defaultResponse` - The fallthrough response to return if a response for a given
 method is not found. If this is not defined the server will return an HTTP 501 error.
 
@@ -296,6 +306,8 @@ Set the Response for the Given Method
 ## Class: \donatj\MockWebServer\DelayedResponse
 
 DelayedResponse wraps a response, causing it when called to be delayed by a specified number of microseconds.
+
+This is useful for simulating slow responses and testing timeouts.
 
 ### Method: DelayedResponse->__construct
 

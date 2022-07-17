@@ -4,6 +4,11 @@ namespace donatj\MockWebServer;
 
 use donatj\MockWebServer\Exceptions\RuntimeException;
 
+/**
+ * ResponseStack is used to store multiple responses for a request issued by the server in order.
+ *
+ * When the stack is empty, the server will return a customizable response defaulting to a 404.
+ */
 class ResponseStack implements MultiResponseInterface {
 
 	private $ref;
@@ -92,6 +97,8 @@ class ResponseStack implements MultiResponseInterface {
 	}
 
 	/**
+	 * Gets the response returned when the stack is exhausted.
+	 *
 	 * @return \donatj\MockWebServer\ResponseInterface
 	 */
 	public function getPastEndResponse() {
@@ -99,6 +106,8 @@ class ResponseStack implements MultiResponseInterface {
 	}
 
 	/**
+	 * Set the response to return when the stack is exhausted.
+	 *
 	 * @param \donatj\MockWebServer\ResponseInterface $pastEndResponse
 	 */
 	public function setPastEndResponse( ResponseInterface $pastEndResponse ) {
