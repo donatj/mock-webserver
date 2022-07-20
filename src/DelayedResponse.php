@@ -29,7 +29,7 @@ class DelayedResponse implements InitializingResponseInterface {
 	 * @inheritDoc
 	 */
 	public function getRef() {
-		return $this->response->getRef();
+		return md5('delayed-' . $this->response->getRef());
 	}
 
 	/**
