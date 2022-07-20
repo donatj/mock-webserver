@@ -293,6 +293,21 @@ Set the Response for the Given Method
 - ***string*** `$method`
 - ***\donatj\MockWebServer\ResponseInterface*** `$response`
 
+## Class: \donatj\MockWebServer\DelayedResponse
+
+DelayedResponse wraps a response, causing it when called to be delayed by a specified number of microseconds.
+
+### Method: DelayedResponse->__construct
+
+```php
+function __construct(\donatj\MockWebServer\ResponseInterface $response, $delay)
+```
+
+#### Parameters:
+
+- ***\donatj\MockWebServer\ResponseInterface*** `$response`
+- ***int*** `$delay` - Microseconds to delay the response
+
 ## Built-In Responses
 
 ### Class: \donatj\MockWebServer\Responses\DefaultResponse

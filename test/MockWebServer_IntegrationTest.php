@@ -1,5 +1,6 @@
 <?php
 
+use donatj\MockWebServer\DelayedResponse;
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseByMethod;
@@ -12,7 +13,6 @@ if( class_exists('\PHPUnit\Runner\Version') ) {
 }
 
 class MockWebServer_IntegrationTest extends BaseServerTest {
-
 
 	public function testBasic() {
 		$url     = self::$server->getServerRoot() . '/endpoint?get=foobar';
@@ -145,6 +145,60 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 
 		$this->assertSame(false, $content);
 		$this->assertStringEndsWith('501 Not Implemented', $http_response_header[0]);
+	}
+
+	public function testDelayedResponse() {
+
+		$realtimeResponse = new Response(
+			'This is our http body response',
+			[ 'X-Foo-Bar' => 'BazBazBaz' ],
+			200
+		);
+
+		$delayedResponse = new DelayedResponse($realtimeResponse, 1000000);
+
+		$this->assertNotSame($realtimeResponse->getRef(), $delayedResponse->getRef(),
+			'DelayedResponse should change the ref. If they are the same, using both causes issues.');
+
+		$realtimeUrl = self::$server->setResponseOfPath('/realtimePath', $realtimeResponse);
+		$delayedUrl  = self::$server->setResponseOfPath('/delayedPath', $delayedResponse);
+
+
+		$realtimeStart = microtime(true);
+		file_get_contents($realtimeUrl);
+
+		$delayedStart   = microtime(true);
+		$delayedContent = file_get_contents($delayedUrl);
+
+		$end = microtime(true);
+
+		$this->assertGreaterThan(.9, ($end - $delayedStart) - ($delayedStart - $realtimeStart), 'Delayed response should take ~1 seconds longer than realtime response');
+
+		$this->assertEquals('This is our http body response', $delayedContent);
+		$this->assertContains('X-Foo-Bar: BazBazBaz', $http_response_header);
+	}
+
+	public function testDelayedMultiResponse() {
+		$multi = new ResponseStack(
+			new Response('Response One', [ 'X-Boop-Bat' => 'Sauce' ], 200),
+			new Response('Response Two', [ 'X-Slaw-Dawg: FranCran' ], 200)
+		);
+
+		$delayed = new DelayedResponse($multi, 1000000);
+
+		$path = self::$server->setResponseOfPath('/delayedMultiPath', $delayed);
+
+		$start = microtime(true);
+		$contentOne = file_get_contents($path);
+		$this->assertSame($contentOne, 'Response One');
+		$this->assertContains('X-Boop-Bat: Sauce', $http_response_header);
+		$this->assertGreaterThan(.9, microtime(true) - $start, 'Delayed response should take ~1 seconds longer than realtime response');
+
+		$start = microtime(true);
+		$contentTwo = file_get_contents($path);
+		$this->assertSame($contentTwo, 'Response Two');
+		$this->assertContains('X-Slaw-Dawg: FranCran', $http_response_header);
+		$this->assertGreaterThan(.9, microtime(true) - $start, 'Delayed response should take ~1 seconds longer than realtime response');
 	}
 
 	/**

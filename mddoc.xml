@@ -29,6 +29,7 @@ There has been work [started to implement this](https://github.com/donatj/mock-w
 							<file name="src/Response.php"/>
 							<file name="src/ResponseStack.php"/>
 							<file name="src/ResponseByMethod.php"/>
+							<file name="src/DelayedResponse.php"/>
 							<section title="Built-In Responses">
 								<file name="src/Responses/DefaultResponse.php"/>
 								<file name="src/Responses/NotFoundResponse.php"/>
@@ -64,6 +65,16 @@ There has been work [started to implement this](https://github.com/donatj/mock-w
 						</section>
 						<section title="PHPUnit">
 							<source name="example/phpunit.php" lang="php"/>
+						</section>
+						<section title="Delayed Response Usage">
+							<text><![CDATA[By default responses will happen instantly. If you're looking to test timeouts, the DelayedResponse response wrapper may be useful.]]></text>
+							<source name="example/delayed.php" lang="php"/>
+							<text>Outputs:</text>
+							<replace regex="true" search="%Realtime Request took: 0\.\d+ seconds%" replace="Realtime Request took: 0.015669107437134 seconds">
+								<replace regex="true" search="%Delayed Request took: 0\.\d+ seconds%" replace="Delayed Request took: 0.10729098320007 seconds">
+									<exec cmd="php example/delayed.php" format="code-block" />
+								</replace>
+							</replace>
 						</section>
 					</section>
 					<section title="Multiple Responses from the Same Endpoint">
