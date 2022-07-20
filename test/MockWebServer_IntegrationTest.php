@@ -14,7 +14,6 @@ if( class_exists('\PHPUnit\Runner\Version') ) {
 
 class MockWebServer_IntegrationTest extends BaseServerTest {
 
-
 	public function testBasic() {
 		$url     = self::$server->getServerRoot() . '/endpoint?get=foobar';
 		$content = file_get_contents($url);
@@ -156,7 +155,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 			200
 		);
 
-		$delayedResponse = new DelayedResponse($realtimeResponse, 2000000);
+		$delayedResponse = new DelayedResponse($realtimeResponse, 1000000);
 
 		$this->assertNotSame($realtimeResponse->getRef(), $delayedResponse->getRef(),
 			'DelayedResponse should change the ref. If they are the same, using both causes issues.');
@@ -173,10 +172,33 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 
 		$end = microtime(true);
 
-		$this->assertGreaterThan(1.9, ($end - $delayedStart) - ($delayedStart - $realtimeStart), 'Delayed response should take ~2 seconds longer than realtime response');
+		$this->assertGreaterThan(.9, ($end - $delayedStart) - ($delayedStart - $realtimeStart), 'Delayed response should take ~1 seconds longer than realtime response');
 
 		$this->assertEquals('This is our http body response', $delayedContent);
 		$this->assertContains('X-Foo-Bar: BazBazBaz', $http_response_header);
+	}
+
+	public function testDelayedMultiResponse() {
+		$multi = new ResponseStack(
+			new Response('Response One', [ 'X-Boop-Bat' => 'Sauce' ], 200),
+			new Response('Response Two', [ 'X-Slaw-Dawg: FranCran' ], 200)
+		);
+
+		$delayed = new DelayedResponse($multi, 1000000);
+
+		$path = self::$server->setResponseOfPath('/delayedMultiPath', $delayed);
+
+		$start = microtime(true);
+		$contentOne = file_get_contents($path);
+		$this->assertSame($contentOne, 'Response One');
+		$this->assertContains('X-Boop-Bat: Sauce', $http_response_header);
+		$this->assertGreaterThan(.9, microtime(true) - $start, 'Delayed response should take ~1 seconds longer than realtime response');
+
+		$start = microtime(true);
+		$contentTwo = file_get_contents($path);
+		$this->assertSame($contentTwo, 'Response Two');
+		$this->assertContains('X-Slaw-Dawg: FranCran', $http_response_header);
+		$this->assertGreaterThan(.9, microtime(true) - $start, 'Delayed response should take ~1 seconds longer than realtime response');
 	}
 
 	/**
