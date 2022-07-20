@@ -65,6 +65,12 @@ There has been work [started to implement this](https://github.com/donatj/mock-w
 						<section title="PHPUnit">
 							<source name="example/phpunit.php" lang="php"/>
 						</section>
+						<section title="Delayed Response Usage">
+							<text><![CDATA[By default responses will happen instantly. If you're looking to test timeouts, the DelayedResponse response wrapper may be useful.]]></text>
+							<source name="example/delayed.php" lang="php"/>
+							<text>Outputs:</text>
+							<exec cmd="php example/delayed.php" format="code-block" />
+						</section>
 					</section>
 					<section title="Multiple Responses from the Same Endpoint">
 						<section title="Response Stack">

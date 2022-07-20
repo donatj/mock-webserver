@@ -16,14 +16,24 @@ $response = new Response(
 );
 
 // Wrap the response in a DelayedResponse object, which will delay the response
-$delay = new DelayedResponse(
+$delayedResponse = new DelayedResponse(
 	$response,
 	100000 // sets a delay of 100000 microseconds (.1 seconds) before returning the response
 );
 
-$url = $server->setResponseOfPath('/delayedPath', $delay);
+$realtimeUrl = $server->setResponseOfPath('/realtime', $response);
+$delayedUrl  = $server->setResponseOfPath('/delayed', $delayedResponse);
 
-echo "Requesting: $url\n\n";
+echo "Requesting: $realtimeUrl\n\n";
+
+// This request will run as quickly as possible
+$start = microtime(true);
+file_get_contents($realtimeUrl);
+echo "Realtime Request took: " . (microtime(true) - $start) . " seconds\n\n";
+
+echo "Requesting: $delayedUrl\n\n";
 
 // The request will take the delayed time + the time it takes to make and transfer the request
-$content = file_get_contents($url);
+$start = microtime(true);
+file_get_contents($delayedUrl);
+echo "Delayed Request took: " . (microtime(true) - $start) . " seconds\n\n";
