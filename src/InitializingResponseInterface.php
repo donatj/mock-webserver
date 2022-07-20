@@ -2,7 +2,7 @@
 
 namespace donatj\MockWebServer;
 
-interface InitializingResponse extends ResponseInterface {
+interface InitializingResponseInterface extends ResponseInterface {
 
 	/**
 	 * @param \donatj\MockWebServer\RequestInfo $request

@@ -2,7 +2,7 @@
 
 namespace donatj\MockWebServer;
 
-class ResponseWithDelay implements InitializingResponse {
+class DelayedResponse implements InitializingResponseInterface {
 
 	/**
 	 * @var int

@@ -132,7 +132,7 @@ class InternalServer {
 	}
 
 	protected function sendResponse( ResponseInterface $response ) {
-		if( $response instanceof InitializingResponse ) {
+		if( $response instanceof InitializingResponseInterface ) {
 			$response->initialize($this->request);
 		}
 
