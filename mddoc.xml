@@ -69,7 +69,11 @@ There has been work [started to implement this](https://github.com/donatj/mock-w
 							<text><![CDATA[By default responses will happen instantly. If you're looking to test timeouts, the DelayedResponse response wrapper may be useful.]]></text>
 							<source name="example/delayed.php" lang="php"/>
 							<text>Outputs:</text>
-							<exec cmd="php example/delayed.php" format="code-block" />
+							<replace regex="true" search="%Realtime Request took: 0\.\d+ seconds%" replace="Realtime Request took: 0.015669107437134 seconds">
+								<replace regex="true" search="%Delayed Request took: 0\.\d+ seconds%" replace="Delayed Request took: 0.10729098320007 seconds">
+									<exec cmd="php example/delayed.php" format="code-block" />
+								</replace>
+							</replace>
 						</section>
 					</section>
 					<section title="Multiple Responses from the Same Endpoint">
