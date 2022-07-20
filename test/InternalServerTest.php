@@ -45,7 +45,7 @@ class InternalServerTest extends TestCase {
 
 	/**
 	 * @param int|null $inputCount
-	 * @param int $expectedCount
+	 * @param int      $expectedCount
 	 *
 	 * @dataProvider countProvider
 	 */
@@ -86,4 +86,5 @@ class InternalServerTest extends TestCase {
 		$this->assertSame($lastRequestContent, $requestContent);
 		$this->assertSame(serialize($fakeReq), $requestContent);
 	}
+
 }

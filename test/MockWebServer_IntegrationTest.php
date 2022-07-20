@@ -167,7 +167,6 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$realtimeUrl = self::$server->setResponseOfPath('/realtimePath', $realtimeResponse);
 		$delayedUrl  = self::$server->setResponseOfPath('/delayedPath', $delayedResponse);
 
-
 		$realtimeStart = microtime(true);
 		file_get_contents($realtimeUrl);
 
@@ -351,7 +350,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 	}
 
 	public function testStartStopServer() {
-		$server = new MockWebServer();
+		$server = new MockWebServer;
 
 		$server->start();
 		$this->assertTrue($server->isRunning());
@@ -359,4 +358,5 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$server->stop();
 		$this->assertFalse($server->isRunning());
 	}
+
 }

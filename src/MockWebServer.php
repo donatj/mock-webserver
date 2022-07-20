@@ -17,9 +17,7 @@ class MockWebServer {
 	/** @var int */
 	private $port;
 
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $tmpDir;
 
 	/**
@@ -305,4 +303,5 @@ class MockWebServer {
 
 		throw new Exceptions\ServerException("Error starting server");
 	}
+
 }

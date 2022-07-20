@@ -85,7 +85,7 @@ class ResponseStack implements MultiResponseInterface {
 	/**
 	 * Set the response to return when the stack is exhausted.
 	 */
-	public function setPastEndResponse( ResponseInterface $pastEndResponse ) {
+	public function setPastEndResponse( ResponseInterface $pastEndResponse ) : void {
 		$this->pastEndResponse = $pastEndResponse;
 	}
 

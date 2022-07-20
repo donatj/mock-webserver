@@ -25,7 +25,7 @@ class ResponseByMethod implements ResponseInterface {
 	/**
 	 * MethodResponse constructor.
 	 *
-	 * @param ResponseInterface[]    $responses A map of responses keyed by their method.
+	 * @param ResponseInterface[]    $responses       A map of responses keyed by their method.
 	 * @param ResponseInterface|null $defaultResponse The fallthrough response to return if a response for a given
 	 *                                                method is not found. If this is not defined the server will return an HTTP 501 error.
 	 */
@@ -64,11 +64,8 @@ class ResponseByMethod implements ResponseInterface {
 
 	private function getMethodResponse( RequestInfo $request ) : ResponseInterface {
 		$method = $request->getRequestMethod();
-		if( isset($this->responses[$method]) ) {
-			return $this->responses[$method];
-		}
 
-		return $this->default;
+		return $this->responses[$method] ?? $this->default;
 	}
 
 	/**

@@ -190,7 +190,7 @@ Gets the response returned when the stack is exhausted.
 ### Method: ResponseStack->setPastEndResponse
 
 ```php
-function setPastEndResponse(\donatj\MockWebServer\ResponseInterface $pastEndResponse)
+function setPastEndResponse(\donatj\MockWebServer\ResponseInterface $pastEndResponse) : void
 ```
 
 Set the response to return when the stack is exhausted.
@@ -248,7 +248,7 @@ This is useful for simulating slow responses and testing timeouts.
 ### Method: DelayedResponse->__construct
 
 ```php
-function __construct(\donatj\MockWebServer\ResponseInterface $response, $delay)
+function __construct(\donatj\MockWebServer\ResponseInterface $response, int $delay)
 ```
 
 #### Parameters:

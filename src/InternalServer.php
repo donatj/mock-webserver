@@ -170,7 +170,7 @@ class InternalServer {
 		self::storeRef($response, $tmpPath, self::DEFAULT_REF);
 	}
 
-	private static function storeRef( ResponseInterface $response, string $tmpPath, string $ref ) {
+	private static function storeRef( ResponseInterface $response, string $tmpPath, string $ref ) : void {
 		$content = serialize($response);
 
 		if( !file_put_contents($tmpPath . DIRECTORY_SEPARATOR . $ref, $content) ) {
