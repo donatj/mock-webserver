@@ -2,7 +2,10 @@
 
 namespace donatj\MockWebServer;
 
-class DelayedResponse implements InitializingResponseInterface {
+/**
+ * Class DelayedResponse wraps a response and delays it a specified number of microseconds.
+ */
+class DelayedResponse implements InitializingResponseInterface, MultiResponseInterface {
 
 	/**
 	 * @var int
@@ -11,7 +14,7 @@ class DelayedResponse implements InitializingResponseInterface {
 	/**
 	 * @var \donatj\MockWebServer\ResponseInterface
 	 */
-	private $response;
+	protected $response;
 
 	/**
 	 * @param \donatj\MockWebServer\ResponseInterface $response
@@ -58,6 +61,17 @@ class DelayedResponse implements InitializingResponseInterface {
 	 */
 	public function getStatus( RequestInfo $request ) {
 		return $this->response->getStatus($request);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function next() {
+		if( $this->response instanceof MultiResponseInterface ) {
+			return $this->response->next();
+		}
+
+		return false;
 	}
 
 }
