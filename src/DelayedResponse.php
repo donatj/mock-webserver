@@ -3,12 +3,12 @@
 namespace donatj\MockWebServer;
 
 /**
- * Class DelayedResponse wraps a response and delays it a specified number of microseconds.
+ * DelayedResponse wraps a response, causing it when called to be delayed by a specified number of microseconds.
  */
 class DelayedResponse implements InitializingResponseInterface, MultiResponseInterface {
 
 	/**
-	 * @var int
+	 * @var int Microseconds to delay the response by.
 	 */
 	protected $delay;
 	/**

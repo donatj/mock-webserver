@@ -29,6 +29,7 @@ There has been work [started to implement this](https://github.com/donatj/mock-w
 							<file name="src/Response.php"/>
 							<file name="src/ResponseStack.php"/>
 							<file name="src/ResponseByMethod.php"/>
+							<file name="src/DelayedResponse.php"/>
 							<section title="Built-In Responses">
 								<file name="src/Responses/DefaultResponse.php"/>
 								<file name="src/Responses/NotFoundResponse.php"/>
