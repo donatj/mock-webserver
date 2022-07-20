@@ -132,6 +132,10 @@ class InternalServer {
 	}
 
 	protected function sendResponse( ResponseInterface $response ) {
+		if( $response instanceof InitializingResponse ) {
+			$response->initialize($this->request);
+		}
+
 		http_response_code($response->getStatus($this->request));
 
 		foreach( $response->getHeaders($this->request) as $key => $header ) {
