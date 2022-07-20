@@ -4,10 +4,7 @@
 		<section title="Mock Web Server">
 			<badge-poser type="version"/>
 			<badge-poser type="license"/>
-			<!--<badge-scrutinizer name="donatj/mock-webserver" type="quality"/>-->
-			<!--<badge-scrutinizer name="donatj/mock-webserver" type="coverage"/>-->
 			<badge-github-action name="donatj/mock-webserver" workflow="CI" />
-			<badge-travis name="donatj/mock-webserver"/>
 			<text><![CDATA[Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
 
 Unit testing HTTP requests can be difficult, especially in cases where injecting a request library is difficult or not ideal. This helps greatly simplify the process.
