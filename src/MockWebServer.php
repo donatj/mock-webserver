@@ -320,7 +320,8 @@ class MockWebServer {
 		$env   = null;
 		$cwd   = null;
 
-		$process = proc_open($fullCmd, [], $pipes, $cwd, $env, [
+		$output = tmpfile();
+		$process = proc_open($fullCmd, [STDIN, $output, $output], $pipes, $cwd, $env, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);
