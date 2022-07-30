@@ -9,7 +9,10 @@ class InternalServerTest extends TestCase {
 	private $testTmpDir;
 	private $server;
 
-	public function setUp() {
+	/**
+	 * @before
+	 */
+	public function beforeEachTest() {
 		parent::setUp();
 
 		$this->testTmpDir = __DIR__ . DIRECTORY_SEPARATOR . 'testTemp';
@@ -21,7 +24,10 @@ class InternalServerTest extends TestCase {
 		file_put_contents($counterFileName, '0');
 	}
 
-	public function tearDown() {
+	/**
+	 * @after
+	 */
+	public function afterEachTest() {
 		parent::tearDown();
 		$this->removeTempDirectory();
 	}
