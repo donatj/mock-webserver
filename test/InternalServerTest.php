@@ -7,14 +7,11 @@ use PHPUnit\Framework\TestCase;
 class InternalServerTest extends TestCase {
 
 	private $testTmpDir;
-	private $server;
 
 	/**
 	 * @before
 	 */
 	public function beforeEachTest() {
-		parent::setUp();
-
 		$this->testTmpDir = __DIR__ . DIRECTORY_SEPARATOR . 'testTemp';
 
 		mkdir($this->testTmpDir);
@@ -28,7 +25,6 @@ class InternalServerTest extends TestCase {
 	 * @after
 	 */
 	public function afterEachTest() {
-		parent::tearDown();
 		$this->removeTempDirectory();
 	}
 
@@ -57,9 +53,10 @@ class InternalServerTest extends TestCase {
 	public function testShouldIncrementRequestCounter($inputCount, $expectedCount) {
 		$counterFileName = $this->testTmpDir . DIRECTORY_SEPARATOR . MockWebServer::REQUEST_COUNT_FILE;
 
+
 		InternalServer::incrementRequestCounter($this->testTmpDir, $inputCount);
 
-		$this->assertEquals(file_get_contents($counterFileName), $expectedCount);
+		$this->assertStringEqualsFile($counterFileName, $expectedCount);
 	}
 
 	public function countProvider() {
@@ -80,7 +77,7 @@ class InternalServerTest extends TestCase {
 			'REQUEST_URI' => '',
 		],
 			[], [], [], [], [], '');
-		$this->server = new InternalServer($this->testTmpDir, $fakeReq);
+		new InternalServer($this->testTmpDir, $fakeReq);
 
 		$lastRequestFile = $this->testTmpDir . DIRECTORY_SEPARATOR . MockWebServer::LAST_REQUEST_FILE;
 		$requestFile = $this->testTmpDir . DIRECTORY_SEPARATOR . 'request.1';
