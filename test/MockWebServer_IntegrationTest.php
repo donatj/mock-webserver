@@ -209,6 +209,28 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$this->assertSame('', file_get_contents($url));
 	}
 
+	public function testIsRunning() {
+		$server = new MockWebServer();
+
+		$server->start();
+		$this->assertTrue($server->isRunning());
+		$server->stop();
+		$this->assertFalse($server->isRunning());
+
+		$server->start();
+
+		$reflectionClass = new \ReflectionClass($server);
+		$property        = $reflectionClass->getProperty('pid');
+		$property->setAccessible(true);
+		$pid = $property->getValue($server);
+
+		$this->assertTrue(ctype_digit($pid));
+		exec(sprintf('kill %d', $pid));
+
+		$this->assertFalse($server->isRunning());
+	}
+
+
 	/**
 	 * @dataProvider requestInfoProvider
 	 */
@@ -254,6 +276,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 
 		// Close request to clear up some resources
 		curl_close($ch);
+
 
 		$request = self::$server->getLastRequest();
 
@@ -335,13 +358,4 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		];
 	}
 
-	public function testStartStopServer() {
-		$server = new MockWebServer();
-
-		$server->start();
-		$this->assertTrue($server->isRunning());
-
-		$server->stop();
-		$this->assertFalse($server->isRunning());
-	}
 }
