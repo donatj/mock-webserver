@@ -191,25 +191,25 @@ class ExampleTest extends PHPUnit\Framework\TestCase {
 	/** @var MockWebServer */
 	protected static $server;
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass() : void {
 		self::$server = new MockWebServer;
 		self::$server->start();
 	}
 
-	public function testGetParams() {
+	public function testGetParams() : void {
 		$result  = file_get_contents(self::$server->getServerRoot() . '/autoEndpoint?foo=bar');
 		$decoded = json_decode($result, true);
 		$this->assertSame('bar', $decoded['_GET']['foo']);
 	}
 
-	public function testGetSetPath() {
+	public function testGetSetPath() : void {
 		// $url = http://127.0.0.1:61874/definedEndPoint
 		$url    = self::$server->setResponseOfPath('/definedEndPoint', new Response('foo bar content'));
 		$result = file_get_contents($url);
 		$this->assertSame('foo bar content', $result);
 	}
 
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass() : void {
 		// stopping the web server during tear down allows us to reuse the port for later tests
 		self::$server->stop();
 	}
