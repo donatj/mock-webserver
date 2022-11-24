@@ -33,7 +33,7 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 	/**
 	 * @inheritDoc
 	 */
-	public function getRef() {
+	public function getRef() : string {
 		return md5('delayed.' . $this->response->getRef());
 	}
 
@@ -47,28 +47,28 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 	/**
 	 * @inheritDoc
 	 */
-	public function getBody( RequestInfo $request ) {
+	public function getBody( RequestInfo $request ) : string {
 		return $this->response->getBody($request);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getHeaders( RequestInfo $request ) {
+	public function getHeaders( RequestInfo $request ) : array {
 		return $this->response->getHeaders($request);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function getStatus( RequestInfo $request ) {
+	public function getStatus( RequestInfo $request ) : int {
 		return $this->response->getStatus($request);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public function next() {
+	public function next() : bool {
 		if( $this->response instanceof MultiResponseInterface ) {
 			return $this->response->next();
 		}
