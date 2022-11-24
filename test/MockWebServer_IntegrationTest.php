@@ -5,16 +5,19 @@ use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseByMethod;
 use donatj\MockWebServer\ResponseStack;
+use PHPUnit\Framework\TestCase;
 
-if( class_exists('\PHPUnit\Runner\Version') ) {
-	require __DIR__ . '/BaseServerTest/BaseServerTest_phpunit9.php';
-} else {
-	require __DIR__ . '/BaseServerTest/BaseServerTest_phpunit4.php';
-}
+class MockWebServer_IntegrationTest extends TestCase {
 
-class MockWebServer_IntegrationTest extends BaseServerTest {
+	/** @var MockWebServer */
+	protected static $server;
 
-	public function testBasic() {
+	public static function setUpBeforeClass() : void {
+		self::$server = new MockWebServer;
+		self::$server->start();
+	}
+
+	public function testBasic() : void {
 		$url     = self::$server->getServerRoot() . '/endpoint?get=foobar';
 		$content = file_get_contents($url);
 
@@ -39,7 +42,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 
 		$lastReq = self::$server->getLastRequest()->jsonSerialize();
 		foreach( $body as $key => $val ) {
-			if( $key == 'HEADERS' ) {
+			if( $key === 'HEADERS' ) {
 				// This is the same horrible connection hack as above. Fix in time.
 				unset($lastReq[$key]['Connection']);
 			}
@@ -48,7 +51,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		}
 	}
 
-	public function testSimple() {
+	public function testSimple() : void {
 		// We define the servers response to requests of the /definedPath endpoint
 		$url = self::$server->setResponseOfPath(
 			'/definedPath',
@@ -64,7 +67,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$this->assertEquals("This is our http body response", $content);
 	}
 
-	public function testMulti() {
+	public function testMulti() : void {
 		$url = self::$server->getUrlOfResponse(
 			new ResponseStack(
 				new Response("Response One", [ 'X-Boop-Bat' => 'Sauce' ], 500),
@@ -109,7 +112,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
 
-	public function testHttpMethods() {
+	public function testHttpMethods() : void {
 		$methods = [
 			ResponseByMethod::METHOD_GET,
 			ResponseByMethod::METHOD_POST,
@@ -139,7 +142,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 
 			$this->assertContains('X-Foo-Bar: Baz ' . $method, $http_response_header);
 
-			if( $method != ResponseByMethod::METHOD_HEAD ) {
+			if( $method !== ResponseByMethod::METHOD_HEAD ) {
 				$this->assertEquals("This is our http $method body response", $content);
 			}
 		}
@@ -147,11 +150,11 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$context = stream_context_create([ 'http' => [ 'method' => 'PROPFIND' ] ]);
 		$content = @file_get_contents($url, false, $context);
 
-		$this->assertSame(false, $content);
+		$this->assertFalse($content);
 		$this->assertStringEndsWith('501 Not Implemented', $http_response_header[0]);
 	}
 
-	public function testDelayedResponse() {
+	public function testDelayedResponse() : void {
 
 		$realtimeResponse = new Response(
 			'This is our http body response',
@@ -181,7 +184,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		$this->assertContains('X-Foo-Bar: BazBazBaz', $http_response_header);
 	}
 
-	public function testDelayedMultiResponse() {
+	public function testDelayedMultiResponse() : void {
 		$multi = new ResponseStack(
 			new Response('Response One', [ 'X-Boop-Bat' => 'Sauce' ], 200),
 			new Response('Response Two', [ 'X-Slaw-Dawg: FranCran' ], 200)
@@ -207,7 +210,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 	/**
 	 * Regression Test - Was a problem in 1.0.0-beta.2
 	 */
-	public function testEmptySingle() {
+	public function testEmptySingle() : void {
 		$url = self::$server->getUrlOfResponse(new Response(''));
 		$this->assertSame('', file_get_contents($url));
 	}
@@ -290,7 +293,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 
 		parse_str($encReqBody, $decReqBody);
 		$this->assertSame($decReqBody, $request->getParsedInput());
-		if( $method == 'POST' ) {
+		if( $method === 'POST' ) {
 			$this->assertSame($decReqBody, $request->getPost());
 		}
 
@@ -304,7 +307,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		}
 	}
 
-	public function requestInfoProvider() {
+	public function requestInfoProvider() : array {
 		return [
 			[
 				'GET',
@@ -349,7 +352,7 @@ class MockWebServer_IntegrationTest extends BaseServerTest {
 		];
 	}
 
-	public function testStartStopServer() {
+	public function testStartStopServer() : void {
 		$server = new MockWebServer;
 
 		$server->start();

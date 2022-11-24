@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class MockWebServer_ChangedDefault_IntegrationTest extends TestCase {
 
-	public function testChangingDefaultResponse() {
+	public function testChangingDefaultResponse() : void {
 		$server = new MockWebServer;
 		$server->start();
 

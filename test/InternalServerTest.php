@@ -12,7 +12,7 @@ class InternalServerTest extends TestCase {
 	/**
 	 * @before
 	 */
-	public function beforeEachTest() {
+	public function beforeEachTest() : void {
 		$this->testTmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'testTemp';
 		mkdir($this->testTmpDir);
 
@@ -23,11 +23,11 @@ class InternalServerTest extends TestCase {
 	/**
 	 * @after
 	 */
-	public function afterEachTest() {
+	public function afterEachTest() : void {
 		$this->removeTempDirectory();
 	}
 
-	private function removeTempDirectory() {
+	private function removeTempDirectory() : void {
 		$it    = new RecursiveDirectoryIterator($this->testTmpDir, FilesystemIterator::SKIP_DOTS);
 		$files = new RecursiveIteratorIterator($it,
 			RecursiveIteratorIterator::CHILD_FIRST);
@@ -44,12 +44,9 @@ class InternalServerTest extends TestCase {
 	}
 
 	/**
-	 * @param int|null $inputCount
-	 * @param int      $expectedCount
-	 *
 	 * @dataProvider countProvider
 	 */
-	public function testShouldIncrementRequestCounter( $inputCount, $expectedCount ) {
+	public function testShouldIncrementRequestCounter( ?int $inputCount, int $expectedCount ) : void {
 		$counterFileName = $this->testTmpDir . DIRECTORY_SEPARATOR . MockWebServer::REQUEST_COUNT_FILE;
 		file_put_contents($counterFileName, '0');
 
@@ -57,7 +54,7 @@ class InternalServerTest extends TestCase {
 		$this->assertStringEqualsFile($counterFileName, $expectedCount);
 	}
 
-	public function countProvider() {
+	public function countProvider() : array {
 		return [
 			'null count' => [
 				'inputCount'    => null,
@@ -70,7 +67,7 @@ class InternalServerTest extends TestCase {
 		];
 	}
 
-	public function testShouldLogRequestsOnInstanceCreate() {
+	public function testShouldLogRequestsOnInstanceCreate() : void {
 		$fakeReq = new RequestInfo([
 			'REQUEST_URI' => '',
 		],
