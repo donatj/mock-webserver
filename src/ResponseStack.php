@@ -13,19 +13,13 @@ class ResponseStack implements MultiResponseInterface {
 
 	private $ref;
 
-	/**
-	 * @var \donatj\MockWebServer\ResponseInterface[]
-	 */
+	/** @var \donatj\MockWebServer\ResponseInterface[] */
 	private $responses = [];
 
-	/**
-	 * @var \donatj\MockWebServer\ResponseInterface|null
-	 */
+	/** @var \donatj\MockWebServer\ResponseInterface|null */
 	protected $currentResponse;
 
-	/**
-	 * @var \donatj\MockWebServer\ResponseInterface
-	 */
+	/** @var \donatj\MockWebServer\ResponseInterface */
 	protected $pastEndResponse;
 
 	/**
@@ -52,45 +46,30 @@ class ResponseStack implements MultiResponseInterface {
 		$this->pastEndResponse = new Response('Past the end of the ResponseStack', [], 404);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function next() {
+	public function next() : bool {
 		array_shift($this->responses);
 		$this->currentResponse = reset($this->responses) ?: null;
 
 		return (bool)$this->currentResponse;
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getRef() {
+	public function getRef() : string {
 		return $this->ref;
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getBody( RequestInfo $request ) {
+	public function getBody( RequestInfo $request ) : string {
 		return $this->currentResponse ?
 			$this->currentResponse->getBody($request) :
 			$this->pastEndResponse->getBody($request);
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getHeaders( RequestInfo $request ) {
+	public function getHeaders( RequestInfo $request ) : array {
 		return $this->currentResponse ?
 			$this->currentResponse->getHeaders($request) :
 			$this->pastEndResponse->getHeaders($request);
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getStatus( RequestInfo $request ) {
+	public function getStatus( RequestInfo $request ) : int {
 		return $this->currentResponse ?
 			$this->currentResponse->getStatus($request) :
 			$this->pastEndResponse->getStatus($request);
@@ -98,19 +77,16 @@ class ResponseStack implements MultiResponseInterface {
 
 	/**
 	 * Gets the response returned when the stack is exhausted.
-	 *
-	 * @return \donatj\MockWebServer\ResponseInterface
 	 */
-	public function getPastEndResponse() {
+	public function getPastEndResponse() : ResponseInterface {
 		return $this->pastEndResponse;
 	}
 
 	/**
 	 * Set the response to return when the stack is exhausted.
-	 *
-	 * @param \donatj\MockWebServer\ResponseInterface $pastEndResponse
 	 */
-	public function setPastEndResponse( ResponseInterface $pastEndResponse ) {
+	public function setPastEndResponse( ResponseInterface $pastEndResponse ) : void {
 		$this->pastEndResponse = $pastEndResponse;
 	}
+
 }

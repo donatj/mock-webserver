@@ -4,36 +4,23 @@ namespace donatj\MockWebServer;
 
 class Response implements ResponseInterface {
 
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $body;
-	/**
-	 * @var array
-	 */
+	/** @var array */
 	private $headers;
-	/**
-	 * @var int
-	 */
+	/** @var int */
 	private $status;
 
 	/**
 	 * Response constructor.
-	 *
-	 * @param string $body
-	 * @param array  $headers
-	 * @param int    $status
 	 */
-	public function __construct( $body, array $headers = [], $status = 200 ) {
+	public function __construct( string $body, array $headers = [], int $status = 200 ) {
 		$this->body    = $body;
 		$this->headers = $headers;
 		$this->status  = $status;
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getRef() {
+	public function getRef() : string {
 		$content = json_encode([
 			$this->body,
 			$this->status,
@@ -43,24 +30,16 @@ class Response implements ResponseInterface {
 		return md5($content);
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getBody( RequestInfo $request ) {
+	public function getBody( RequestInfo $request ) : string {
 		return $this->body;
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getHeaders( RequestInfo $request ) {
+	public function getHeaders( RequestInfo $request ) : array {
 		return $this->headers;
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getStatus( RequestInfo $request ) {
+	public function getStatus( RequestInfo $request ) : int {
 		return $this->status;
 	}
+
 }

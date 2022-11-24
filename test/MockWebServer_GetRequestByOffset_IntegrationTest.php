@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class MockWebServer_GetRequestByOffset_IntegrationTest extends TestCase {
 
-	public function testGetRequestByOffset() {
+	public function testGetRequestByOffset() : void {
 		$server = new MockWebServer;
 		$server->start();
 

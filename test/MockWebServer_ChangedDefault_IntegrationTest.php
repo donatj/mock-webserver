@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class MockWebServer_ChangedDefault_IntegrationTest extends TestCase {
 
-	public function testChangingDefaultResponse() {
+	public function testChangingDefaultResponse() : void {
 		$server = new MockWebServer;
 		$server->start();
 
@@ -23,7 +23,7 @@ class MockWebServer_ChangedDefault_IntegrationTest extends TestCase {
 		$server->setDefaultResponse(new NotFoundResponse);
 
 		$content = file_get_contents($server->getServerRoot() . '/PageDoesNotExist', false, stream_context_create([
-			'http' => [ 'ignore_errors' => true ] // allow reading 404s
+			'http' => [ 'ignore_errors' => true ], // allow reading 404s
 		]));
 
 		$this->assertNotFalse(stripos($http_response_header[0], '404 Not Found', true));

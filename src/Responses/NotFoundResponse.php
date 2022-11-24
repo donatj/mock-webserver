@@ -11,21 +11,22 @@ use donatj\MockWebServer\ResponseInterface;
  */
 class NotFoundResponse implements ResponseInterface {
 
-	public function getRef() {
+	public function getRef() : string {
 		return md5(MockWebServer::VND . '.not-found');
 	}
 
-	public function getBody( RequestInfo $request ) {
+	public function getBody( RequestInfo $request ) : string {
 		$path = $request->getParsedUri()['path'];
 
 		return MockWebServer::VND . ": Resource '{$path}' not found!\n";
 	}
 
-	public function getHeaders( RequestInfo $request ) {
+	public function getHeaders( RequestInfo $request ) : array {
 		return [];
 	}
 
-	public function getStatus( RequestInfo $request ) {
+	public function getStatus( RequestInfo $request ) : int {
 		return 404;
 	}
+
 }

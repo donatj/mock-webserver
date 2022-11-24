@@ -4,65 +4,46 @@ namespace donatj\MockWebServer;
 
 class RequestInfo implements \JsonSerializable {
 
-	const JSON_KEY_GET          = '_GET';
-	const JSON_KEY_POST         = '_POST';
-	const JSON_KEY_FILES        = '_FILES';
-	const JSON_KEY_COOKIE       = '_COOKIE';
-	const JSON_KEY_HEADERS      = 'HEADERS';
-	const JSON_KEY_METHOD       = 'METHOD';
-	const JSON_KEY_INPUT        = 'INPUT';
-	const JSON_KEY_PARSED_INPUT = 'PARSED_INPUT';
-	const JSON_KEY_REQUEST_URI  = 'REQUEST_URI';
+	public const JSON_KEY_GET          = '_GET';
+	public const JSON_KEY_POST         = '_POST';
+	public const JSON_KEY_FILES        = '_FILES';
+	public const JSON_KEY_COOKIE       = '_COOKIE';
+	public const JSON_KEY_HEADERS      = 'HEADERS';
+	public const JSON_KEY_METHOD       = 'METHOD';
+	public const JSON_KEY_INPUT        = 'INPUT';
+	public const JSON_KEY_PARSED_INPUT = 'PARSED_INPUT';
+	public const JSON_KEY_REQUEST_URI  = 'REQUEST_URI';
 
-	const JSON_KEY_PARSED_REQUEST_URI = 'PARSED_REQUEST_URI';
+	public const JSON_KEY_PARSED_REQUEST_URI = 'PARSED_REQUEST_URI';
 
-	/**
-	 * @var mixed
-	 */
+	/** @var array */
 	private $parsedUri;
-	/**
-	 * @var array
-	 */
+	/** @var array */
 	private $server;
-	/**
-	 * @var array
-	 */
+	/** @var array */
 	private $get;
-	/**
-	 * @var array
-	 */
+	/** @var array */
 	private $post;
-	/**
-	 * @var array
-	 */
+	/** @var array */
 	private $files;
-	/**
-	 * @var array
-	 */
+	/** @var array */
 	private $cookie;
-	/**
-	 * @var array
-	 */
+	/** @var array */
 	private $HEADERS;
-	/**
-	 * @var string
-	 */
+	/** @var string */
 	private $INPUT;
-	/**
-	 * @var array|null
-	 */
+	/** @var array|null */
 	private $PARSED_INPUT;
 
-	/**
-	 * @param array  $server
-	 * @param array  $get
-	 * @param array  $post
-	 * @param array  $files
-	 * @param array  $cookie
-	 * @param array  $HEADERS
-	 * @param string $INPUT
-	 */
-	public function __construct( array $server, array $get, array $post, array $files, array $cookie, array $HEADERS, $INPUT ) {
+	public function __construct(
+		array $server,
+		array $get,
+		array $post,
+		array $files,
+		array $cookie,
+		array $HEADERS,
+		string $INPUT
+	) {
 		$this->server  = $server;
 		$this->get     = $get;
 		$this->post    = $post;
@@ -80,13 +61,12 @@ class RequestInfo implements \JsonSerializable {
 	/**
 	 * Specify data which should be serialized to JSON
 	 *
-	 * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @see http://php.net/manual/en/jsonserializable.jsonserialize.php
 	 * @return mixed data which can be serialized by <b>json_encode</b>,
 	 * which is a value of any type other than a resource.
 	 * @since 5.4.0
 	 */
-	#[\ReturnTypeWillChange]
-	public function jsonSerialize() {
+	public function jsonSerialize() : array {
 		return [
 			self::JSON_KEY_GET          => $this->get,
 			self::JSON_KEY_POST         => $this->post,
@@ -102,80 +82,47 @@ class RequestInfo implements \JsonSerializable {
 		];
 	}
 
-	/**
-	 * @return mixed
-	 */
 	public function getParsedUri() {
 		return $this->parsedUri;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getRequestUri() {
+	public function getRequestUri() : string {
 		return $this->server['REQUEST_URI'];
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getRequestMethod() {
+	public function getRequestMethod() : string {
 		return $this->server['REQUEST_METHOD'];
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getServer() {
+	public function getServer() : array {
 		return $this->server;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getGet() {
+	public function getGet() : array {
 		return $this->get;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getPost() {
+	public function getPost() : array {
 		return $this->post;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getFiles() {
+	public function getFiles() : array {
 		return $this->files;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getCookie() {
+	public function getCookie() : array {
 		return $this->cookie;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getHeaders() {
+	public function getHeaders() : array {
 		return $this->HEADERS;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getInput() {
+	public function getInput() : string {
 		return $this->INPUT;
 	}
 
-	/**
-	 * @return array|null
-	 */
-	public function getParsedInput() {
+	public function getParsedInput() : ?array {
 		return $this->PARSED_INPUT;
 	}
 

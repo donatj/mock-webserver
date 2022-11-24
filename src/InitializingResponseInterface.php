@@ -9,9 +9,8 @@ interface InitializingResponseInterface extends ResponseInterface {
 
 	/**
 	 * @param \donatj\MockWebServer\RequestInfo $request
-	 * @return void
 	 * @internal
 	 */
-	public function initialize( RequestInfo $request );
+	public function initialize( RequestInfo $request ) : void;
 
 }

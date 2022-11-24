@@ -18,7 +18,7 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 
 ## Requirements
 
-- **php**: >=5.4
+- **php**: >=7.1
 - **ext-sockets**: *
 - **ext-json**: *
 - **ralouphie/getallheaders**: ~2.0 || ~3.0
@@ -51,12 +51,13 @@ $url = $server->getServerRoot() . '/endpoint?get=foobar';
 
 echo "Requesting: $url\n\n";
 echo file_get_contents($url);
+
 ```
 
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:61355/endpoint?get=foobar
+Requesting: http://127.0.0.1:61874/endpoint?get=foobar
 
 {
     "_GET": {
@@ -66,7 +67,7 @@ Requesting: http://127.0.0.1:61355/endpoint?get=foobar
     "_FILES": [],
     "_COOKIE": [],
     "HEADERS": {
-        "Host": "127.0.0.1:61355",
+        "Host": "127.0.0.1:61874",
         "Connection": "close"
     },
     "METHOD": "GET",
@@ -111,16 +112,19 @@ $content = file_get_contents($url);
 // in the current scope by file_get_contents with the response headers
 echo implode("\n", $http_response_header) . "\n\n";
 echo $content . "\n";
+
 ```
 
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:61355/definedPath
+Requesting: http://127.0.0.1:61874/definedPath
 
-HTTP/1.0 200 OK
-Host: 127.0.0.1:61355
+HTTP/1.1 200 OK
+Host: 127.0.0.1:61874
+Date: Tue, 31 Aug 2021 19:50:15 GMT
 Connection: close
+X-Powered-By: PHP/7.3.25
 Cache-Control: no-cache
 Content-type: text/html; charset=UTF-8
 
@@ -163,9 +167,11 @@ echo $content . "\n";
 Outputs:
 
 ```
-HTTP/1.0 404 Not Found
-Host: 127.0.0.1:61355
+HTTP/1.1 404 Not Found
+Host: 127.0.0.1:61874
+Date: Tue, 31 Aug 2021 19:50:15 GMT
 Connection: close
+X-Powered-By: PHP/7.3.25
 Content-type: text/html; charset=UTF-8
 
 VND.DonatStudios.MockWebServer: Resource '/PageDoesNotExist' not found!
@@ -180,35 +186,36 @@ VND.DonatStudios.MockWebServer: Resource '/PageDoesNotExist' not found!
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 
-class ExampleTest extends PHPUnit_Framework_TestCase {
+class ExampleTest extends PHPUnit\Framework\TestCase {
 
 	/** @var MockWebServer */
 	protected static $server;
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass() : void {
 		self::$server = new MockWebServer;
 		self::$server->start();
 	}
 
-	public function testGetParams() {
+	public function testGetParams() : void {
 		$result  = file_get_contents(self::$server->getServerRoot() . '/autoEndpoint?foo=bar');
 		$decoded = json_decode($result, true);
 		$this->assertSame('bar', $decoded['_GET']['foo']);
 	}
 
-	public function testGetSetPath() {
-		// $url = http://127.0.0.1:61355/definedEndPoint
+	public function testGetSetPath() : void {
+		// $url = http://127.0.0.1:61874/definedEndPoint
 		$url    = self::$server->setResponseOfPath('/definedEndPoint', new Response('foo bar content'));
 		$result = file_get_contents($url);
 		$this->assertSame('foo bar content', $result);
 	}
 
-	static function tearDownAfterClass() {
+	public static function tearDownAfterClass() : void {
 		// stopping the web server during tear down allows us to reuse the port for later tests
 		self::$server->stop();
 	}
 
 }
+
 ```
 
 ### Delayed Response Usage
@@ -261,11 +268,11 @@ echo "Delayed Request took: " . (microtime(true) - $start) . " seconds\n\n";
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:61355/realtime
+Requesting: http://127.0.0.1:61874/realtime
 
 Realtime Request took: 0.015669107437134 seconds
 
-Requesting: http://127.0.0.1:61355/delayed
+Requesting: http://127.0.0.1:61874/delayed
 
 Delayed Request took: 0.10729098320007 seconds
 
@@ -310,12 +317,13 @@ $contentThree = file_get_contents($url, false, stream_context_create([ 'http' =>
 echo $contentOne . "\n";
 echo $contentTwo . "\n";
 echo $contentThree . "\n";
+
 ```
 
 Outputs:
 
 ```
-Requesting: http://127.0.0.1:61355/definedPath
+Requesting: http://127.0.0.1:61874/definedPath
 
 Response One
 Response Two
@@ -338,7 +346,6 @@ require __DIR__ . '/../vendor/autoload.php';
 $server = new MockWebServer;
 $server->start();
 
-
 // Create a response for both a POST and GET request to the same URL
 
 $response = new ResponseByMethod([
@@ -356,15 +363,16 @@ foreach( [ ResponseByMethod::METHOD_GET, ResponseByMethod::METHOD_POST ] as $met
 
 	echo $content . "\n\n";
 }
+
 ```
 
 Outputs:
 
 ```
-GET request to http://127.0.0.1:61355/foo/bar:
+GET request to http://127.0.0.1:61874/foo/bar:
 This is our http GET response
 
-POST request to http://127.0.0.1:61355/foo/bar:
+POST request to http://127.0.0.1:61874/foo/bar:
 This is our http POST response
 
 ```

@@ -35,53 +35,55 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 			<section title="Installing">
 				<composer-install dev="true"/>
 			</section>
-			<replace regex="true" search="/127\.0\.0\.1:\d+/" replace="127.0.0.1:61355">
-				<replace regex="true" search="%Date: .*GMT\n|X-Powered-By: PHP/[\d.]+\n%" replace="">
-					<section title="Examples">
-						<section title="Basic Usage">
-							<text><![CDATA[The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.]]></text>
-							<source name="example/basic.php" lang="php"/>
-							<text>Outputs:</text>
-							<exec cmd="php example/basic.php" format="code-block" />
-						</section>
-						<section title="Simple">
-							<source name="example/simple.php" lang="php"/>
-							<text>Outputs:</text>
-							<exec cmd="php example/simple.php" format="code-block" />
-						</section>
-						<section title="Change Default Response">
-							<source name="example/notfound.php" lang="php"/>
-							<text>Outputs:</text>
-							<exec cmd="php example/notfound.php" format="code-block" />
-						</section>
-						<section title="PHPUnit">
-							<source name="example/phpunit.php" lang="php"/>
-						</section>
-						<section title="Delayed Response Usage">
-							<text><![CDATA[By default responses will happen instantly. If you're looking to test timeouts, the DelayedResponse response wrapper may be useful.]]></text>
-							<source name="example/delayed.php" lang="php"/>
-							<text>Outputs:</text>
-							<replace regex="true" search="%Realtime Request took: 0\.\d+ seconds%" replace="Realtime Request took: 0.015669107437134 seconds">
-								<replace regex="true" search="%Delayed Request took: 0\.\d+ seconds%" replace="Delayed Request took: 0.10729098320007 seconds">
-									<exec cmd="php example/delayed.php" format="code-block" />
+			<replace search="%:\d{4,}%" replace=":61874" regex="true">
+				<replace search="%PHP/[\d.]+%" replace="PHP/7.3.25" regex="true">
+					<replace search="/Date: .*/" replace="Date: Tue, 31 Aug 2021 19:50:15 GMT" regex="true">
+						<section title="Examples">
+							<section title="Basic Usage">
+								<text><![CDATA[The following example shows the most basic usage. If you do not define a path, the server will simply bounce a JSON body describing the request back to you.]]></text>
+								<source name="example/basic.php" lang="php"/>
+								<text>Outputs:</text>
+								<exec cmd="php example/basic.php" format="code-block"/>
+							</section>
+							<section title="Simple">
+								<source name="example/simple.php" lang="php"/>
+								<text>Outputs:</text>
+								<exec cmd="php example/simple.php" format="code-block"/>
+							</section>
+							<section title="Change Default Response">
+								<source name="example/notfound.php" lang="php"/>
+								<text>Outputs:</text>
+								<exec cmd="php example/notfound.php" format="code-block"/>
+							</section>
+							<section title="PHPUnit">
+								<source name="example/phpunit.php" lang="php"/>
+							</section>
+							<section title="Delayed Response Usage">
+								<text><![CDATA[By default responses will happen instantly. If you're looking to test timeouts, the DelayedResponse response wrapper may be useful.]]></text>
+								<source name="example/delayed.php" lang="php"/>
+								<text>Outputs:</text>
+								<replace regex="true" search="%Realtime Request took: 0\.\d+ seconds%" replace="Realtime Request took: 0.015669107437134 seconds">
+									<replace regex="true" search="%Delayed Request took: 0\.\d+ seconds%" replace="Delayed Request took: 0.10729098320007 seconds">
+										<exec cmd="php example/delayed.php" format="code-block" />
+									</replace>
 								</replace>
-							</replace>
+							</section>
 						</section>
-					</section>
-					<section title="Multiple Responses from the Same Endpoint">
-						<section title="Response Stack">
-							<text>If you need an ordered set of responses, that can be done using the ResponseStack.</text>
-							<source name="example/multi.php" lang="php"/>
-							<text>Outputs:</text>
-							<exec cmd="php example/multi.php" format="code-block" />
+						<section title="Multiple Responses from the Same Endpoint">
+							<section title="Response Stack">
+								<text>If you need an ordered set of responses, that can be done using the ResponseStack.</text>
+								<source name="example/multi.php" lang="php"/>
+								<text>Outputs:</text>
+								<exec cmd="php example/multi.php" format="code-block"/>
+							</section>
+							<section title="Response by Method">
+								<text>If you need to vary responses to a single endpoint by method, you can do that using the ResponseByMethod response object.</text>
+								<source name="example/methods.php" lang="php"/>
+								<text>Outputs:</text>
+								<exec cmd="php example/methods.php" format="code-block"/>
+							</section>
 						</section>
-						<section title="Response by Method">
-							<text>If you need to vary responses to a single endpoint by method, you can do that using the ResponseByMethod response object.</text>
-							<source name="example/methods.php" lang="php"/>
-							<text>Outputs:</text>
-							<exec cmd="php example/methods.php" format="code-block" />
-						</section>
-					</section>
+					</replace>
 				</replace>
 			</replace>
 		</section>
