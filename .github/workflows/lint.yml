@@ -1,0 +1,32 @@
+on:
+  - pull_request
+  - push
+
+name: Lint
+
+jobs:
+  run:
+    name: Tests
+
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['8.1']
+
+    runs-on: ${{ matrix.operating-system }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: sockets, json, curl
+
+      - name: Install dependencies with composer
+        run: composer install
+
+      - name: Lint
+        run: vendor/bin/phpcs
