@@ -293,8 +293,8 @@ class MockWebServer {
 
 		$descriptorSpec = [
 			0 => $stdin,
-			1 => [ "file", $stdoutf, "a" ],
-			2 => [ "file", $stderrf, "a" ],
+			1 => [ 'file', $stdoutf, 'a' ],
+			2 => [ 'file', $stderrf, 'a' ],
 		];
 
 		$process = proc_open($fullCmd, $descriptorSpec, $pipes, $cwd, $env, [
@@ -306,7 +306,7 @@ class MockWebServer {
 			return $process;
 		}
 
-		throw new Exceptions\ServerException("Error starting server");
+		throw new Exceptions\ServerException('Error starting server');
 	}
 
 }
