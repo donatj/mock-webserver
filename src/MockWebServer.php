@@ -83,7 +83,7 @@ class MockWebServer {
 			throw new Exceptions\ServerException("Failed to start server. Is something already running on port {$this->port}?");
 		}
 
-		register_shutdown_function(function () {
+		register_shutdown_function(function() {
 			if( $this->isRunning() ) {
 				$this->stop();
 			}
@@ -270,18 +270,14 @@ class MockWebServer {
 		throw new Exceptions\RuntimeException('Failed to find open port');
 	}
 
-	/**
-	 * @return bool
-	 */
-	private function isWindowsPlatform() {
+	private function isWindowsPlatform() : bool {
 		return defined('PHP_WINDOWS_VERSION_MAJOR');
 	}
 
 	/**
-	 * @param string $fullCmd
 	 * @return resource
 	 */
-	private function startServer( $fullCmd ) {
+	private function startServer( string $fullCmd ) {
 		if( !$this->isWindowsPlatform() ) {
 			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
 			$fullCmd = 'exec ' . $fullCmd;
