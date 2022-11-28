@@ -83,7 +83,7 @@ class MockWebServer {
 			throw new Exceptions\ServerException("Failed to start server. Is something already running on port {$this->port}?");
 		}
 
-		register_shutdown_function(function() {
+		register_shutdown_function(function () {
 			if( $this->isRunning() ) {
 				$this->stop();
 			}
@@ -287,8 +287,17 @@ class MockWebServer {
 		$env   = null;
 		$cwd   = null;
 
-		$output = tmpfile();
-		$process = proc_open($fullCmd, [fopen('php://stdin', 'r'), $output, $output], $pipes, $cwd, $env, [
+		$stdin   = fopen('php://stdin', 'rb');
+		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
+		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
+
+		$descriptorSpec = [
+			0 => $stdin,
+			1 => [ 'file', $stdoutf, 'a' ],
+			2 => [ 'file', $stderrf, 'a' ],
+		];
+
+		$process = proc_open($fullCmd, $descriptorSpec, $pipes, $cwd, $env, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);
@@ -297,7 +306,7 @@ class MockWebServer {
 			return $process;
 		}
 
-		throw new Exceptions\ServerException("Error starting server");
+		throw new Exceptions\ServerException('Error starting server');
 	}
 
 }
