@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - dev
+      - master
 
 name: Coveralls
 
