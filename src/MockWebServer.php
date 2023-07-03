@@ -54,7 +54,7 @@ class MockWebServer {
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd    = "php -S {$this->host}:{$this->port} " . $script;
+		$cmd    = sprintf("php -S %s:%d %s", $this->host, $this->port, escapeshellarg($script));
 
 		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
 			throw new Exceptions\RuntimeException('Unable to put environmental variable');
