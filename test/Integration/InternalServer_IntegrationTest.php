@@ -112,7 +112,7 @@ class InternalServer_IntegrationTest extends TestCase {
 
 		$response = new Response($body, [ 'Content-Type' => $contentType ], 200);
 
-		$r = $this->getRequestInfo(MockWebServer::getPathOfRef($response->getRef()));
+		$r = $this->getRequestInfo(InternalServer::getPathOfRef($response->getRef()));
 
 		InternalServer::storeResponse($tmp, $response);
 		$server = new InternalServer($tmp, $r, $header, $httpResponseCode);
@@ -179,7 +179,7 @@ class InternalServer_IntegrationTest extends TestCase {
 			$headers[] = $header;
 		};
 
-		$r = $this->getRequestInfo(MockWebServer::getPathOfRef($response->getRef()));
+		$r = $this->getRequestInfo(InternalServer::getPathOfRef($response->getRef()));
 
 		InternalServer::storeResponse($tmp, $response);
 		$server = new InternalServer($tmp, $r, $header, function () { });
@@ -204,7 +204,7 @@ class InternalServer_IntegrationTest extends TestCase {
 			$statusCode = $code;
 		};
 
-		$r = $this->getRequestInfo(MockWebServer::getPathOfRef(str_repeat('a', 32)));
+		$r = $this->getRequestInfo(InternalServer::getPathOfRef(str_repeat('a', 32)));
 
 		$server = new InternalServer($tmp, $r, $header, $httpResponseCode);
 

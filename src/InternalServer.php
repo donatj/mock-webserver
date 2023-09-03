@@ -163,6 +163,10 @@ class InternalServer {
 		return null;
 	}
 
+	public static function getPathOfRef( string $ref ) : string {
+		return '/' . MockWebServer::VND . '/' . $ref;
+	}
+
 	/**
 	 * @internal
 	 */

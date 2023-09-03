@@ -141,14 +141,7 @@ class MockWebServer {
 	public function getUrlOfResponse( ResponseInterface $response ) : string {
 		$ref = InternalServer::storeResponse($this->tmpDir, $response);
 
-		return $this->getServerRoot() . self::getPathOfRef($ref);
-	}
-
-	/**
-	 * @internal Use getUrlOfResponse instead
-	 */
-	public static function getPathOfRef( string $ref ) : string {
-		return '/' . self::VND . '/' . $ref;
+		return $this->getServerRoot() . InternalServer::getPathOfRef($ref);
 	}
 
 	/**
