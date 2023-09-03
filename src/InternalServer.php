@@ -22,9 +22,18 @@ class InternalServer {
 
 	private const DEFAULT_REF = 'default';
 
-	public function __construct( string $tmpPath, RequestInfo $request, ?callable $header = null ) {
+	public function __construct(
+		string $tmpPath,
+		RequestInfo $request,
+		?callable $header = null,
+		?callable $httpResponseCode = null
+	) {
 		if( $header === null ) {
 			$header = "\\header";
+		}
+
+		if( $httpResponseCode === null ) {
+			$httpResponseCode = "\\http_response_code";
 		}
 
 		$this->tmpPath = $tmpPath;
@@ -32,8 +41,9 @@ class InternalServer {
 		$count = self::incrementRequestCounter($this->tmpPath);
 		$this->logRequest($request, $count);
 
-		$this->header  = $header;
-		$this->request = $request;
+		$this->request          = $request;
+		$this->header           = $header;
+		$this->httpResponseCode = $httpResponseCode;
 	}
 
 	/**
@@ -121,7 +131,7 @@ class InternalServer {
 			$response->initialize($this->request);
 		}
 
-		http_response_code($response->getStatus($this->request));
+		($this->httpResponseCode)($response->getStatus($this->request));
 
 		foreach( $response->getHeaders($this->request) as $key => $header ) {
 			if( is_int($key) ) {
