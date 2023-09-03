@@ -135,9 +135,9 @@ class InternalServer {
 
 		foreach( $response->getHeaders($this->request) as $key => $header ) {
 			if( is_int($key) ) {
-				call_user_func($this->header, $header);
+				($this->header)($header);
 			} else {
-				call_user_func($this->header, "{$key}: {$header}");
+				($this->header)("{$key}: {$header}");
 			}
 		}
 
