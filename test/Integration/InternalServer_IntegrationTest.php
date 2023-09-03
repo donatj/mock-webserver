@@ -3,7 +3,6 @@
 namespace Test\Integration;
 
 use donatj\MockWebServer\InternalServer;
-use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\Response;
 use PHPUnit\Framework\TestCase;

@@ -156,6 +156,18 @@ class MockWebServer_IntegrationTest extends TestCase {
 		$this->assertStringEndsWith('501 Not Implemented', $http_response_header[0]);
 	}
 
+	public function testHttpMethods_fallthrough() : void {
+		$response = new ResponseByMethod([], new Response('Default Fallthrough', [], 400));
+
+		$url = self::$server->setResponseOfPath('/definedPath', $response);
+
+		$context = stream_context_create([ 'http' => [ 'method' => 'PROPFIND', 'ignore_errors' => true ] ]);
+		$content = @file_get_contents($url, false, $context);
+
+		$this->assertSame('Default Fallthrough', $content);
+		$this->assertStringEndsWith('400 Bad Request', $http_response_header[0]);
+	}
+
 	public function testDelayedResponse() : void {
 
 		$realtimeResponse = new Response(

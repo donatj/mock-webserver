@@ -20,14 +20,15 @@ class ResponseByMethod implements ResponseInterface {
 	private $responses = [];
 
 	/** @var ResponseInterface */
-	private $default;
+	private $defaultResponse;
 
 	/**
 	 * MethodResponse constructor.
 	 *
-	 * @param ResponseInterface[]    $responses       A map of responses keyed by their method.
-	 * @param ResponseInterface|null $defaultResponse The fallthrough response to return if a response for a given
-	 *                                                method is not found. If this is not defined the server will return an HTTP 501 error.
+	 * @param array<string, ResponseInterface> $responses       A map of responses keyed by their method.
+	 * @param ResponseInterface|null           $defaultResponse The fallthrough response to return if a response for a given
+	 *                                                          method is not found. If this is not defined the server will
+	 *                                                          return an HTTP 501 error.
 	 */
 	public function __construct( array $responses = [], ?ResponseInterface $defaultResponse = null ) {
 		foreach( $responses as $method => $response ) {
@@ -35,14 +36,14 @@ class ResponseByMethod implements ResponseInterface {
 		}
 
 		if( $defaultResponse ) {
-			$this->default = $defaultResponse;
+			$this->defaultResponse = $defaultResponse;
 		} else {
-			$this->default = new Response('MethodResponse - Method Not Defined', [], 501);
+			$this->defaultResponse = new Response('MethodResponse - Method Not Defined', [], 501);
 		}
 	}
 
 	public function getRef() : string {
-		$refBase = $this->default->getRef();
+		$refBase = $this->defaultResponse->getRef();
 		foreach( $this->responses as $response ) {
 			$refBase .= $response->getRef();
 		}
@@ -65,7 +66,7 @@ class ResponseByMethod implements ResponseInterface {
 	private function getMethodResponse( RequestInfo $request ) : ResponseInterface {
 		$method = $request->getRequestMethod();
 
-		return $this->responses[$method] ?? $this->default;
+		return $this->responses[$method] ?? $this->defaultResponse;
 	}
 
 	/**
