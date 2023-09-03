@@ -19,6 +19,8 @@ class InternalServer {
 	private $request;
 	/** @var callable */
 	private $header;
+	/** @var callable */
+	private $httpResponseCode;
 
 	private const DEFAULT_REF = 'default';
 
