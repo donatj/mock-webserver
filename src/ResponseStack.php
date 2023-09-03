@@ -25,7 +25,7 @@ class ResponseStack implements MultiResponseInterface {
 	/**
 	 * ResponseStack constructor.
 	 *
-	 * Accepts a variable number of RequestInterface objects
+	 * Accepts a variable number of ResponseInterface objects
 	 */
 	public function __construct() {
 		$responses = func_get_args();
