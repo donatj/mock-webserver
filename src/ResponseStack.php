@@ -2,8 +2,6 @@
 
 namespace donatj\MockWebServer;
 
-use donatj\MockWebServer\Exceptions\RuntimeException;
-
 /**
  * ResponseStack is used to store multiple responses for a request issued by the server in order.
  *
@@ -27,14 +25,9 @@ class ResponseStack implements MultiResponseInterface {
 	 *
 	 * Accepts a variable number of ResponseInterface objects
 	 */
-	public function __construct() {
-		$responses = func_get_args();
+	public function __construct(ResponseInterface ...$responses) {
 		$refBase   = '';
 		foreach( $responses as $response ) {
-			if( !$response instanceof ResponseInterface ) {
-				throw new RuntimeException('invalid response given - must be an instance of ResponseInterface');
-			}
-
 			$this->responses[] = $response;
 
 			$refBase .= $response->getRef();
