@@ -1,6 +1,6 @@
 <?php
 
-namespace Integration;
+namespace Test\Integration;
 
 use donatj\MockWebServer\DelayedResponse;
 use donatj\MockWebServer\MockWebServer;
