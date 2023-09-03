@@ -1,5 +1,7 @@
 <?php
 
+namespace Test;
+
 use donatj\MockWebServer\InternalServer;
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\RequestInfo;
@@ -28,9 +30,9 @@ class InternalServerTest extends TestCase {
 	}
 
 	private function removeTempDirectory() : void {
-		$it    = new RecursiveDirectoryIterator($this->testTmpDir, FilesystemIterator::SKIP_DOTS);
-		$files = new RecursiveIteratorIterator($it,
-			RecursiveIteratorIterator::CHILD_FIRST);
+		$it    = new \RecursiveDirectoryIterator($this->testTmpDir, \FilesystemIterator::SKIP_DOTS);
+		$files = new \RecursiveIteratorIterator($it,
+			\RecursiveIteratorIterator::CHILD_FIRST);
 
 		foreach( $files as $file ) {
 			if( $file->isDir() ) {
@@ -69,7 +71,8 @@ class InternalServerTest extends TestCase {
 
 	public function testShouldLogRequestsOnInstanceCreate() : void {
 		$fakeReq = new RequestInfo([
-			'REQUEST_URI' => '',
+			'REQUEST_URI'    => '/',
+			'REQUEST_METHOD' => 'GET',
 		],
 			[], [], [], [], [], '');
 		new InternalServer($this->testTmpDir, $fakeReq);

@@ -22,6 +22,11 @@
 			"donatj\\MockWebServer\\": "src/"
 		}
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"Test\\": "test/"
+		}
+	},
 	"require-dev": {
 		"donatj/drop": "^1.0",
 		"phpunit/phpunit": "~7|~9",

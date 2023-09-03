@@ -15,8 +15,7 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 	protected $response;
 
 	/**
-	 * @param \donatj\MockWebServer\ResponseInterface $response
-	 * @param int                                     $delay    Microseconds to delay the response
+	 * @param int $delay Microseconds to delay the response
 	 */
 	public function __construct(
 		ResponseInterface $response,

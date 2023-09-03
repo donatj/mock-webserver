@@ -78,10 +78,6 @@ function getUrlOfResponse(\donatj\MockWebServer\ResponseInterface $response) : s
 
 Get a URL providing the specified response.
 
-#### Parameters:
-
-- ***\donatj\MockWebServer\ResponseInterface*** `$response`
-
 #### Returns:
 
 - ***string*** - URL where response can be found
@@ -168,12 +164,12 @@ When the stack is empty, the server will return a customizable response defaulti
 ### Method: ResponseStack->__construct
 
 ```php
-function __construct()
+function __construct(\donatj\MockWebServer\ResponseInterface ...$responses)
 ```
 
 ResponseStack constructor.  
   
-Accepts a variable number of RequestInterface objects
+Accepts a variable number of ResponseInterface objects
 
 ---
 
@@ -225,9 +221,10 @@ MethodResponse constructor.
 
 #### Parameters:
 
-- ***\donatj\MockWebServer\ResponseInterface[]*** `$responses` - A map of responses keyed by their method.
+- ***array<string,\donatj\MockWebServer\ResponseInterface>*** `$responses` - A map of responses keyed by their method.
 - ***\donatj\MockWebServer\ResponseInterface*** | ***null*** `$defaultResponse` - The fallthrough response to return if a response for a given
-method is not found. If this is not defined the server will return an HTTP 501 error.
+method is not found. If this is not defined the server will
+return an HTTP 501 error.
 
 ---
 
@@ -253,7 +250,6 @@ function __construct(\donatj\MockWebServer\ResponseInterface $response, int $del
 
 #### Parameters:
 
-- ***\donatj\MockWebServer\ResponseInterface*** `$response`
 - ***int*** `$delay` - Microseconds to delay the response
 
 ## Built-In Responses

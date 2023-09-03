@@ -1,5 +1,7 @@
 <?php
 
+namespace Test;
+
 use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\ResponseStack;

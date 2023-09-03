@@ -5,11 +5,11 @@ namespace donatj\MockWebServer;
 class Response implements ResponseInterface {
 
 	/** @var string */
-	private $body;
+	protected $body;
 	/** @var array */
-	private $headers;
+	protected $headers;
 	/** @var int */
-	private $status;
+	protected $status;
 
 	/**
 	 * Response constructor.

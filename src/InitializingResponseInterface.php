@@ -8,7 +8,6 @@ namespace donatj\MockWebServer;
 interface InitializingResponseInterface extends ResponseInterface {
 
 	/**
-	 * @param \donatj\MockWebServer\RequestInfo $request
 	 * @internal
 	 */
 	public function initialize( RequestInfo $request ) : void;

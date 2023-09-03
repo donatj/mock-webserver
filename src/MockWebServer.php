@@ -136,13 +136,12 @@ class MockWebServer {
 	/**
 	 * Get a URL providing the specified response.
 	 *
-	 * @param \donatj\MockWebServer\ResponseInterface $response
 	 * @return string URL where response can be found
 	 */
 	public function getUrlOfResponse( ResponseInterface $response ) : string {
 		$ref = InternalServer::storeResponse($this->tmpDir, $response);
 
-		return $this->getServerRoot() . '/' . self::VND . '/' . $ref;
+		return $this->getServerRoot() . InternalServer::getPathOfRef($ref);
 	}
 
 	/**

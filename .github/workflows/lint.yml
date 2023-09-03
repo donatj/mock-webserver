@@ -6,7 +6,7 @@ name: Lint
 
 jobs:
   run:
-    name: Tests
+    name: Linters
 
     strategy:
       matrix:
@@ -24,9 +24,13 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: sockets, json, curl
+          tools: phan
 
       - name: Install dependencies with composer
         run: composer install
 
-      - name: Lint
+      - name: PHPCS
         run: vendor/bin/phpcs
+
+      - name: phan
+        run: phan --no-progress-bar
