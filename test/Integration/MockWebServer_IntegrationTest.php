@@ -1,5 +1,7 @@
 <?php
 
+namespace Integration;
+
 use donatj\MockWebServer\DelayedResponse;
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
@@ -194,13 +196,13 @@ class MockWebServer_IntegrationTest extends TestCase {
 
 		$path = self::$server->setResponseOfPath('/delayedMultiPath', $delayed);
 
-		$start = microtime(true);
+		$start      = microtime(true);
 		$contentOne = file_get_contents($path);
 		$this->assertSame($contentOne, 'Response One');
 		$this->assertContains('X-Boop-Bat: Sauce', $http_response_header);
 		$this->assertGreaterThan(.9, microtime(true) - $start, 'Delayed response should take ~1 seconds longer than realtime response');
 
-		$start = microtime(true);
+		$start      = microtime(true);
 		$contentTwo = file_get_contents($path);
 		$this->assertSame($contentTwo, 'Response Two');
 		$this->assertContains('X-Slaw-Dawg: FranCran', $http_response_header);

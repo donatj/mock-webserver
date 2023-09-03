@@ -1,5 +1,7 @@
 <?php
 
+namespace Integration;
+
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\Response;
 use donatj\MockWebServer\Responses\NotFoundResponse;
@@ -16,7 +18,7 @@ class MockWebServer_ChangedDefault_IntegrationTest extends TestCase {
 
 		$content = file_get_contents($server->getServerRoot() . '/PageDoesNotExist');
 		$result  = json_decode($content, true);
-		$this->assertNotFalse(stripos($http_response_header[0], '200 OK', true) );
+		$this->assertNotFalse(stripos($http_response_header[0], '200 OK', true));
 		$this->assertSame('/PageDoesNotExist', $result['PARSED_REQUEST_URI']['path']);
 
 		// try with a 404

@@ -1,5 +1,7 @@
 <?php
 
+namespace Integration;
+
 use donatj\MockWebServer\MockWebServer;
 use PHPUnit\Framework\TestCase;
 
