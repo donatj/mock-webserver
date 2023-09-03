@@ -2,6 +2,8 @@
 
 namespace donatj\MockWebServer;
 
+use donatj\MockWebServer\Exceptions\RuntimeException;
+
 class RequestInfo implements \JsonSerializable {
 
 	public const JSON_KEY_GET          = '_GET';
@@ -54,6 +56,14 @@ class RequestInfo implements \JsonSerializable {
 
 		parse_str($INPUT, $PARSED_INPUT);
 		$this->PARSED_INPUT = $PARSED_INPUT;
+
+		if( !isset($server['REQUEST_URI']) ) {
+			throw new RuntimeException('REQUEST_URI not set');
+		}
+
+		if( !isset($server['REQUEST_METHOD']) ) {
+			throw new RuntimeException('REQUEST_METHOD not set');
+		}
 
 		$this->parsedUri = parse_url($server['REQUEST_URI']);
 	}

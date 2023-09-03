@@ -71,7 +71,8 @@ class InternalServerTest extends TestCase {
 
 	public function testShouldLogRequestsOnInstanceCreate() : void {
 		$fakeReq = new RequestInfo([
-			'REQUEST_URI' => '',
+			'REQUEST_URI'    => '/',
+			'REQUEST_METHOD' => 'GET',
 		],
 			[], [], [], [], [], '');
 		new InternalServer($this->testTmpDir, $fakeReq);
