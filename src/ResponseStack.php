@@ -7,7 +7,7 @@ namespace donatj\MockWebServer;
  *
  * When the stack is empty, the server will return a customizable response defaulting to a 404.
  */
-class ResponseStack implements MultiResponseInterface {
+class ResponseStack implements InitializingResponseInterface, MultiResponseInterface {
 
 	private $ref;
 
@@ -37,6 +37,12 @@ class ResponseStack implements MultiResponseInterface {
 
 		$this->currentResponse = reset($this->responses) ?: null;
 		$this->pastEndResponse = new Response('Past the end of the ResponseStack', [], 404);
+	}
+
+	public function initialize( RequestInfo $request ) : void {
+		if( $this->currentResponse instanceof InitializingResponseInterface ) {
+			$this->currentResponse->initialize($request);
+		}
 	}
 
 	public function next() : bool {
