@@ -221,6 +221,27 @@ class MockWebServer_IntegrationTest extends TestCase {
 		$this->assertGreaterThan(.9, microtime(true) - $start, 'Delayed response should take ~1 seconds longer than realtime response');
 	}
 
+	public function testMultiResponseWithPartialDelay() : void {
+		$multi = new ResponseStack(
+			new Response('Response One', [ 'X-Boop-Bat' => 'Sauce' ], 200),
+			new DelayedResponse(new Response('Response Two', [ 'X-Slaw-Dawg: FranCran' ], 200), 1000000)
+		);
+
+		$path = self::$server->setResponseOfPath('/delayedMultiPath', $multi);
+
+		$start      = microtime(true);
+		$contentOne = file_get_contents($path);
+		$this->assertSame($contentOne, 'Response One');
+		$this->assertContains('X-Boop-Bat: Sauce', $http_response_header);
+		$this->assertLessThan(.2, microtime(true) - $start, 'Delayed response should take less than 200ms');
+
+		$start      = microtime(true);
+		$contentTwo = file_get_contents($path);
+		$this->assertSame($contentTwo, 'Response Two');
+		$this->assertContains('X-Slaw-Dawg: FranCran', $http_response_header);
+		$this->assertGreaterThan(.9, microtime(true) - $start, 'Delayed response should take ~1 seconds longer than realtime response');
+	}
+
 	/**
 	 * Regression Test - Was a problem in 1.0.0-beta.2
 	 */
