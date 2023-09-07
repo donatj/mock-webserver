@@ -245,7 +245,7 @@ This is useful for simulating slow responses and testing timeouts.
 ### Method: DelayedResponse->__construct
 
 ```php
-function __construct(\donatj\MockWebServer\ResponseInterface $response, int $delay)
+function __construct(\donatj\MockWebServer\ResponseInterface $response, int $delay [, ?callable $usleep = null])
 ```
 
 #### Parameters:
