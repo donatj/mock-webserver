@@ -13,16 +13,24 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 	protected $delay;
 	/** @var \donatj\MockWebServer\ResponseInterface */
 	protected $response;
+	/** @var callable */
+	protected $usleep;
 
 	/**
 	 * @param int $delay Microseconds to delay the response
 	 */
 	public function __construct(
 		ResponseInterface $response,
-		int $delay
+		int $delay,
+		?callable $usleep = null
 	) {
 		$this->response = $response;
 		$this->delay    = $delay;
+
+		$this->usleep = '\\usleep';
+		if( $usleep ) {
+			$this->usleep = $usleep;
+		}
 	}
 
 	public function getRef() : string {
@@ -30,7 +38,7 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 	}
 
 	public function initialize( RequestInfo $request ) : void {
-		usleep($this->delay);
+		($this->usleep)($this->delay);
 	}
 
 	public function getBody( RequestInfo $request ) : string {
