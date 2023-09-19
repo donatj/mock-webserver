@@ -3,6 +3,9 @@
 	"description": "Simple mock web server for unit testing",
 	"type": "library",
 	"license": "MIT",
+	"keywords": [
+		"webserver", "mock", "testing", "unit testing", "dev", "http", "phpunit"
+	],
 	"authors": [
 		{
 			"name": "Jesse G. Donat",
