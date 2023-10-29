@@ -286,14 +286,13 @@ class MockWebServer {
 		$env   = null;
 		$cwd   = null;
 
-		$stdin   = fopen('php://stdin', 'rb');
 		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
 		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
 
 		$descriptorSpec = [
-			0 => $stdin,
-			1 => [ 'file', $stdoutf, 'a' ],
-			2 => [ 'file', $stderrf, 'a' ],
+			0 => fopen('php://stdin', 'rb'),
+			1 => fopen($stdoutf, 'a'),
+			2 => fopen($stderrf, 'a'),
 		];
 
 		$process = proc_open($fullCmd, $descriptorSpec, $pipes, $cwd, $env, [
