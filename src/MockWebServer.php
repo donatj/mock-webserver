@@ -28,6 +28,13 @@ class MockWebServer {
 	private $process;
 
 	/**
+	 * Contains the descriptors for the process after it has been started
+	 *
+	 * @var array|null
+	 */
+	private $descriptors = null;
+
+	/**
 	 * TestWebServer constructor.
 	 *
 	 * @param int    $port Network port to run on
@@ -67,7 +74,7 @@ class MockWebServer {
 
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
-		$this->process = $this->startServer($fullCmd);
+		[ $this->process, $this->descriptors ] = $this->startServer($fullCmd);
 
 		for( $i = 0; $i <= 20; $i++ ) {
 			usleep(100000);
@@ -121,6 +128,14 @@ class MockWebServer {
 				}
 
 				usleep(10000);
+			}
+		}
+
+		if( $this->descriptors ) {
+			foreach( $this->descriptors as $descriptor ) {
+				if( is_resource($descriptor) ) {
+					fclose($descriptor);
+				}
 			}
 		}
 	}
@@ -274,7 +289,7 @@ class MockWebServer {
 	}
 
 	/**
-	 * @return resource
+	 * @return array [resource, resource[]]
 	 */
 	private function startServer( string $fullCmd ) {
 		if( !$this->isWindowsPlatform() ) {
@@ -301,7 +316,7 @@ class MockWebServer {
 		]);
 
 		if( is_resource($process) ) {
-			return $process;
+			return [ $process, $descriptorSpec ];
 		}
 
 		throw new Exceptions\ServerException('Error starting server');
