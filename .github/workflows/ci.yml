@@ -30,3 +30,6 @@ jobs:
 
     - name: Test with phpunit
       run: vendor/bin/phpunit
+
+    - name: Test with phpstan
+      run: vendor/bin/phpstan
