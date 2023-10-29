@@ -285,9 +285,9 @@ class MockWebServer {
 	}
 
 	/**
-	 * @return array [resource, resource[]]
+	 * @return array{resource, resource[]}
 	 */
-	private function startServer( string $fullCmd ) {
+	private function startServer( string $fullCmd ) : array {
 		if( !$this->isWindowsPlatform() ) {
 			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
 			$fullCmd = 'exec ' . $fullCmd;
