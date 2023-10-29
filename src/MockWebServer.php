@@ -30,9 +30,9 @@ class MockWebServer {
 	/**
 	 * Contains the descriptors for the process after it has been started
 	 *
-	 * @var array|null
+	 * @var resource[]
 	 */
-	private $descriptors = null;
+	private $descriptors = [];
 
 	/**
 	 * TestWebServer constructor.
@@ -131,12 +131,8 @@ class MockWebServer {
 			}
 		}
 
-		if( $this->descriptors ) {
-			foreach( $this->descriptors as $descriptor ) {
-				if( is_resource($descriptor) ) {
-					fclose($descriptor);
-				}
-			}
+		foreach( $this->descriptors as $descriptor ) {
+			@fclose($descriptor);
 		}
 	}
 
