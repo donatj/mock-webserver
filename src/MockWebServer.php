@@ -28,6 +28,13 @@ class MockWebServer {
 	private $process;
 
 	/**
+	 * Contains the descriptors for the process after it has been started
+	 *
+	 * @var resource[]
+	 */
+	private $descriptors = [];
+
+	/**
 	 * TestWebServer constructor.
 	 *
 	 * @param int    $port Network port to run on
@@ -67,7 +74,7 @@ class MockWebServer {
 
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
-		$this->process = $this->startServer($fullCmd);
+		[ $this->process, $this->descriptors ] = $this->startServer($fullCmd);
 
 		for( $i = 0; $i <= 20; $i++ ) {
 			usleep(100000);
@@ -122,6 +129,10 @@ class MockWebServer {
 
 				usleep(10000);
 			}
+		}
+
+		foreach( $this->descriptors as $descriptor ) {
+			@fclose($descriptor);
 		}
 	}
 
@@ -275,9 +286,9 @@ class MockWebServer {
 	}
 
 	/**
-	 * @return resource
+	 * @return array{resource, resource[]}
 	 */
-	private function startServer( string $fullCmd ) {
+	private function startServer( string $fullCmd ) : array {
 		if( !$this->isWindowsPlatform() ) {
 			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
 			$fullCmd = 'exec ' . $fullCmd;
@@ -287,14 +298,13 @@ class MockWebServer {
 		$env   = null;
 		$cwd   = null;
 
-		$stdin   = fopen('php://stdin', 'rb');
 		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
 		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
 
 		$descriptorSpec = [
-			0 => $stdin,
-			1 => [ 'file', $stdoutf, 'a' ],
-			2 => [ 'file', $stderrf, 'a' ],
+			0 => fopen('php://stdin', 'rb'),
+			1 => fopen($stdoutf, 'a'),
+			2 => fopen($stderrf, 'a'),
 		];
 
 		$process = proc_open($fullCmd, $descriptorSpec, $pipes, $cwd, $env, [
@@ -303,7 +313,7 @@ class MockWebServer {
 		]);
 
 		if( is_resource($process) ) {
-			return $process;
+			return [ $process, $descriptorSpec ];
 		}
 
 		throw new Exceptions\ServerException('Error starting server');
