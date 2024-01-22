@@ -132,7 +132,9 @@ class MockWebServer {
 		}
 
 		foreach( $this->descriptors as $descriptor ) {
-			@fclose($descriptor);
+			try {
+				@fclose($descriptor);
+			} catch (\Throwable $_) {}
 		}
 	}
 
