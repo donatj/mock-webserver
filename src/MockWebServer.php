@@ -134,6 +134,8 @@ class MockWebServer {
 		foreach( $this->descriptors as $descriptor ) {
 			@fclose($descriptor);
 		}
+
+		$this->descriptors = [];
 	}
 
 	/**
