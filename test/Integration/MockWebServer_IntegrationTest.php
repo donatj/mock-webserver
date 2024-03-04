@@ -185,7 +185,8 @@ class MockWebServer_IntegrationTest extends TestCase {
 		$delayedUrl  = self::$server->setResponseOfPath('/delayedPath', $delayedResponse);
 
 		$realtimeStart = microtime(true);
-		file_get_contents($realtimeUrl);
+		$content = @file_get_contents($realtimeUrl);
+		$this->assertNotFalse($content);
 
 		$delayedStart   = microtime(true);
 		$delayedContent = file_get_contents($delayedUrl);
@@ -295,12 +296,7 @@ class MockWebServer_IntegrationTest extends TestCase {
 
 		// Send the request & save response to $resp
 		$resp = curl_exec($ch);
-
-		if( !$resp ) {
-			$this->fail("request failed");
-
-			return;
-		}
+		$this->assertNotEmpty($resp, "response body is empty, request failed");
 
 		$this->assertSame($status, curl_getinfo($ch, CURLINFO_HTTP_CODE));
 

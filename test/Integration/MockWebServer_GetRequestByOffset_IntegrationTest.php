@@ -13,7 +13,8 @@ class MockWebServer_GetRequestByOffset_IntegrationTest extends TestCase {
 
 		for( $i = 0; $i <= 80; $i++ ) {
 			$link = $server->getServerRoot() . '/link' . $i;
-			file_get_contents($link);
+			$content = @file_get_contents($link);
+			$this->assertNotFalse($content, "test link $i");
 		}
 
 		for( $i = 0; $i <= 80; $i++ ) {

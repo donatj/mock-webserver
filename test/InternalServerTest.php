@@ -53,7 +53,7 @@ class InternalServerTest extends TestCase {
 		file_put_contents($counterFileName, '0');
 
 		InternalServer::incrementRequestCounter($this->testTmpDir, $inputCount);
-		$this->assertStringEqualsFile($counterFileName, $expectedCount);
+		$this->assertStringEqualsFile($counterFileName, (string)$expectedCount);
 	}
 
 	public function countProvider() : array {
