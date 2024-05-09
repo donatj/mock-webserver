@@ -161,6 +161,7 @@ class MockWebServer {
 	 * Set a specified path to provide a specific response
 	 */
 	public function setResponseOfPath( string $path, ResponseInterface $response ) : string {
+		if (strpos($path, '*') !== false) { $path = str_replace('*', '.*', preg_quote($path, '/')); }
 		$ref = InternalServer::storeResponse($this->tmpDir, $response);
 
 		$aliasPath = InternalServer::aliasPath($this->tmpDir, $path);
@@ -321,3 +322,4 @@ class MockWebServer {
 	}
 
 }
+

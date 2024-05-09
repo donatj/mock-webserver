@@ -21,6 +21,8 @@ class InternalServer {
 	private $header;
 	/** @var callable */
 	private $httpResponseCode;
+	/** @var array */
+	private $mockedPaths = [];
 
 	private const DEFAULT_REF = 'default';
 
@@ -104,6 +106,15 @@ class InternalServer {
 
 	public function __invoke() : void {
 		$ref = $this->getRefForUri($this->request->getParsedUri()['path']);
+
+		if ($ref === null) {
+			foreach ($this->mockedPaths as $mockedPath) {
+				if (preg_match('/' . $mockedPath . '/', $this->request->getParsedUri()['path'])) {
+					$ref = $this->getRefForUri($mockedPath);
+					break;
+				}
+			}
+		}
 
 		if( $ref !== null ) {
 			$response = $this->responseForRef($ref);
