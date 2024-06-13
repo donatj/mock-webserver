@@ -2,6 +2,8 @@
 
 namespace donatj\MockWebServer;
 
+use donatj\MockWebServer\Exceptions\RuntimeException;
+
 class MockWebServer {
 
 	public const VND = 'VND.DonatStudios.MockWebServer';
@@ -190,17 +192,23 @@ class MockWebServer {
 
 		$tmpPath = $tmpDir . DIRECTORY_SEPARATOR . 'MockWebServer';
 		if( !is_dir($tmpPath) ) {
-			mkdir($tmpPath);
+			if( !mkdir($tmpPath) && !is_dir($tmpPath) ) {
+				throw new \RuntimeException(sprintf('Directory "%s" was not created', $tmpPath));
+			}
 		}
 
 		$tmpPath .= DIRECTORY_SEPARATOR . $this->port;
 		if( !is_dir($tmpPath) ) {
-			mkdir($tmpPath);
+			if( !mkdir($tmpPath) && !is_dir($tmpPath) ) {
+				throw new \RuntimeException(sprintf('Directory "%s" was not created', $tmpPath));
+			}
 		}
 
 		$tmpPath .= DIRECTORY_SEPARATOR . md5(microtime(true) . ':' . rand(0, 100000));
 		if( !is_dir($tmpPath) ) {
-			mkdir($tmpPath);
+			if( !mkdir($tmpPath) && !is_dir($tmpPath) ) {
+				throw new \RuntimeException(sprintf('Directory "%s" was not created', $tmpPath));
+			}
 		}
 
 		return $tmpPath;
@@ -213,6 +221,10 @@ class MockWebServer {
 		$path = $this->tmpDir . DIRECTORY_SEPARATOR . self::LAST_REQUEST_FILE;
 		if( file_exists($path) ) {
 			$content = file_get_contents($path);
+			if( $content === false ) {
+				throw new RuntimeException('failed to read last request');
+			}
+
 			$data    = @unserialize($content);
 			if( $data instanceof RequestInfo ) {
 				return $data;
@@ -229,7 +241,7 @@ class MockWebServer {
 	 * If offset is negative, the request will be that from the end of the requests.
 	 */
 	public function getRequestByOffset( int $offset ) : ?RequestInfo {
-		$reqs = glob($this->tmpDir . DIRECTORY_SEPARATOR . 'request.*');
+		$reqs = glob($this->tmpDir . DIRECTORY_SEPARATOR . 'request.*') ?: [];
 		natsort($reqs);
 
 		$item = array_slice($reqs, $offset, 1);
@@ -237,9 +249,17 @@ class MockWebServer {
 			return null;
 		}
 
-		$path    = reset($item);
+		$path = reset($item);
+		if( !$path ) {
+			return null;
+		}
+
 		$content = file_get_contents($path);
-		$data    = @unserialize($content);
+		if( $content === false ) {
+			throw new RuntimeException("failed to read request from '{$path}'");
+		}
+
+		$data = @unserialize($content);
 		if( $data instanceof RequestInfo ) {
 			return $data;
 		}
@@ -266,10 +286,13 @@ class MockWebServer {
 	 */
 	private function findOpenPort() : int {
 		$sock = socket_create(AF_INET, SOCK_STREAM, 0);
+		if( $sock === false ) {
+			throw new RuntimeException('Failed to create socket');
+		}
 
 		// Bind the socket to an address/port
 		if( !socket_bind($sock, $this->getHost(), 0) ) {
-			throw new Exceptions\RuntimeException('Could not bind to address');
+			throw new RuntimeException('Could not bind to address');
 		}
 
 		socket_getsockname($sock, $checkAddress, $checkPort);
@@ -279,7 +302,7 @@ class MockWebServer {
 			return $checkPort;
 		}
 
-		throw new Exceptions\RuntimeException('Failed to find open port');
+		throw new RuntimeException('Failed to find open port');
 	}
 
 	private function isWindowsPlatform() : bool {
@@ -287,7 +310,7 @@ class MockWebServer {
 	}
 
 	/**
-	 * @return array{resource, resource[]}
+	 * @return array{resource,array{resource,resource,resource}}
 	 */
 	private function startServer( string $fullCmd ) : array {
 		if( !$this->isWindowsPlatform() ) {
@@ -300,24 +323,42 @@ class MockWebServer {
 		$cwd   = null;
 
 		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
-		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
+		if( $stdoutf === false ) {
+			throw new RuntimeException('error creating stdout temp file');
+		}
 
-		$descriptorSpec = [
-			0 => fopen('php://stdin', 'rb'),
-			1 => fopen($stdoutf, 'a'),
-			2 => fopen($stderrf, 'a'),
-		];
+		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
+		if( $stderrf === false ) {
+			throw new RuntimeException('error creating stderr temp file');
+		}
+
+		$stdin = fopen('php://stdin', 'rb');
+		if( $stdin === false ) {
+			throw new RuntimeException('error opening stdin');
+		}
+
+		$stdout = fopen($stdoutf, 'ab');
+		if( $stdout === false ) {
+			throw new RuntimeException('error opening stdout');
+		}
+
+		$stderr = fopen($stderrf, 'ab');
+		if( $stderr === false ) {
+			throw new RuntimeException('error opening stderr');
+		}
+
+		$descriptorSpec = [ $stdin, $stdout, $stderr ];
 
 		$process = proc_open($fullCmd, $descriptorSpec, $pipes, $cwd, $env, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);
 
-		if( is_resource($process) ) {
-			return [ $process, $descriptorSpec ];
+		if( $process === false ) {
+			throw new Exceptions\ServerException('Error starting server');
 		}
 
-		throw new Exceptions\ServerException('Error starting server');
+		return [ $process, $descriptorSpec ];
 	}
 
 }
