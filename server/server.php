@@ -14,9 +14,16 @@ foreach( $files as $file ) {
 }
 
 $INPUT   = file_get_contents("php://input");
+if( $INPUT === false ) {
+	throw new RuntimeException('Failed to read php://input');
+}
+
 $HEADERS = getallheaders();
 
 $tmp = getenv(MockWebServer::TMP_ENV);
+if( $tmp === false || $tmp === '' ) {
+	throw new RuntimeException('Environment variable ' . MockWebServer::TMP_ENV . ' is not set');
+}
 
 $r      = new \donatj\MockWebServer\RequestInfo($_SERVER, $_GET, $_POST, $_FILES, $_COOKIE, $HEADERS, $INPUT);
 $server = new \donatj\MockWebServer\InternalServer($tmp, $r);

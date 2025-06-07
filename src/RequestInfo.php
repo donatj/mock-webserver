@@ -65,7 +65,12 @@ class RequestInfo implements \JsonSerializable {
 			throw new RuntimeException('REQUEST_METHOD not set');
 		}
 
-		$this->parsedUri = parse_url($server['REQUEST_URI']);
+		$parsedUrl = parse_url($server['REQUEST_URI']);
+		if( $parsedUrl === false ) {
+			throw new RuntimeException('Failed to parse REQUEST_URI: ' . $server['REQUEST_URI']);
+		}
+
+		$this->parsedUri = $parsedUrl;
 	}
 
 	/**
@@ -87,6 +92,9 @@ class RequestInfo implements \JsonSerializable {
 		];
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getParsedUri() {
 		return $this->parsedUri;
 	}

@@ -1,6 +1,9 @@
 parameters:
-	level: 5
+	level: 9
 	paths:
 		- src
 		- server
 	phpVersion: 70100
+	ignoreErrors:
+		- 
+			identifier: missingType.iterableValue

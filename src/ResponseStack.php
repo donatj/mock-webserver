@@ -9,6 +9,7 @@ namespace donatj\MockWebServer;
  */
 class ResponseStack implements InitializingResponseInterface, MultiResponseInterface {
 
+	/** @var string */
 	private $ref;
 
 	/** @var \donatj\MockWebServer\ResponseInterface[] */

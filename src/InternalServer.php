@@ -94,6 +94,10 @@ class InternalServer {
 		}
 
 		$content  = file_get_contents($path);
+		if( $content === false ) {
+			throw new ServerException('failed to read response content');
+		}
+
 		$response = unserialize($content);
 		if( !$response instanceof ResponseInterface ) {
 			throw new ServerException('invalid serialized response');
@@ -151,7 +155,7 @@ class InternalServer {
 		}
 	}
 
-	protected function getRefForUri( $uriPath ) : ?string {
+	protected function getRefForUri( string $uriPath ) : ?string {
 		$aliasPath = self::aliasPath($this->tmpPath, $uriPath);
 
 		if( file_exists($aliasPath) ) {
