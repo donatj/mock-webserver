@@ -31,24 +31,8 @@ jobs:
     - name: Test with phpunit
       run: vendor/bin/phpunit
 
-  phpstan:
-    name: PHPStan
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Install PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        tools: phpstan:2.1.8
-        extensions: sockets, json, curl
-
-    - name: Install dependencies with composer
-      run: composer install
-
-    - name: Test with phpstan
-      run: phpstan
+    - name: Install PHPStan if PHP >= 7.4
+      if: startsWith(matrix.php-versions, '7.4') || startsWith(matrix.php-versions, '8.')
+      run: |
+       composer require --dev phpstan/phpstan:2.1.17
+       vendor/bin/phpstan
