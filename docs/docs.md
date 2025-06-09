@@ -1,6 +1,6 @@
 # Documentation
 
-## Class: \donatj\MockWebServer\MockWebServer
+## Class: donatj\MockWebServer\MockWebServer
 
 ```php
 <?php
@@ -145,7 +145,7 @@ function getPort() : int
 
 Get the port the network server is to be ran on.
 
-## Class: \donatj\MockWebServer\Response
+## Class: donatj\MockWebServer\Response
 
 ### Method: Response->__construct
 
@@ -155,7 +155,7 @@ function __construct(string $body [, array $headers = [] [, int $status = 200]])
 
 Response constructor.
 
-## Class: \donatj\MockWebServer\ResponseStack
+## Class: donatj\MockWebServer\ResponseStack
 
 ResponseStack is used to store multiple responses for a request issued by the server in order.
 
@@ -191,7 +191,7 @@ function setPastEndResponse(\donatj\MockWebServer\ResponseInterface $pastEndResp
 
 Set the response to return when the stack is exhausted.
 
-## Class: \donatj\MockWebServer\ResponseByMethod
+## Class: donatj\MockWebServer\ResponseByMethod
 
 ResponseByMethod is used to vary the response to a request by the called HTTP Method.
 
@@ -236,7 +236,7 @@ function setMethodResponse(string $method, \donatj\MockWebServer\ResponseInterfa
 
 Set the Response for the Given Method
 
-## Class: \donatj\MockWebServer\DelayedResponse
+## Class: donatj\MockWebServer\DelayedResponse
 
 DelayedResponse wraps a response, causing it when called to be delayed by a specified number of microseconds.
 
@@ -254,12 +254,12 @@ function __construct(\donatj\MockWebServer\ResponseInterface $response, int $del
 
 ## Built-In Responses
 
-### Class: \donatj\MockWebServer\Responses\DefaultResponse
+### Class: donatj\MockWebServer\Responses\DefaultResponse
 
 The Built-In Default Response.
 
 Results in an HTTP 200 with a JSON encoded version of the incoming Request
 
-### Class: \donatj\MockWebServer\Responses\NotFoundResponse
+### Class: donatj\MockWebServer\Responses\NotFoundResponse
 
 Basic Built-In 404 Response

@@ -2,7 +2,7 @@
 
 [![Latest Stable Version](https://poser.pugx.org/donatj/mock-webserver/version)](https://packagist.org/packages/donatj/mock-webserver)
 [![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
-[![ci.yml](https://github.com/donatj/mock-webserver/actions/workflows/ci.yml/badge.svg?)](https://github.com/donatj/mock-webserver/actions/workflows/ci.yml)
+[![ci.yml](https://github.com/donatj/mock-webserver/actions/workflows/ci.yml/badge.svg)](https://github.com/donatj/mock-webserver/actions/workflows/ci.yml)
 
 
 Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.

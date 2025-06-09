@@ -2,6 +2,8 @@
 
 namespace donatj\MockWebServer;
 
+use donatj\MockWebServer\Exceptions\RuntimeException;
+
 class Response implements ResponseInterface {
 
 	/** @var string */
@@ -26,6 +28,10 @@ class Response implements ResponseInterface {
 			$this->status,
 			$this->headers,
 		]);
+
+		if( $content === false ) {
+			throw new RuntimeException('Failed to encode response content to JSON: ' . json_last_error_msg());
+		}
 
 		return md5($content);
 	}
