@@ -5,11 +5,13 @@
 [![ci.yml](https://github.com/donatj/mock-webserver/actions/workflows/ci.yml/badge.svg)](https://github.com/donatj/mock-webserver/actions/workflows/ci.yml)
 
 
-Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
+Lightweight, easy to use Mock HTTP Server for PHP testing.
 
-Unit testing HTTP requests can be difficult, especially in cases where injecting a request library is difficult or not ideal. This helps greatly simplify the process.
+Ideal for cases where injecting a mock client isn’t practical, possible, or fully comprehensive.
 
-Mock Web Server creates a local Web Server you can make predefined requests against.
+Mock Web Server serves precise, predefined responses—perfect for testing HTTP clients, webhooks, and API integrations. Useful for testing error handling, timeouts, and edge cases.
+
+Works seamlessly with PHPUnit and other test frameworks, with minimal setup.
 
 
 ## Documentation
