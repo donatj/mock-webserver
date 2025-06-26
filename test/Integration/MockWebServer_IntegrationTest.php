@@ -251,6 +251,21 @@ class MockWebServer_IntegrationTest extends TestCase {
 		$this->assertSame('', file_get_contents($url));
 	}
 
+	public function testBinaryResponse() : void {
+		$response = new Response(
+			gzencode('This is our http body response'),
+			[ 'Content-Encoding: gzip' ],
+			200
+		);
+
+		$url = self::$server->setResponseOfPath('/', $response);
+		$content = @file_get_contents($url);
+
+		$this->assertNotFalse($content);
+		$this->assertSame('This is our http body response', gzdecode($content));
+		$this->assertContains('Content-Encoding: gzip', $http_response_header);
+	}
+
 	/**
 	 * @dataProvider requestInfoProvider
 	 */

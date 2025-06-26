@@ -24,7 +24,7 @@ class Response implements ResponseInterface {
 
 	public function getRef() : string {
 		$content = json_encode([
-			$this->body,
+			md5($this->body),
 			$this->status,
 			$this->headers,
 		]);
