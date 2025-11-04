@@ -5,7 +5,7 @@ namespace donatj\MockWebServer;
 /**
  * ResponseByMethod is used to vary the response to a request by the called HTTP Method.
  */
-class ResponseByMethod implements ResponseInterface {
+class ResponseByMethod implements MultiResponseInterface {
 
 	public const METHOD_GET     = 'GET';
 	public const METHOD_POST    = 'POST';
@@ -22,13 +22,16 @@ class ResponseByMethod implements ResponseInterface {
 	/** @var ResponseInterface */
 	private $defaultResponse;
 
+	/** @var string|null */
+	private $latestMethod;
+
 	/**
 	 * MethodResponse constructor.
 	 *
 	 * @param array<string, ResponseInterface> $responses       A map of responses keyed by their method.
-	 * @param ResponseInterface|null           $defaultResponse The fallthrough response to return if a response for a given
-	 *                                                          method is not found. If this is not defined the server will
-	 *                                                          return an HTTP 501 error.
+	 * @param ResponseInterface|null           $defaultResponse The fallthrough response to return if a response for a
+	 *                                                          given method is not found. If this is not defined the
+	 *                                                          server will return an HTTP 501 error.
 	 */
 	public function __construct( array $responses = [], ?ResponseInterface $defaultResponse = null ) {
 		foreach( $responses as $method => $response ) {
@@ -64,7 +67,8 @@ class ResponseByMethod implements ResponseInterface {
 	}
 
 	private function getMethodResponse( RequestInfo $request ) : ResponseInterface {
-		$method = $request->getRequestMethod();
+		$method             = $request->getRequestMethod();
+		$this->latestMethod = $method;
 
 		return $this->responses[$method] ?? $this->defaultResponse;
 	}
@@ -74,6 +78,23 @@ class ResponseByMethod implements ResponseInterface {
 	 */
 	public function setMethodResponse( string $method, ResponseInterface $response ) : void {
 		$this->responses[$method] = $response;
+	}
+
+	public function next() : bool {
+		$method = $this->latestMethod;
+		if( !$method ) {
+			return false;
+		}
+
+		if( !isset($this->responses[$method]) ) {
+			return false;
+		}
+
+		if( !$this->responses[$method] instanceof MultiResponseInterface ) {
+			return false;
+		}
+
+		return $this->responses[$method]->next();
 	}
 
 }
