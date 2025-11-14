@@ -3,6 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/donatj/mock-webserver/version)](https://packagist.org/packages/donatj/mock-webserver)
 [![License](https://poser.pugx.org/donatj/mock-webserver/license)](https://packagist.org/packages/donatj/mock-webserver)
 [![ci.yml](https://github.com/donatj/mock-webserver/actions/workflows/ci.yml/badge.svg)](https://github.com/donatj/mock-webserver/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/donatj/mock-webserver/badge.svg)](https://coveralls.io/github/donatj/mock-webserver)
 
 
 Simple, easy to use Mock Web Server for PHP unit testing. Gets along simply with PHPUnit and other unit testing frameworks.
@@ -120,7 +121,7 @@ Outputs:
 ```
 Requesting: http://127.0.0.1:61874/definedPath
 
-HTTP/1.1 200 OK
+HTTP/1.0 200 OK
 Host: 127.0.0.1:61874
 Date: Tue, 31 Aug 2021 19:50:15 GMT
 Connection: close
@@ -167,7 +168,7 @@ echo $content . "\n";
 Outputs:
 
 ```
-HTTP/1.1 404 Not Found
+HTTP/1.0 404 Not Found
 Host: 127.0.0.1:61874
 Date: Tue, 31 Aug 2021 19:50:15 GMT
 Connection: close
