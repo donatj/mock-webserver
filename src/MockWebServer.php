@@ -32,7 +32,7 @@ class MockWebServer {
 	/**
 	 * Contains the descriptors for the process after it has been started
 	 *
-	 * @var resource[]
+	 * @var resource[]|array[]
 	 */
 	private $descriptors = [];
 
@@ -134,7 +134,10 @@ class MockWebServer {
 		}
 
 		foreach( $this->descriptors as $descriptor ) {
-			@fclose($descriptor);
+			// Only close if it's a resource (Unix), not on Windows where it's an array spec
+			if( is_resource($descriptor) ) {
+				@fclose($descriptor);
+			}
 		}
 
 		$this->descriptors = [];
@@ -310,10 +313,12 @@ class MockWebServer {
 	}
 
 	/**
-	 * @return array{resource,array{resource,resource,resource}}
+	 * @return array{resource,resource[]|array[]}
 	 */
 	private function startServer( string $fullCmd ) : array {
-		if( !$this->isWindowsPlatform() ) {
+		$isWindows = $this->isWindowsPlatform();
+		
+		if( !$isWindows ) {
 			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
 			$fullCmd = 'exec ' . $fullCmd;
 		}
@@ -332,30 +337,47 @@ class MockWebServer {
 			throw new RuntimeException('error creating stderr temp file');
 		}
 
-		$stdin = fopen('php://stdin', 'rb');
-		if( $stdin === false ) {
-			throw new RuntimeException('error opening stdin');
-		}
+		// On Windows, bypass_shell=true with file resource handles causes "nonexistent pipe" errors.
+		// We need to use pipe specifications instead of file resources on Windows.
+		if( $isWindows ) {
+			$descriptorSpec = [
+				0 => [ 'pipe', 'r' ],  // stdin
+				1 => [ 'file', $stdoutf, 'a' ],  // stdout
+				2 => [ 'file', $stderrf, 'a' ],  // stderr
+			];
+			$bypassShell = false;
+		} else {
+			$stdin = fopen('php://stdin', 'rb');
+			if( $stdin === false ) {
+				throw new RuntimeException('error opening stdin');
+			}
 
-		$stdout = fopen($stdoutf, 'ab');
-		if( $stdout === false ) {
-			throw new RuntimeException('error opening stdout');
-		}
+			$stdout = fopen($stdoutf, 'ab');
+			if( $stdout === false ) {
+				throw new RuntimeException('error opening stdout');
+			}
 
-		$stderr = fopen($stderrf, 'ab');
-		if( $stderr === false ) {
-			throw new RuntimeException('error opening stderr');
-		}
+			$stderr = fopen($stderrf, 'ab');
+			if( $stderr === false ) {
+				throw new RuntimeException('error opening stderr');
+			}
 
-		$descriptorSpec = [ $stdin, $stdout, $stderr ];
+			$descriptorSpec = [ $stdin, $stdout, $stderr ];
+			$bypassShell = true;
+		}
 
 		$process = proc_open($fullCmd, $descriptorSpec, $pipes, $cwd, $env, [
 			'suppress_errors' => false,
-			'bypass_shell'    => true,
+			'bypass_shell'    => $bypassShell,
 		]);
 
 		if( $process === false ) {
 			throw new Exceptions\ServerException('Error starting server');
+		}
+
+		// On Windows, we need to close the stdin pipe that was created
+		if( $isWindows && isset($pipes[0]) ) {
+			fclose($pipes[0]);
 		}
 
 		return [ $process, $descriptorSpec ];
