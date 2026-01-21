@@ -10,31 +10,13 @@ namespace donatj\MockWebServer;
 interface ProcessRunner {
 
 	/**
-	 * Prepare the command for execution on this platform
-	 */
-	public function prepareCommand( string $command ) : string;
-
-	/**
-	 * Build the descriptor specification for proc_open
+	 * Start a process with the given command
 	 *
-	 * @param string $stdoutPath Path to stdout log file
-	 * @param string $stderrPath Path to stderr log file
-	 * @return array The descriptor specification for proc_open
+	 * @param string $command The command to execute
+	 * @return resource The process resource
+	 * @throws \donatj\MockWebServer\Exceptions\ServerException If the process fails to start
 	 */
-	public function buildDescriptorSpec( string $stdoutPath, string $stderrPath ) : array;
-
-	/**
-	 * Get the bypass_shell option value for proc_open
-	 */
-	public function getBypassShell() : bool;
-
-	/**
-	 * Perform any post-process setup after proc_open
-	 *
-	 * @param array $descriptorSpec The descriptor specification used
-	 * @param array $pipes The pipes array from proc_open
-	 */
-	public function postProcessSetup( array $descriptorSpec, array $pipes ) : void;
+	public function startProcess( string $command );
 
 	/**
 	 * Clean up resources when stopping the process

@@ -321,36 +321,7 @@ class MockWebServer {
 	 * @return resource
 	 */
 	private function startServer( string $fullCmd ) {
-		$fullCmd = $this->processRunner->prepareCommand($fullCmd);
-
-		$pipes = [];
-		$env   = null;
-		$cwd   = null;
-
-		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
-		if( $stdoutf === false ) {
-			throw new RuntimeException('error creating stdout temp file');
-		}
-
-		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
-		if( $stderrf === false ) {
-			throw new RuntimeException('error creating stderr temp file');
-		}
-
-		$descriptorSpec = $this->processRunner->buildDescriptorSpec($stdoutf, $stderrf);
-
-		$process = proc_open($fullCmd, $descriptorSpec, $pipes, $cwd, $env, [
-			'suppress_errors' => false,
-			'bypass_shell'    => $this->processRunner->getBypassShell(),
-		]);
-
-		if( $process === false ) {
-			throw new Exceptions\ServerException('Error starting server');
-		}
-
-		$this->processRunner->postProcessSetup($descriptorSpec, $pipes);
-
-		return $process;
+		return $this->processRunner->startProcess($fullCmd);
 	}
 
 }

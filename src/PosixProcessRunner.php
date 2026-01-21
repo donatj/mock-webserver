@@ -3,6 +3,7 @@
 namespace donatj\MockWebServer;
 
 use donatj\MockWebServer\Exceptions\RuntimeException;
+use donatj\MockWebServer\Exceptions\ServerException;
 
 /**
  * Process runner for POSIX (Unix/Linux/macOS) systems
@@ -14,38 +15,52 @@ class PosixProcessRunner implements ProcessRunner {
 	/** @var resource[] */
 	private $descriptors = [];
 
-	public function prepareCommand( string $command ) : string {
+	public function startProcess( string $command ) {
 		// We need to prefix exec to get the correct process
 		// http://php.net/manual/ru/function.proc-get-status.php#93382
-		return 'exec ' . $command;
-	}
+		$command = 'exec ' . $command;
 
-	public function buildDescriptorSpec( string $stdoutPath, string $stderrPath ) : array {
+		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
+		if( $stdoutf === false ) {
+			throw new RuntimeException('error creating stdout temp file');
+		}
+
+		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
+		if( $stderrf === false ) {
+			throw new RuntimeException('error creating stderr temp file');
+		}
+
 		$stdin = fopen('php://stdin', 'rb');
 		if( $stdin === false ) {
 			throw new RuntimeException('error opening stdin');
 		}
 
-		$stdout = fopen($stdoutPath, 'ab');
+		$stdout = fopen($stdoutf, 'ab');
 		if( $stdout === false ) {
 			throw new RuntimeException('error opening stdout');
 		}
 
-		$stderr = fopen($stderrPath, 'ab');
+		$stderr = fopen($stderrf, 'ab');
 		if( $stderr === false ) {
 			throw new RuntimeException('error opening stderr');
 		}
 
-		return [ $stdin, $stdout, $stderr ];
-	}
+		$descriptorSpec = [ $stdin, $stdout, $stderr ];
 
-	public function getBypassShell() : bool {
-		return true;
-	}
+		$pipes = [];
+		$process = proc_open($command, $descriptorSpec, $pipes, null, null, [
+			'suppress_errors' => false,
+			'bypass_shell'    => true,
+		]);
 
-	public function postProcessSetup( array $descriptorSpec, array $pipes ) : void {
+		if( $process === false ) {
+			throw new ServerException('Error starting server');
+		}
+
 		// Store the descriptors for cleanup
 		$this->descriptors = $descriptorSpec;
+
+		return $process;
 	}
 
 	public function cleanup() : void {
