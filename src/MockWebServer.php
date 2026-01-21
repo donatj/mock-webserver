@@ -63,18 +63,12 @@ class MockWebServer {
 
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
-		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd    = sprintf("php -S %s:%d %s", $this->host, $this->port, escapeshellarg($script));
-
-		$fullCmd = sprintf('%s > %s 2>&1',
-			$cmd,
-			$stdout
-		);
+		$cmd = sprintf("php -S %s:%d %s", $this->host, $this->port, escapeshellarg($script));
 
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
 		$env = [ self::TMP_ENV => $this->tmpDir ];
-		$this->process = $this->startServer($fullCmd, $env);
+		$this->process = $this->startServer($cmd, $env);
 
 		for( $i = 0; $i <= 20; $i++ ) {
 			usleep(100000);
