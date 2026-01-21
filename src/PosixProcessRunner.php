@@ -15,6 +15,9 @@ class PosixProcessRunner implements ProcessRunner {
 	/** @var resource[] */
 	private $descriptors = [];
 
+	/**
+	 * @return resource
+	 */
 	public function startProcess( string $command ) {
 		// We need to prefix exec to get the correct process
 		// http://php.net/manual/ru/function.proc-get-status.php#93382

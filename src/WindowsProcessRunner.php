@@ -12,6 +12,9 @@ use donatj\MockWebServer\Exceptions\ServerException;
  */
 class WindowsProcessRunner implements ProcessRunner {
 
+	/**
+	 * @return resource
+	 */
 	public function startProcess( string $command ) {
 		// Windows doesn't need the 'exec' prefix
 
