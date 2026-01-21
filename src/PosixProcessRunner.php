@@ -18,7 +18,7 @@ class PosixProcessRunner implements ProcessRunner {
 	/**
 	 * @return resource
 	 */
-	public function startProcess( string $command ) {
+	public function startProcess( string $command, array $env = [] ) {
 		// We need to prefix exec to get the correct process
 		// http://php.net/manual/ru/function.proc-get-status.php#93382
 		$command = 'exec ' . $command;
@@ -51,7 +51,7 @@ class PosixProcessRunner implements ProcessRunner {
 		$descriptorSpec = [ $stdin, $stdout, $stderr ];
 
 		$pipes = [];
-		$process = proc_open($command, $descriptorSpec, $pipes, null, null, [
+		$process = proc_open($command, $descriptorSpec, $pipes, null, $env, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);

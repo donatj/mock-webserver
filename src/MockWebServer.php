@@ -66,10 +66,6 @@ class MockWebServer {
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
 		$cmd    = sprintf("php -S %s:%d %s", $this->host, $this->port, escapeshellarg($script));
 
-		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
-			throw new Exceptions\RuntimeException('Unable to put environmental variable');
-		}
-
 		$fullCmd = sprintf('%s > %s 2>&1',
 			$cmd,
 			$stdout
@@ -77,7 +73,8 @@ class MockWebServer {
 
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
-		$this->process = $this->startServer($fullCmd);
+		$env = [ self::TMP_ENV => $this->tmpDir ];
+		$this->process = $this->startServer($fullCmd, $env);
 
 		for( $i = 0; $i <= 20; $i++ ) {
 			usleep(100000);
@@ -320,8 +317,8 @@ class MockWebServer {
 	/**
 	 * @return resource
 	 */
-	private function startServer( string $fullCmd ) {
-		return $this->processRunner->startProcess($fullCmd);
+	private function startServer( string $fullCmd, array $env = [] ) {
+		return $this->processRunner->startProcess($fullCmd, $env);
 	}
 
 }
