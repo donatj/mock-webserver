@@ -8,8 +8,6 @@ use donatj\MockWebServer\ProcessRunnerInterface;
 
 /**
  * Process runner for POSIX (Unix/Linux/macOS) systems
- *
- * @internal
  */
 class PosixProcessRunner implements ProcessRunnerInterface {
 

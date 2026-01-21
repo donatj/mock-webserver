@@ -8,8 +8,6 @@ use donatj\MockWebServer\ProcessRunnerInterface;
 
 /**
  * Process runner for Windows systems
- *
- * @internal
  */
 class WindowsProcessRunner implements ProcessRunnerInterface {
 

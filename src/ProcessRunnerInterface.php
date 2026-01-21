@@ -4,8 +4,6 @@ namespace donatj\MockWebServer;
 
 /**
  * Interface for platform-specific process execution
- *
- * @internal
  */
 interface ProcessRunnerInterface {
 
