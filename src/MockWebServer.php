@@ -32,7 +32,7 @@ class MockWebServer {
 	/**
 	 * Contains the descriptors for the process after it has been started
 	 *
-	 * @var resource[]|array[]
+	 * @var resource[]|array<int,array>
 	 */
 	private $descriptors = [];
 
@@ -313,11 +313,11 @@ class MockWebServer {
 	}
 
 	/**
-	 * @return array{resource,resource[]|array[]}
+	 * @return array{resource,resource[]|array<int,array>}
 	 */
 	private function startServer( string $fullCmd ) : array {
 		$isWindows = $this->isWindowsPlatform();
-		
+
 		if( !$isWindows ) {
 			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
 			$fullCmd = 'exec ' . $fullCmd;
