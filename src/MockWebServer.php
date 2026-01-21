@@ -32,7 +32,7 @@ class MockWebServer {
 	/**
 	 * Platform-specific process runner
 	 *
-	 * @var ProcessRunner
+	 * @var ProcessRunnerInterface
 	 */
 	private $processRunner;
 
@@ -306,12 +306,12 @@ class MockWebServer {
 	/**
 	 * Create the appropriate process runner for the current platform
 	 */
-	private function createProcessRunner() : ProcessRunner {
+	private function createProcessRunner() : ProcessRunnerInterface {
 		if( $this->isWindowsPlatform() ) {
-			return new WindowsProcessRunner;
+			return new ProcessRunners\WindowsProcessRunner;
 		}
 
-		return new PosixProcessRunner;
+		return new ProcessRunners\PosixProcessRunner;
 	}
 
 	/**

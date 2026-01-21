@@ -1,16 +1,17 @@
 <?php
 
-namespace donatj\MockWebServer;
+namespace donatj\MockWebServer\ProcessRunners;
 
 use donatj\MockWebServer\Exceptions\RuntimeException;
 use donatj\MockWebServer\Exceptions\ServerException;
+use donatj\MockWebServer\ProcessRunnerInterface;
 
 /**
  * Process runner for Windows systems
  *
  * @internal
  */
-class WindowsProcessRunner implements ProcessRunner {
+class WindowsProcessRunner implements ProcessRunnerInterface {
 
 	/**
 	 * @return resource

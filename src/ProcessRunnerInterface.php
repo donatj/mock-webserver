@@ -7,7 +7,7 @@ namespace donatj\MockWebServer;
  *
  * @internal
  */
-interface ProcessRunner {
+interface ProcessRunnerInterface {
 
 	/**
 	 * Start a process with the given command
