@@ -9,9 +9,6 @@ namespace donatj\MockWebServer;
  */
 class WindowsProcessRunner implements ProcessRunner {
 
-	/** @var resource|null */
-	private $stdinPipe;
-
 	public function prepareCommand( string $command ) : string {
 		// Windows doesn't need the 'exec' prefix
 		return $command;
@@ -34,15 +31,12 @@ class WindowsProcessRunner implements ProcessRunner {
 	public function postProcessSetup( array $descriptorSpec, array $pipes ) : void {
 		// On Windows, we need to close the stdin pipe that was created
 		if( isset($pipes[0]) ) {
-			$this->stdinPipe = $pipes[0];
 			fclose($pipes[0]);
 		}
 	}
 
 	public function cleanup() : void {
-		// Windows uses array specs, not resources, so no additional cleanup needed
-		// The stdin pipe was already closed in postProcessSetup
-		$this->stdinPipe = null;
+		// Windows uses array specs, not resources, so no cleanup needed
 	}
 
 }
