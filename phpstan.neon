@@ -3,7 +3,7 @@ parameters:
 	paths:
 		- src
 		- server
-	phpVersion: 70100
+	phpVersion: 70200
 	ignoreErrors:
 		- 
 			identifier: missingType.iterableValue

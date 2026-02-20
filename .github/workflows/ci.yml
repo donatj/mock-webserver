@@ -34,5 +34,5 @@ jobs:
     - name: Install PHPStan if PHP >= 7.4
       if: startsWith(matrix.php-versions, '7.4') || startsWith(matrix.php-versions, '8.')
       run: |
-       composer require --dev phpstan/phpstan:2.1.17
+       composer require --dev phpstan/phpstan:2.1.39
        vendor/bin/phpstan
