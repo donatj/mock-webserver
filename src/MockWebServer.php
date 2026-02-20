@@ -63,7 +63,12 @@ class MockWebServer {
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
 		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd    = sprintf("%s -S %s:%d %s", PHP_BINARY, $this->host, $this->port, escapeshellarg($script));
+		$cmd    = sprintf("%s -S %s:%d %s",
+			escapeshellarg(PHP_BINARY),
+			escapeshellarg($this->host),
+			$this->port,
+			escapeshellarg($script)
+		);
 
 		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
 			throw new Exceptions\RuntimeException('Unable to put environmental variable');
@@ -71,7 +76,7 @@ class MockWebServer {
 
 		$fullCmd = sprintf('%s > %s 2>&1',
 			$cmd,
-			$stdout
+			escapeshellarg($stdout)
 		);
 
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
