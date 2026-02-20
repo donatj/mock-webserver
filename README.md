@@ -19,7 +19,7 @@ Mock Web Server creates a local Web Server you can make predefined requests agai
 
 ## Requirements
 
-- **php**: >=7.1
+- **php**: >=7.2
 - **ext-sockets**: *
 - **ext-json**: *
 - **ralouphie/getallheaders**: ~2.0 || ~3.0
@@ -121,7 +121,7 @@ Outputs:
 ```
 Requesting: http://127.0.0.1:61874/definedPath
 
-HTTP/1.0 200 OK
+HTTP/1.1 200 OK
 Host: 127.0.0.1:61874
 Date: Tue, 31 Aug 2021 19:50:15 GMT
 Connection: close
@@ -168,7 +168,7 @@ echo $content . "\n";
 Outputs:
 
 ```
-HTTP/1.0 404 Not Found
+HTTP/1.1 404 Not Found
 Host: 127.0.0.1:61874
 Date: Tue, 31 Aug 2021 19:50:15 GMT
 Connection: close
