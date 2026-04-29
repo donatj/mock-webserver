@@ -4,18 +4,14 @@ namespace donatj\MockWebServer\ProcessRunners;
 
 use donatj\MockWebServer\Exceptions\RuntimeException;
 use donatj\MockWebServer\Exceptions\ServerException;
-use donatj\MockWebServer\ProcessRunnerInterface;
 
 /**
  * Process runner for POSIX (Unix/Linux/macOS) systems
  */
-class PosixProcessRunner implements ProcessRunnerInterface {
+class PosixProcessRunner extends AbstractProcessRunner {
 
 	/** @var resource[] */
 	private $descriptors = [];
-
-	/** @var string[] */
-	private $tempFiles = [];
 
 	/**
 	 * @return resource
@@ -30,14 +26,14 @@ class PosixProcessRunner implements ProcessRunnerInterface {
 			escapeshellarg($script)
 		);
 
-		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
+		$stdoutf = tempnam(sys_get_temp_dir(), self::STDOUT_PREFIX);
 		if( $stdoutf === false ) {
 			throw new RuntimeException('error creating stdout temp file');
 		}
 
 		$this->tempFiles[] = $stdoutf;
 
-		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
+		$stderrf = tempnam(sys_get_temp_dir(), self::STDERR_PREFIX);
 		if( $stderrf === false ) {
 			@unlink($stdoutf);
 			throw new RuntimeException('error creating stderr temp file');
@@ -101,15 +97,8 @@ class PosixProcessRunner implements ProcessRunnerInterface {
 		}
 
 		$this->descriptors = [];
-		$this->cleanupTempFiles();
-	}
 
-	private function cleanupTempFiles() : void {
-		foreach( $this->tempFiles as $file ) {
-			@unlink($file);
-		}
-
-		$this->tempFiles = [];
+		parent::cleanup();
 	}
 
 }
