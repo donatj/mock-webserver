@@ -20,10 +20,15 @@ class PosixProcessRunner implements ProcessRunnerInterface {
 	/**
 	 * @return resource
 	 */
-	public function startProcess( string $command, array $env = [] ) {
+	public function startProcess( string $phpBinary, string $host, int $port, string $script, array $env = [] ) {
 		// We need to prefix exec to get the correct process
 		// http://php.net/manual/ru/function.proc-get-status.php#93382
-		$command = 'exec ' . $command;
+		$command = sprintf('exec %s -S %s:%d %s',
+			escapeshellarg($phpBinary),
+			escapeshellarg($host),
+			$port,
+			escapeshellarg($script)
+		);
 
 		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
 		if( $stdoutf === false ) {

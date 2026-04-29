@@ -17,9 +17,13 @@ class WindowsProcessRunner implements ProcessRunnerInterface {
 	/**
 	 * @return resource
 	 */
-	public function startProcess( string $command, array $env = [] ) {
-		// Windows doesn't need the 'exec' prefix
-
+	public function startProcess( string $phpBinary, string $host, int $port, string $script, array $env = [] ) {
+		$command = sprintf('%s -S %s:%d %s',
+			escapeshellarg($phpBinary),
+			escapeshellarg($host),
+			$port,
+			escapeshellarg($script)
+		);
 		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
 		if( $stdoutf === false ) {
 			throw new RuntimeException('error creating stdout temp file');

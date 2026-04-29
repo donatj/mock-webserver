@@ -63,17 +63,10 @@ class MockWebServer {
 
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
-		$cmd = sprintf("%s -S %s:%d %s",
-			escapeshellarg(PHP_BINARY),
-			escapeshellarg($this->host),
-			$this->port,
-			escapeshellarg($script)
-		);
-
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
 		$env = [ self::TMP_ENV => $this->tmpDir ];
-		$this->process = $this->startServer($cmd, $env);
+		$this->process = $this->startServer($script, $env);
 
 		for( $i = 0; $i <= 20; $i++ ) {
 			usleep(100000);
@@ -316,8 +309,8 @@ class MockWebServer {
 	/**
 	 * @return resource
 	 */
-	private function startServer( string $fullCmd, array $env = [] ) {
-		return $this->processRunner->startProcess($fullCmd, $env);
+	private function startServer( string $script, array $env = [] ) {
+		return $this->processRunner->startProcess(PHP_BINARY, $this->host, $this->port, $script, $env);
 	}
 
 }
