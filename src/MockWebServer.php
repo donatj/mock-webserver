@@ -63,7 +63,12 @@ class MockWebServer {
 
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
-		$cmd = sprintf("php -S %s:%d %s", $this->host, $this->port, escapeshellarg($script));
+		$cmd = sprintf("%s -S %s:%d %s",
+			escapeshellarg(PHP_BINARY),
+			escapeshellarg($this->host),
+			$this->port,
+			escapeshellarg($script)
+		);
 
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
