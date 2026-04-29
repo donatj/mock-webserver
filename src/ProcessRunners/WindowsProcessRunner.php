@@ -51,7 +51,7 @@ class WindowsProcessRunner implements ProcessRunnerInterface {
 		$pipes = [];
 		$process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
 			'suppress_errors' => false,
-			'bypass_shell'    => false,
+			'bypass_shell'    => true,
 		]);
 
 		if( $process === false ) {
