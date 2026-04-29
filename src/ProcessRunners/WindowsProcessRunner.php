@@ -11,6 +11,9 @@ use donatj\MockWebServer\ProcessRunnerInterface;
  */
 class WindowsProcessRunner implements ProcessRunnerInterface {
 
+	/** @var string[] */
+	private $tempFiles = [];
+
 	/**
 	 * @return resource
 	 */
@@ -22,26 +25,37 @@ class WindowsProcessRunner implements ProcessRunnerInterface {
 			throw new RuntimeException('error creating stdout temp file');
 		}
 
+		$this->tempFiles[] = $stdoutf;
+
 		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
 		if( $stderrf === false ) {
+			@unlink($stdoutf);
 			throw new RuntimeException('error creating stderr temp file');
 		}
 
-		// On Windows, bypass_shell=true with file resource handles causes "nonexistent pipe" errors.
-		// We need to use pipe specifications instead of file resources.
+		$this->tempFiles[] = $stderrf;
+
+		// On Windows with bypass_shell enabled, proc_open expects array-based descriptor
+		// specifications rather than resource handles to avoid "nonexistent pipe" errors.
 		$descriptorSpec = [
 			0 => [ 'pipe', 'r' ],  // stdin
 			1 => [ 'file', $stdoutf, 'a' ],  // stdout
 			2 => [ 'file', $stderrf, 'a' ],  // stderr
 		];
 
+		// Merge with parent environment to ensure PATH, SystemRoot, ComSpec, etc. are present
+		// Filter out non-string values that can't be passed to proc_open
+		$parentEnv = array_filter($_SERVER, 'is_string');
+		$mergedEnv = array_merge($parentEnv, $env);
+
 		$pipes = [];
-		$process = proc_open($command, $descriptorSpec, $pipes, null, $env, [
+		$process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
 			'suppress_errors' => false,
 			'bypass_shell'    => false,
 		]);
 
 		if( $process === false ) {
+			$this->cleanupTempFiles();
 			throw new ServerException('Error starting server');
 		}
 
@@ -54,7 +68,15 @@ class WindowsProcessRunner implements ProcessRunnerInterface {
 	}
 
 	public function cleanup() : void {
-		// Windows uses array specs, not resources, so no cleanup needed
+		$this->cleanupTempFiles();
+	}
+
+	private function cleanupTempFiles() : void {
+		foreach( $this->tempFiles as $file ) {
+			@unlink($file);
+		}
+
+		$this->tempFiles = [];
 	}
 
 }

@@ -14,6 +14,7 @@ interface ProcessRunnerInterface {
 	 * @param array<string,string> $env Environment variables to pass to the process
 	 * @return resource The process resource
 	 * @throws \donatj\MockWebServer\Exceptions\ServerException If the process fails to start
+	 * @throws \donatj\MockWebServer\Exceptions\RuntimeException If temp file or stream operations fail
 	 */
 	public function startProcess( string $command, array $env = [] );
 
