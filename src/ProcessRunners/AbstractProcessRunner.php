@@ -26,6 +26,9 @@ abstract class AbstractProcessRunner implements ProcessRunnerInterface {
 		$this->stop();
 	}
 
+	/**
+	 * @phpstan-assert-if-true resource $this->process
+	 */
 	public function isRunning() : bool {
 		if( !is_resource($this->process) ) {
 			return false;
@@ -41,17 +44,19 @@ abstract class AbstractProcessRunner implements ProcessRunnerInterface {
 	}
 
 	public function stop() : void {
-		if( $this->isRunning() ) {
-			proc_terminate($this->process);
+		if( !$this->isRunning() ) {
+			return;
+		}
 
-			$attempts = 0;
-			while( $this->isRunning() ) {
-				if( ++$attempts > 1000 ) {
-					throw new ServerException('Failed to stop server.');
-				}
+		proc_terminate($this->process);
 
-				usleep(10000);
+		$attempts = 0;
+		while( $this->isRunning() ) {
+			if( ++$attempts > 1000 ) {
+				throw new ServerException('Failed to stop server.');
 			}
+
+			usleep(10000);
 		}
 	}
 
