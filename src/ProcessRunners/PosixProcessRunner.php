@@ -58,12 +58,12 @@ class PosixProcessRunner extends AbstractProcessRunner {
 		$mergedEnv = array_merge(getenv() ?: [], $env);
 
 		$pipes = [];
-		$this->process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
+		$process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);
 
-		if( $this->process === false ) {
+		if( $process === false ) {
 			fclose($stdin);
 			fclose($stdout);
 			fclose($stderr);
@@ -73,6 +73,8 @@ class PosixProcessRunner extends AbstractProcessRunner {
 
 		// Store the descriptors for cleanup on stop
 		$this->descriptors = $descriptorSpec;
+
+		$this->process = $process;
 
 		return $this->process;
 	}

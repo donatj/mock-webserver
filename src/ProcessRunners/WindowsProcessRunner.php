@@ -35,12 +35,12 @@ class WindowsProcessRunner extends AbstractProcessRunner {
 		$mergedEnv = array_merge(getenv() ?: [], $env);
 
 		$pipes = [];
-		$this->process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
+		$process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);
 
-		if( $this->process === false ) {
+		if( $process === false ) {
 			throw new ServerException('Error starting server');
 		}
 
@@ -48,6 +48,8 @@ class WindowsProcessRunner extends AbstractProcessRunner {
 		if( isset($pipes[0]) ) {
 			fclose($pipes[0]);
 		}
+
+		$this->process = $process;
 
 		return $this->process;
 	}

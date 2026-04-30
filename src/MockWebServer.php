@@ -79,6 +79,7 @@ class MockWebServer {
 
 	/**
 	 * Is the Web Server currently running?
+	 * @phpstan-impure
 	 */
 	public function isRunning() : bool {
 		return $this->processRunner->isRunning();
