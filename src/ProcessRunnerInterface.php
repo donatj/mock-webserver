@@ -22,6 +22,18 @@ interface ProcessRunnerInterface {
 	public function startProcess( string $phpBinary, string $host, int $port, string $script, array $env = [] );
 
 	/**
+	 * Is the process currently running?
+	 */
+	public function isRunning() : bool;
+
+	/**
+	 * Stop the running process
+	 *
+	 * @throws \donatj\MockWebServer\Exceptions\ServerException If the process fails to stop
+	 */
+	public function stop() : void;
+
+	/**
 	 * Clean up resources when stopping the process
 	 */
 	public function cleanup() : void;

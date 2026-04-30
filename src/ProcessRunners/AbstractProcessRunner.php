@@ -2,6 +2,7 @@
 
 namespace donatj\MockWebServer\ProcessRunners;
 
+use donatj\MockWebServer\Exceptions\ServerException;
 use donatj\MockWebServer\ProcessRunnerInterface;
 
 /**
@@ -11,11 +12,45 @@ use donatj\MockWebServer\ProcessRunnerInterface;
  */
 abstract class AbstractProcessRunner implements ProcessRunnerInterface {
 
-	const STDOUT_PREFIX = 'MockWebServer.stdout';
-	const STDERR_PREFIX = 'MockWebServer.stderr';
+	public const STDOUT_PREFIX = 'MockWebServer.stdout';
+	public const STDERR_PREFIX = 'MockWebServer.stderr';
 
 	/** @var string[] */
 	protected $tempFiles = [];
+
+	/** @var resource|null */
+	protected $process;
+
+	public function isRunning() : bool {
+		if( !is_resource($this->process) ) {
+			return false;
+		}
+
+		$processStatus = proc_get_status($this->process);
+
+		if( !$processStatus ) {
+			return false;
+		}
+
+		return $processStatus['running'];
+	}
+
+	public function stop() : void {
+		if( $this->isRunning() ) {
+			proc_terminate($this->process);
+
+			$attempts = 0;
+			while( $this->isRunning() ) {
+				if( ++$attempts > 1000 ) {
+					throw new ServerException('Failed to stop server.');
+				}
+
+				usleep(10000);
+			}
+		}
+
+		$this->cleanup();
+	}
 
 	public function cleanup() : void {
 		$this->cleanupTempFiles();

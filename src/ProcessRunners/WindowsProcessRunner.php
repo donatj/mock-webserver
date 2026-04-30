@@ -20,6 +20,7 @@ class WindowsProcessRunner extends AbstractProcessRunner {
 			$port,
 			escapeshellarg($script)
 		);
+
 		$stdoutf = tempnam(sys_get_temp_dir(), self::STDOUT_PREFIX);
 		if( $stdoutf === false ) {
 			throw new RuntimeException('error creating stdout temp file');
@@ -47,12 +48,12 @@ class WindowsProcessRunner extends AbstractProcessRunner {
 		$mergedEnv = array_merge(getenv() ?: [], $env);
 
 		$pipes = [];
-		$process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
+		$this->process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);
 
-		if( $process === false ) {
+		if( $this->process === false ) {
 			$this->cleanupTempFiles();
 			throw new ServerException('Error starting server');
 		}
@@ -62,7 +63,7 @@ class WindowsProcessRunner extends AbstractProcessRunner {
 			fclose($pipes[0]);
 		}
 
-		return $process;
+		return $this->process;
 	}
 
 }

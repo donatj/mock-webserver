@@ -18,7 +18,7 @@ class PosixProcessRunner extends AbstractProcessRunner {
 	 */
 	public function startProcess( string $phpBinary, string $host, int $port, string $script, array $env = [] ) {
 		// We need to prefix exec to get the correct process
-		// http://php.net/manual/ru/function.proc-get-status.php#93382
+		// http://php.net/manual/en/function.proc-get-status.php#93382
 		$command = sprintf('exec %s -S %s:%d %s',
 			escapeshellarg($phpBinary),
 			escapeshellarg($host),
@@ -68,12 +68,12 @@ class PosixProcessRunner extends AbstractProcessRunner {
 		$mergedEnv = array_merge(getenv() ?: [], $env);
 
 		$pipes = [];
-		$process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
+		$this->process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
 			'suppress_errors' => false,
 			'bypass_shell'    => true,
 		]);
 
-		if( $process === false ) {
+		if( $this->process === false ) {
 			fclose($stdin);
 			fclose($stdout);
 			fclose($stderr);
@@ -84,7 +84,7 @@ class PosixProcessRunner extends AbstractProcessRunner {
 		// Store the descriptors for cleanup
 		$this->descriptors = $descriptorSpec;
 
-		return $process;
+		return $this->process;
 	}
 
 	public function cleanup() : void {

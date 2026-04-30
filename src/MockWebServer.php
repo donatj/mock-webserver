@@ -23,13 +23,6 @@ class MockWebServer {
 	private $tmpDir;
 
 	/**
-	 * Contain link to opened process resource
-	 *
-	 * @var resource
-	 */
-	private $process;
-
-	/**
 	 * Platform-specific process runner
 	 *
 	 * @var ProcessRunnerInterface
@@ -66,7 +59,8 @@ class MockWebServer {
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
 		$env = [ self::TMP_ENV => $this->tmpDir ];
-		$this->process = $this->startServer($script, $env);
+
+		$this->processRunner->startProcess(PHP_BINARY, $this->host, $this->port, $script, $env);
 
 		for( $i = 0; $i <= 20; $i++ ) {
 			usleep(100000);
@@ -93,37 +87,14 @@ class MockWebServer {
 	 * Is the Web Server currently running?
 	 */
 	public function isRunning() : bool {
-		if( !is_resource($this->process) ) {
-			return false;
-		}
-
-		$processStatus = proc_get_status($this->process);
-
-		if( !$processStatus ) {
-			return false;
-		}
-
-		return $processStatus['running'];
+		return $this->processRunner->isRunning();
 	}
 
 	/**
 	 * Stop the Web Server
 	 */
 	public function stop() : void {
-		if( $this->isRunning() ) {
-			proc_terminate($this->process);
-
-			$attempts = 0;
-			while( $this->isRunning() ) {
-				if( ++$attempts > 1000 ) {
-					throw new Exceptions\ServerException('Failed to stop server.');
-				}
-
-				usleep(10000);
-			}
-		}
-
-		$this->processRunner->cleanup();
+		$this->processRunner->stop();
 	}
 
 	/**
@@ -304,13 +275,6 @@ class MockWebServer {
 		}
 
 		return new ProcessRunners\PosixProcessRunner;
-	}
-
-	/**
-	 * @return resource
-	 */
-	private function startServer( string $script, array $env = [] ) {
-		return $this->processRunner->startProcess(PHP_BINARY, $this->host, $this->port, $script, $env);
 	}
 
 }
