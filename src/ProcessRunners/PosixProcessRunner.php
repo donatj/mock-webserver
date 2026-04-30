@@ -65,9 +65,7 @@ class PosixProcessRunner extends AbstractProcessRunner {
 		$descriptorSpec = [ $stdin, $stdout, $stderr ];
 
 		// Merge with parent environment to ensure PATH and other required vars are present
-		// Filter out non-string values that can't be passed to proc_open
-		$parentEnv = array_filter($_SERVER, 'is_string');
-		$mergedEnv = array_merge($parentEnv, $env);
+		$mergedEnv = array_merge(getenv() ?: [], $env);
 
 		$pipes = [];
 		$process = proc_open($command, $descriptorSpec, $pipes, null, $mergedEnv, [
