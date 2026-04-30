@@ -33,9 +33,4 @@ interface ProcessRunnerInterface {
 	 */
 	public function stop() : void;
 
-	/**
-	 * Clean up resources when stopping the process
-	 */
-	public function cleanup() : void;
-
 }

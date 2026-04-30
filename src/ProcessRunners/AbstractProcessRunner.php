@@ -3,6 +3,7 @@
 namespace donatj\MockWebServer\ProcessRunners;
 
 use donatj\MockWebServer\Exceptions\ServerException;
+use donatj\MockWebServer\Exceptions\TempFileException;
 use donatj\MockWebServer\ProcessRunnerInterface;
 
 /**
@@ -14,9 +15,6 @@ abstract class AbstractProcessRunner implements ProcessRunnerInterface {
 
 	public const STDOUT_PREFIX = 'MockWebServer.stdout';
 	public const STDERR_PREFIX = 'MockWebServer.stderr';
-
-	/** @var string[] */
-	protected $tempFiles = [];
 
 	/** @var resource|null */
 	protected $process;
@@ -48,20 +46,22 @@ abstract class AbstractProcessRunner implements ProcessRunnerInterface {
 				usleep(10000);
 			}
 		}
-
-		$this->cleanup();
 	}
 
-	public function cleanup() : void {
-		$this->cleanupTempFiles();
-	}
-
-	protected function cleanupTempFiles() : void {
-		foreach( $this->tempFiles as $file ) {
-			@unlink($file);
+	/**
+	 * Create a temporary file
+	 *
+	 * @param string $prefix Prefix for the temp file name
+	 * @return string Path to the created temp file
+	 * @throws TempFileException If temp file creation fails
+	 */
+	protected function createTempFile( string $prefix ) : string {
+		$tempFile = tempnam(sys_get_temp_dir(), $prefix);
+		if( $tempFile === false ) {
+			throw new TempFileException("error creating temp file with prefix '{$prefix}'");
 		}
 
-		$this->tempFiles = [];
+		return $tempFile;
 	}
 
 }

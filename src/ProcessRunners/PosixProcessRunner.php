@@ -26,31 +26,17 @@ class PosixProcessRunner extends AbstractProcessRunner {
 			escapeshellarg($script)
 		);
 
-		$stdoutf = tempnam(sys_get_temp_dir(), self::STDOUT_PREFIX);
-		if( $stdoutf === false ) {
-			throw new RuntimeException('error creating stdout temp file');
-		}
-
-		$this->tempFiles[] = $stdoutf;
-
-		$stderrf = tempnam(sys_get_temp_dir(), self::STDERR_PREFIX);
-		if( $stderrf === false ) {
-			@unlink($stdoutf);
-			throw new RuntimeException('error creating stderr temp file');
-		}
-
-		$this->tempFiles[] = $stderrf;
+		$stdoutf = $this->createTempFile(self::STDOUT_PREFIX);
+		$stderrf = $this->createTempFile(self::STDERR_PREFIX);
 
 		$stdin = fopen('php://stdin', 'rb');
 		if( $stdin === false ) {
-			$this->cleanupTempFiles();
 			throw new RuntimeException('error opening stdin');
 		}
 
 		$stdout = fopen($stdoutf, 'ab');
 		if( $stdout === false ) {
 			fclose($stdin);
-			$this->cleanupTempFiles();
 			throw new RuntimeException('error opening stdout');
 		}
 
@@ -58,7 +44,6 @@ class PosixProcessRunner extends AbstractProcessRunner {
 		if( $stderr === false ) {
 			fclose($stdin);
 			fclose($stdout);
-			$this->cleanupTempFiles();
 			throw new RuntimeException('error opening stderr');
 		}
 
@@ -77,17 +62,18 @@ class PosixProcessRunner extends AbstractProcessRunner {
 			fclose($stdin);
 			fclose($stdout);
 			fclose($stderr);
-			$this->cleanupTempFiles();
 			throw new ServerException('Error starting server');
 		}
 
-		// Store the descriptors for cleanup
+		// Store the descriptors for cleanup on stop
 		$this->descriptors = $descriptorSpec;
 
 		return $this->process;
 	}
 
-	public function cleanup() : void {
+	public function stop() : void {
+		parent::stop();
+
 		foreach( $this->descriptors as $descriptor ) {
 			if( is_resource($descriptor) ) {
 				@fclose($descriptor);
@@ -95,8 +81,6 @@ class PosixProcessRunner extends AbstractProcessRunner {
 		}
 
 		$this->descriptors = [];
-
-		parent::cleanup();
 	}
 
 }
