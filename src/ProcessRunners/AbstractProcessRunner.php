@@ -19,6 +19,13 @@ abstract class AbstractProcessRunner implements ProcessRunnerInterface {
 	/** @var resource|null */
 	protected $process;
 
+	/**
+	 * Ensure the process is stopped when the object is destroyed
+	 */
+	public function __destruct() {
+		$this->stop();
+	}
+
 	public function isRunning() : bool {
 		if( !is_resource($this->process) ) {
 			return false;
@@ -52,8 +59,8 @@ abstract class AbstractProcessRunner implements ProcessRunnerInterface {
 	 * Create a temporary file
 	 *
 	 * @param string $prefix Prefix for the temp file name
-	 * @return string Path to the created temp file
 	 * @throws TempFileException If temp file creation fails
+	 * @return string Path to the created temp file
 	 */
 	protected function createTempFile( string $prefix ) : string {
 		$tempFile = tempnam(sys_get_temp_dir(), $prefix);

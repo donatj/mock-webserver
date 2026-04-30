@@ -75,12 +75,6 @@ class MockWebServer {
 		if( !$this->isRunning() ) {
 			throw new Exceptions\ServerException("Failed to start server. Is something already running on port {$this->port}?");
 		}
-
-		register_shutdown_function(function () {
-			if( $this->isRunning() ) {
-				$this->stop();
-			}
-		});
 	}
 
 	/**

@@ -17,6 +17,9 @@ class PosixProcessRunner extends AbstractProcessRunner {
 	 * @return resource
 	 */
 	public function startProcess( string $phpBinary, string $host, int $port, string $script, array $env = [] ) {
+		// Clean up any leftover descriptors from previous run
+		$this->closeDescriptors();
+
 		// We need to prefix exec to get the correct process
 		// http://php.net/manual/en/function.proc-get-status.php#93382
 		$command = sprintf('exec %s -S %s:%d %s',
@@ -37,6 +40,7 @@ class PosixProcessRunner extends AbstractProcessRunner {
 		$stdout = fopen($stdoutf, 'ab');
 		if( $stdout === false ) {
 			fclose($stdin);
+
 			throw new RuntimeException('error opening stdout');
 		}
 
@@ -44,6 +48,7 @@ class PosixProcessRunner extends AbstractProcessRunner {
 		if( $stderr === false ) {
 			fclose($stdin);
 			fclose($stdout);
+
 			throw new RuntimeException('error opening stderr');
 		}
 
@@ -62,6 +67,7 @@ class PosixProcessRunner extends AbstractProcessRunner {
 			fclose($stdin);
 			fclose($stdout);
 			fclose($stderr);
+
 			throw new ServerException('Error starting server');
 		}
 
@@ -74,6 +80,10 @@ class PosixProcessRunner extends AbstractProcessRunner {
 	public function stop() : void {
 		parent::stop();
 
+		$this->closeDescriptors();
+	}
+
+	private function closeDescriptors() : void {
 		foreach( $this->descriptors as $descriptor ) {
 			if( is_resource($descriptor) ) {
 				@fclose($descriptor);
