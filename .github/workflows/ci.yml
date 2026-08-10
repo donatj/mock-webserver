@@ -31,8 +31,14 @@ jobs:
     - name: Test with phpunit
       run: vendor/bin/phpunit
 
-    - name: Install PHPStan if PHP >= 7.4
-      if: startsWith(matrix.php-versions, '7.4') || startsWith(matrix.php-versions, '8.')
+    - name: Install PHPStan on PHP 7.4
+      if: startsWith(matrix.php-versions, '7.4')
+      run: |
+       composer require --dev "phpstan/phpstan:^1" -W
+       vendor/bin/phpstan
+
+    - name: Install PHPStan on PHP 8+
+      if: startsWith(matrix.php-versions, '8.')
       run: |
        composer require --dev "phpstan/phpstan:^2" -W
        vendor/bin/phpstan
