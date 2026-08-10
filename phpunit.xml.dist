@@ -1,4 +1,5 @@
-<phpunit bootstrap="vendor/autoload.php">
+<phpunit bootstrap="vendor/autoload.php"
+	failOnPhpunitDeprecation="true" failOnDeprecation="true" displayDetailsOnTestsThatTriggerDeprecations="true">
 	<testsuites>
 		<testsuite name="Library">
 			<directory>test</directory>
