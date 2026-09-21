@@ -20,6 +20,18 @@ class ResponseStackTest extends TestCase {
 		$this->assertFalse($x->next());
 	}
 
+	public function testGetRefIsUniquePerStack() : void {
+		$first  = new ResponseStack(new Response('foo'), new Response('bar'));
+		$second = new ResponseStack(new Response('foo'), new Response('bar'));
+
+		$this->assertNotSame(
+			$first->getRef(),
+			$second->getRef(),
+			'Independent response stacks must not share mutable state'
+		);
+		$this->assertSame($first->getRef(), $first->getRef(), 'A response stack ref must remain stable');
+	}
+
 	/**
 	 * @dataProvider customResponseProvider
 	 */

@@ -53,18 +53,32 @@ class DelayedResponseTest extends TestCase {
 
 	public function testGetRef() : void {
 		$resp1 = new DelayedResponse(new DefaultResponse, 1234);
-		$this->assertNotFalse(
+		$this->assertSame(
+			1,
 			preg_match('/^[a-f0-9]{32}$/', $resp1->getRef()),
 			'Ref must be a 32 character hex string'
 		);
 
 		$resp2 = new DelayedResponse(new Response('foo'), 1234);
-		$this->assertNotFalse(
+		$this->assertSame(
+			1,
 			preg_match('/^[a-f0-9]{32}$/', $resp2->getRef()),
 			'Ref is a 32 character hex string'
 		);
 
 		$this->assertNotSame($resp1->getRef(), $resp2->getRef(), 'Ref is unique per response');
+	}
+
+	public function testGetRefIsUniquePerInstance() : void {
+		$response = new Response('foo');
+		$first    = new DelayedResponse($response, 1234);
+
+		$this->assertSame($first->getRef(), $first->getRef(), 'A response ref must remain stable');
+		$this->assertNotSame(
+			$first->getRef(),
+			(new DelayedResponse($response, 1234))->getRef(),
+			'Independent delayed responses must not share storage'
+		);
 	}
 
 }
