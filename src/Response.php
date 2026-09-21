@@ -2,10 +2,10 @@
 
 namespace donatj\MockWebServer;
 
-use donatj\MockWebServer\Exceptions\RuntimeException;
-
 class Response implements ResponseInterface {
 
+	/** @var string */
+	private $ref;
 	/** @var string */
 	protected $body;
 	/** @var array */
@@ -17,23 +17,14 @@ class Response implements ResponseInterface {
 	 * Response constructor.
 	 */
 	public function __construct( string $body, array $headers = [], int $status = 200 ) {
+		$this->ref     = bin2hex(random_bytes(16));
 		$this->body    = $body;
 		$this->headers = $headers;
 		$this->status  = $status;
 	}
 
 	public function getRef() : string {
-		$content = json_encode([
-			md5($this->body),
-			$this->status,
-			$this->headers,
-		]);
-
-		if( $content === false ) {
-			throw new RuntimeException('Failed to encode response content to JSON: ' . json_last_error_msg());
-		}
-
-		return md5($content);
+		return $this->ref;
 	}
 
 	public function getBody( RequestInfo $request ) : string {

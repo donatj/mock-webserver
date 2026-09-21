@@ -11,8 +11,15 @@ use donatj\MockWebServer\ResponseInterface;
  */
 class NotFoundResponse implements ResponseInterface {
 
+	/** @var string */
+	private $ref;
+
+	public function __construct() {
+		$this->ref = bin2hex(random_bytes(16));
+	}
+
 	public function getRef() : string {
-		return md5(MockWebServer::VND . '.not-found');
+		return $this->ref;
 	}
 
 	public function getBody( RequestInfo $request ) : string {

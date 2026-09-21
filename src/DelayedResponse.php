@@ -9,6 +9,8 @@ namespace donatj\MockWebServer;
  */
 class DelayedResponse implements InitializingResponseInterface, MultiResponseInterface {
 
+	/** @var string */
+	private $ref;
 	/** @var int Microseconds to delay the response by. */
 	protected $delay;
 	/** @var \donatj\MockWebServer\ResponseInterface */
@@ -24,6 +26,7 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 		int $delay,
 		?callable $usleep = null
 	) {
+		$this->ref      = bin2hex(random_bytes(16));
 		$this->response = $response;
 		$this->delay    = $delay;
 
@@ -34,7 +37,7 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 	}
 
 	public function getRef() : string {
-		return md5('delayed.' . $this->delay . '.' . $this->response->getRef());
+		return $this->ref;
 	}
 
 	public function initialize( RequestInfo $request ) : void {

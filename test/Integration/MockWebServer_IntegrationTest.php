@@ -114,6 +114,16 @@ class MockWebServer_IntegrationTest extends TestCase {
 		$this->assertEquals("Past the end of the ResponseStack", $content);
 	}
 
+	public function testSharedResponseStackUsesSingleResponseReference() : void {
+		$response = new ResponseStack(new Response('Response One'), new Response('Response Two'));
+
+		$firstUrl  = self::$server->setResponseOfPath('/shared-response-stack-first', $response);
+		$secondUrl = self::$server->setResponseOfPath('/shared-response-stack-second', $response);
+
+		$this->assertSame('Response One', file_get_contents($firstUrl));
+		$this->assertSame('Response Two', file_get_contents($secondUrl));
+	}
+
 	public function testHttpMethods() : void {
 		$methods = [
 			ResponseByMethod::METHOD_GET,

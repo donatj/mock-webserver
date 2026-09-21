@@ -5,7 +5,7 @@ namespace donatj\MockWebServer;
 interface ResponseInterface {
 
 	/**
-	 * Get a unique identifier for the response.
+	 * Get a stable, unique identifier for the response instance.
 	 *
 	 * Expected to be 32 characters of hexadecimal
 	 *

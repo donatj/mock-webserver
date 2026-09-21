@@ -10,13 +10,15 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseByMethod_RegressionTest extends TestCase {
 
-	public function testGetRefIsUniquePerResponse() : void {
+	public function testGetRefIsUniquePerInstance() : void {
 		$response = new Response('response');
+		$first    = new ResponseByMethod([ ResponseByMethod::METHOD_GET => $response ]);
 
+		$this->assertSame($first->getRef(), $first->getRef(), 'A response ref must remain stable');
 		$this->assertNotSame(
+			$first->getRef(),
 			(new ResponseByMethod([ ResponseByMethod::METHOD_GET => $response ]))->getRef(),
-			(new ResponseByMethod([ ResponseByMethod::METHOD_POST => $response ]))->getRef(),
-			'Response maps with different methods must not share storage'
+			'Independent response maps must not share storage'
 		);
 	}
 
