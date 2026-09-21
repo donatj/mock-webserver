@@ -21,6 +21,8 @@ class ResponseByMethod implements MultiResponseInterface {
 
 	/** @var ResponseInterface */
 	private $defaultResponse;
+	/** @var string */
+	private $ref;
 
 	/** @var string|null */
 	private $latestMethod;
@@ -43,15 +45,12 @@ class ResponseByMethod implements MultiResponseInterface {
 		} else {
 			$this->defaultResponse = new Response('MethodResponse - Method Not Defined', [], 501);
 		}
+
+		$this->ref = bin2hex(random_bytes(16));
 	}
 
 	public function getRef() : string {
-		$refBase = $this->defaultResponse->getRef();
-		foreach( $this->responses as $response ) {
-			$refBase .= $response->getRef();
-		}
-
-		return md5($refBase);
+		return $this->ref;
 	}
 
 	public function getBody( RequestInfo $request ) : string {

@@ -27,14 +27,11 @@ class ResponseStack implements InitializingResponseInterface, MultiResponseInter
 	 * Accepts a variable number of ResponseInterface objects
 	 */
 	public function __construct(ResponseInterface ...$responses) {
-		$refBase   = '';
 		foreach( $responses as $response ) {
 			$this->responses[] = $response;
-
-			$refBase .= $response->getRef();
 		}
 
-		$this->ref = md5($refBase);
+		$this->ref = bin2hex(random_bytes(16));
 
 		$this->currentResponse = reset($this->responses) ?: null;
 		$this->pastEndResponse = new Response('Past the end of the ResponseStack', [], 404);

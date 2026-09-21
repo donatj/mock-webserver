@@ -34,7 +34,7 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 	}
 
 	public function getRef() : string {
-		return md5('delayed.' . $this->response->getRef());
+		return md5('delayed.' . $this->delay . '.' . $this->response->getRef());
 	}
 
 	public function initialize( RequestInfo $request ) : void {

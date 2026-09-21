@@ -67,4 +67,14 @@ class DelayedResponseTest extends TestCase {
 		$this->assertNotSame($resp1->getRef(), $resp2->getRef(), 'Ref is unique per response');
 	}
 
+	public function testGetRefIncludesDelay() : void {
+		$response = new Response('foo');
+
+		$this->assertNotSame(
+			(new DelayedResponse($response, 1234))->getRef(),
+			(new DelayedResponse($response, 5678))->getRef(),
+			'Delayed responses with different delays must not share storage'
+		);
+	}
+
 }
