@@ -39,6 +39,10 @@ class DelayedResponse implements InitializingResponseInterface, MultiResponseInt
 
 	public function initialize( RequestInfo $request ) : void {
 		($this->usleep)($this->delay);
+
+		if( $this->response instanceof InitializingResponseInterface ) {
+			$this->response->initialize($request);
+		}
 	}
 
 	public function getBody( RequestInfo $request ) : string {
