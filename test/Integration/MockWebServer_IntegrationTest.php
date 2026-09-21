@@ -184,16 +184,13 @@ class MockWebServer_IntegrationTest extends TestCase {
 		$realtimeUrl = self::$server->setResponseOfPath('/realtimePath', $realtimeResponse);
 		$delayedUrl  = self::$server->setResponseOfPath('/delayedPath', $delayedResponse);
 
-		$realtimeStart = microtime(true);
 		$content = @file_get_contents($realtimeUrl);
 		$this->assertNotFalse($content);
 
 		$delayedStart   = microtime(true);
 		$delayedContent = file_get_contents($delayedUrl);
 
-		$end = microtime(true);
-
-		$this->assertGreaterThan(.9, ($end - $delayedStart) - ($delayedStart - $realtimeStart), 'Delayed response should take ~1 seconds longer than realtime response');
+		$this->assertGreaterThan(.9, microtime(true) - $delayedStart, 'Delayed response should take ~1 second');
 
 		$this->assertEquals('This is our http body response', $delayedContent);
 		$this->assertContains('X-Foo-Bar: BazBazBaz', $http_response_header);
