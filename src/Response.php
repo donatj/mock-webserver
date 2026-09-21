@@ -4,8 +4,8 @@ namespace donatj\MockWebServer;
 
 class Response implements ResponseInterface {
 
-	/** @var string */
-	private $ref;
+	use ResponseRefTrait;
+
 	/** @var string */
 	protected $body;
 	/** @var array */
@@ -17,14 +17,10 @@ class Response implements ResponseInterface {
 	 * Response constructor.
 	 */
 	public function __construct( string $body, array $headers = [], int $status = 200 ) {
-		$this->ref     = bin2hex(random_bytes(16));
+		$this->initializeResponseRef();
 		$this->body    = $body;
 		$this->headers = $headers;
 		$this->status  = $status;
-	}
-
-	public function getRef() : string {
-		return $this->ref;
 	}
 
 	public function getBody( RequestInfo $request ) : string {

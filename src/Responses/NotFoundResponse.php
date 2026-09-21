@@ -5,21 +5,17 @@ namespace donatj\MockWebServer\Responses;
 use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\ResponseInterface;
+use donatj\MockWebServer\ResponseRefTrait;
 
 /**
  * Basic Built-In 404 Response
  */
 class NotFoundResponse implements ResponseInterface {
 
-	/** @var string */
-	private $ref;
+	use ResponseRefTrait;
 
 	public function __construct() {
-		$this->ref = bin2hex(random_bytes(16));
-	}
-
-	public function getRef() : string {
-		return $this->ref;
+		$this->initializeResponseRef();
 	}
 
 	public function getBody( RequestInfo $request ) : string {

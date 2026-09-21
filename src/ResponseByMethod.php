@@ -7,6 +7,8 @@ namespace donatj\MockWebServer;
  */
 class ResponseByMethod implements MultiResponseInterface {
 
+	use ResponseRefTrait;
+
 	public const METHOD_GET     = 'GET';
 	public const METHOD_POST    = 'POST';
 	public const METHOD_PUT     = 'PUT';
@@ -21,9 +23,6 @@ class ResponseByMethod implements MultiResponseInterface {
 
 	/** @var ResponseInterface */
 	private $defaultResponse;
-	/** @var string */
-	private $ref;
-
 	/** @var string|null */
 	private $latestMethod;
 
@@ -46,11 +45,7 @@ class ResponseByMethod implements MultiResponseInterface {
 			$this->defaultResponse = new Response('MethodResponse - Method Not Defined', [], 501);
 		}
 
-		$this->ref = bin2hex(random_bytes(16));
-	}
-
-	public function getRef() : string {
-		return $this->ref;
+		$this->initializeResponseRef();
 	}
 
 	public function getBody( RequestInfo $request ) : string {
