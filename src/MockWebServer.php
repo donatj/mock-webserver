@@ -23,18 +23,11 @@ class MockWebServer {
 	private $tmpDir;
 
 	/**
-	 * Contain link to opened process resource
+	 * Platform-specific process runner
 	 *
-	 * @var resource
+	 * @var ProcessRunnerInterface
 	 */
-	private $process;
-
-	/**
-	 * Contains the descriptors for the process after it has been started
-	 *
-	 * @var resource[]
-	 */
-	private $descriptors = [];
+	private $processRunner;
 
 	/**
 	 * TestWebServer constructor.
@@ -50,6 +43,7 @@ class MockWebServer {
 		}
 
 		$this->tmpDir = $this->getTmpDir();
+		$this->processRunner = $this->createProcessRunner();
 	}
 
 	/**
@@ -62,26 +56,11 @@ class MockWebServer {
 
 		$script = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'server' . DIRECTORY_SEPARATOR . 'server.php';
 
-		$stdout = tempnam(sys_get_temp_dir(), 'mockserv-stdout-');
-		$cmd    = sprintf("%s -S %s:%d %s",
-			escapeshellarg(PHP_BINARY),
-			escapeshellarg($this->host),
-			$this->port,
-			escapeshellarg($script)
-		);
-
-		if( !putenv(self::TMP_ENV . '=' . $this->tmpDir) ) {
-			throw new Exceptions\RuntimeException('Unable to put environmental variable');
-		}
-
-		$fullCmd = sprintf('%s > %s 2>&1',
-			$cmd,
-			escapeshellarg($stdout)
-		);
-
 		InternalServer::incrementRequestCounter($this->tmpDir, 0);
 
-		[ $this->process, $this->descriptors ] = $this->startServer($fullCmd);
+		$env = [ self::TMP_ENV => $this->tmpDir ];
+
+		$this->processRunner->startProcess(PHP_BINARY, $this->host, $this->port, $script, $env);
 
 		for( $i = 0; $i <= 20; $i++ ) {
 			usleep(100000);
@@ -96,53 +75,21 @@ class MockWebServer {
 		if( !$this->isRunning() ) {
 			throw new Exceptions\ServerException("Failed to start server. Is something already running on port {$this->port}?");
 		}
-
-		register_shutdown_function(function () {
-			if( $this->isRunning() ) {
-				$this->stop();
-			}
-		});
 	}
 
 	/**
 	 * Is the Web Server currently running?
+	 * @phpstan-impure
 	 */
 	public function isRunning() : bool {
-		if( !is_resource($this->process) ) {
-			return false;
-		}
-
-		$processStatus = proc_get_status($this->process);
-
-		if( !$processStatus ) {
-			return false;
-		}
-
-		return $processStatus['running'];
+		return $this->processRunner->isRunning();
 	}
 
 	/**
 	 * Stop the Web Server
 	 */
 	public function stop() : void {
-		if( $this->isRunning() ) {
-			proc_terminate($this->process);
-
-			$attempts = 0;
-			while( $this->isRunning() ) {
-				if( ++$attempts > 1000 ) {
-					throw new Exceptions\ServerException('Failed to stop server.');
-				}
-
-				usleep(10000);
-			}
-		}
-
-		foreach( $this->descriptors as $descriptor ) {
-			@fclose($descriptor);
-		}
-
-		$this->descriptors = [];
+		$this->processRunner->stop();
 	}
 
 	/**
@@ -315,55 +262,14 @@ class MockWebServer {
 	}
 
 	/**
-	 * @return array{resource,array{resource,resource,resource}}
+	 * Create the appropriate process runner for the current platform
 	 */
-	private function startServer( string $fullCmd ) : array {
-		if( !$this->isWindowsPlatform() ) {
-			// We need to prefix exec to get the correct process http://php.net/manual/ru/function.proc-get-status.php#93382
-			$fullCmd = 'exec ' . $fullCmd;
+	private function createProcessRunner() : ProcessRunnerInterface {
+		if( $this->isWindowsPlatform() ) {
+			return new ProcessRunners\WindowsProcessRunner;
 		}
 
-		$pipes = [];
-		$env   = null;
-		$cwd   = null;
-
-		$stdoutf = tempnam(sys_get_temp_dir(), 'MockWebServer.stdout');
-		if( $stdoutf === false ) {
-			throw new RuntimeException('error creating stdout temp file');
-		}
-
-		$stderrf = tempnam(sys_get_temp_dir(), 'MockWebServer.stderr');
-		if( $stderrf === false ) {
-			throw new RuntimeException('error creating stderr temp file');
-		}
-
-		$stdin = fopen('php://stdin', 'rb');
-		if( $stdin === false ) {
-			throw new RuntimeException('error opening stdin');
-		}
-
-		$stdout = fopen($stdoutf, 'ab');
-		if( $stdout === false ) {
-			throw new RuntimeException('error opening stdout');
-		}
-
-		$stderr = fopen($stderrf, 'ab');
-		if( $stderr === false ) {
-			throw new RuntimeException('error opening stderr');
-		}
-
-		$descriptorSpec = [ $stdin, $stdout, $stderr ];
-
-		$process = proc_open($fullCmd, $descriptorSpec, $pipes, $cwd, $env, [
-			'suppress_errors' => false,
-			'bypass_shell'    => true,
-		]);
-
-		if( $process === false ) {
-			throw new Exceptions\ServerException('Error starting server');
-		}
-
-		return [ $process, $descriptorSpec ];
+		return new ProcessRunners\PosixProcessRunner;
 	}
 
 }
