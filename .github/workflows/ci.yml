@@ -32,6 +32,9 @@ jobs:
     - name: Test with phpunit
       run: vendor/bin/phpunit
 
+    - name: Check documentation with mddoc
+      run: ./vendor/bin/mddoc --dry-run=true
+
     - name: Install PHPStan if PHP >= 7.4
       if: startsWith(matrix.php-versions, '7.4') || startsWith(matrix.php-versions, '8.')
       run: |
