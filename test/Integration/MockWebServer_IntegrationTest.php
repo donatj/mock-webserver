@@ -312,6 +312,9 @@ class MockWebServer_IntegrationTest extends TestCase {
 
 		$this->assertSame($status, curl_getinfo($ch, CURLINFO_HTTP_CODE));
 
+		// Close request to clear up some resources
+		curl_close($ch);
+
 		$request = self::$server->getLastRequest();
 
 		$this->assertSame($uri . '?' . $query, $request->getRequestUri());
