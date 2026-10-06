@@ -1,6 +1,6 @@
 <mddoc>
-	<docpage target="README.md" autoloader="psr4" autoloader-root="src"
-			 autoloader-root-namespace="donatj\MockWebServer">
+	<docpage target="README.md">
+		<autoloader type="psr4" root="src" namespace="donatj\MockWebServer" />
 		<section title="Mock Web Server">
 			<badge-poser type="version"/>
 			<badge-poser type="license"/>
@@ -13,8 +13,8 @@ Unit testing HTTP requests can be difficult, especially in cases where injecting
 Mock Web Server creates a local Web Server you can make predefined requests against.
 ]]></text>
 			<section title="Documentation">
-				<docpage target="docs/docs.md" autoloader="psr4" autoloader-root="src"
-						 autoloader-root-namespace="donatj\MockWebServer">
+				<docpage target="docs/docs.md">
+					<autoloader type="psr4" root="src" namespace="donatj\MockWebServer" />
 					<replace regex="true" search="/127\.0\.0\.1:\d+/" replace="127.0.0.1:8123">
 						<section title="Documentation">
 							<file name="src/MockWebServer.php"/>

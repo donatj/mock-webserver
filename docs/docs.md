@@ -17,12 +17,12 @@ class MockWebServer {
 ### Method: MockWebServer->__construct
 
 ```php
-function __construct([ int $port = 0 [, string $host = '127.0.0.1']])
+function __construct(int $port = 0, string $host = '127.0.0.1')
 ```
 
 TestWebServer constructor.
 
-#### Parameters:
+#### Parameters
 
 - ***int*** `$port` - Network port to run on
 - ***string*** `$host` - Listening hostname
@@ -32,7 +32,7 @@ TestWebServer constructor.
 ### Method: MockWebServer->start
 
 ```php
-function start() : void
+function start(): void
 ```
 
 Start the Web Server on the selected port and host
@@ -42,7 +42,7 @@ Start the Web Server on the selected port and host
 ### Method: MockWebServer->isRunning
 
 ```php
-function isRunning() : bool
+function isRunning(): bool
 ```
 
 Is the Web Server currently running?
@@ -52,7 +52,7 @@ Is the Web Server currently running?
 ### Method: MockWebServer->stop
 
 ```php
-function stop() : void
+function stop(): void
 ```
 
 Stop the Web Server
@@ -62,7 +62,7 @@ Stop the Web Server
 ### Method: MockWebServer->getServerRoot
 
 ```php
-function getServerRoot() : string
+function getServerRoot(): string
 ```
 
 Get the HTTP root of the webserver  
@@ -73,12 +73,14 @@ Get the HTTP root of the webserver
 ### Method: MockWebServer->getUrlOfResponse
 
 ```php
-function getUrlOfResponse(\donatj\MockWebServer\ResponseInterface $response) : string
+function getUrlOfResponse(
+	\donatj\MockWebServer\ResponseInterface $response,
+): string
 ```
 
 Get a URL providing the specified response.
 
-#### Returns:
+#### Return Value
 
 - ***string*** - URL where response can be found
 
@@ -87,7 +89,10 @@ Get a URL providing the specified response.
 ### Method: MockWebServer->setResponseOfPath
 
 ```php
-function setResponseOfPath(string $path, \donatj\MockWebServer\ResponseInterface $response) : string
+function setResponseOfPath(
+	string $path,
+	\donatj\MockWebServer\ResponseInterface $response,
+): string
 ```
 
 Set a specified path to provide a specific response
@@ -97,7 +102,9 @@ Set a specified path to provide a specific response
 ### Method: MockWebServer->setDefaultResponse
 
 ```php
-function setDefaultResponse(\donatj\MockWebServer\ResponseInterface $response) : void
+function setDefaultResponse(
+	\donatj\MockWebServer\ResponseInterface $response,
+): void
 ```
 
 Override the default server response, e.g. Fallback or 404
@@ -107,7 +114,7 @@ Override the default server response, e.g. Fallback or 404
 ### Method: MockWebServer->getLastRequest
 
 ```php
-function getLastRequest() : ?\donatj\MockWebServer\RequestInfo
+function getLastRequest(): ?\donatj\MockWebServer\RequestInfo
 ```
 
 Get the previous requests associated request data.
@@ -117,7 +124,7 @@ Get the previous requests associated request data.
 ### Method: MockWebServer->getRequestByOffset
 
 ```php
-function getRequestByOffset(int $offset) : ?\donatj\MockWebServer\RequestInfo
+function getRequestByOffset(int $offset): ?\donatj\MockWebServer\RequestInfo
 ```
 
 Get request by offset  
@@ -130,7 +137,7 @@ If offset is negative, the request will be that from the end of the requests.
 ### Method: MockWebServer->getHost
 
 ```php
-function getHost() : string
+function getHost(): string
 ```
 
 Get the host of the server.
@@ -140,7 +147,7 @@ Get the host of the server.
 ### Method: MockWebServer->getPort
 
 ```php
-function getPort() : int
+function getPort(): int
 ```
 
 Get the port the network server is to be ran on.
@@ -150,7 +157,7 @@ Get the port the network server is to be ran on.
 ### Method: Response->__construct
 
 ```php
-function __construct(string $body [, array $headers = [] [, int $status = 200]])
+function __construct(string $body, array $headers = [], int $status = 200)
 ```
 
 Response constructor.
@@ -176,7 +183,7 @@ Accepts a variable number of ResponseInterface objects
 ### Method: ResponseStack->getPastEndResponse
 
 ```php
-function getPastEndResponse() : \donatj\MockWebServer\ResponseInterface
+function getPastEndResponse(): \donatj\MockWebServer\ResponseInterface
 ```
 
 Gets the response returned when the stack is exhausted.
@@ -186,7 +193,9 @@ Gets the response returned when the stack is exhausted.
 ### Method: ResponseStack->setPastEndResponse
 
 ```php
-function setPastEndResponse(\donatj\MockWebServer\ResponseInterface $pastEndResponse) : void
+function setPastEndResponse(
+	\donatj\MockWebServer\ResponseInterface $pastEndResponse,
+): void
 ```
 
 Set the response to return when the stack is exhausted.
@@ -214,24 +223,30 @@ class ResponseByMethod {
 ### Method: ResponseByMethod->__construct
 
 ```php
-function __construct([ array $responses = [] [, ?\donatj\MockWebServer\ResponseInterface $defaultResponse = null]])
+function __construct(
+	array $responses = [],
+	?\donatj\MockWebServer\ResponseInterface $defaultResponse = null,
+)
 ```
 
 MethodResponse constructor.
 
-#### Parameters:
+#### Parameters
 
 - ***array<string,\donatj\MockWebServer\ResponseInterface>*** `$responses` - A map of responses keyed by their method.
-- ***\donatj\MockWebServer\ResponseInterface*** | ***null*** `$defaultResponse` - The fallthrough response to return if a response for a given
-method is not found. If this is not defined the server will
-return an HTTP 501 error.
+- ***\donatj\MockWebServer\ResponseInterface*** | ***null*** `$defaultResponse` - The fallthrough response to return if a response for a
+given method is not found. If this is not defined the
+server will return an HTTP 501 error.
 
 ---
 
 ### Method: ResponseByMethod->setMethodResponse
 
 ```php
-function setMethodResponse(string $method, \donatj\MockWebServer\ResponseInterface $response) : void
+function setMethodResponse(
+	string $method,
+	\donatj\MockWebServer\ResponseInterface $response,
+): void
 ```
 
 Set the Response for the Given Method
@@ -245,10 +260,14 @@ This is useful for simulating slow responses and testing timeouts.
 ### Method: DelayedResponse->__construct
 
 ```php
-function __construct(\donatj\MockWebServer\ResponseInterface $response, int $delay [, ?callable $usleep = null])
+function __construct(
+	\donatj\MockWebServer\ResponseInterface $response,
+	int $delay,
+	?callable $usleep = null,
+)
 ```
 
-#### Parameters:
+#### Parameters
 
 - ***int*** `$delay` - Microseconds to delay the response
 
