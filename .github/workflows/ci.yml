@@ -37,3 +37,26 @@ jobs:
       run: |
        composer require --dev phpstan/phpstan:2.2.2
        vendor/bin/phpstan
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.5'
+        extensions: sockets, json, curl
+
+    - name: Install dependencies with composer
+      run: composer install
+
+    - name: Install mddoc
+      run: composer global require donatj/mddoc:0.13.0
+
+    - name: Check documentation with mddoc
+      run: $(composer global config bin-dir --absolute)/mddoc --dry-run=true mddoc.xml
