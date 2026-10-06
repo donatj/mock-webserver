@@ -5,7 +5,7 @@ namespace donatj\MockWebServer;
 /**
  * ResponseByMethod is used to vary the response to a request by the called HTTP Method.
  */
-class ResponseByMethod implements MultiResponseInterface {
+class ResponseByMethod implements InitializingResponseInterface, MultiResponseInterface {
 
 	public const METHOD_GET     = 'GET';
 	public const METHOD_POST    = 'POST';
@@ -64,6 +64,13 @@ class ResponseByMethod implements MultiResponseInterface {
 
 	public function getStatus( RequestInfo $request ) : int {
 		return $this->getMethodResponse($request)->getStatus($request);
+	}
+
+	public function initialize( RequestInfo $request ) : void {
+		$response = $this->getMethodResponse($request);
+		if( $response instanceof InitializingResponseInterface ) {
+			$response->initialize($request);
+		}
 	}
 
 	private function getMethodResponse( RequestInfo $request ) : ResponseInterface {
