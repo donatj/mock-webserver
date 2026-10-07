@@ -9,8 +9,7 @@ namespace donatj\MockWebServer;
  */
 class ResponseStack implements InitializingResponseInterface, MultiResponseInterface {
 
-	/** @var string */
-	private $ref;
+	use ResponseRefTrait;
 
 	/** @var \donatj\MockWebServer\ResponseInterface[] */
 	private $responses = [];
@@ -27,14 +26,11 @@ class ResponseStack implements InitializingResponseInterface, MultiResponseInter
 	 * Accepts a variable number of ResponseInterface objects
 	 */
 	public function __construct(ResponseInterface ...$responses) {
-		$refBase   = '';
 		foreach( $responses as $response ) {
 			$this->responses[] = $response;
-
-			$refBase .= $response->getRef();
 		}
 
-		$this->ref = md5($refBase);
+		$this->initializeResponseRef();
 
 		$this->currentResponse = reset($this->responses) ?: null;
 		$this->pastEndResponse = new Response('Past the end of the ResponseStack', [], 404);
@@ -51,10 +47,6 @@ class ResponseStack implements InitializingResponseInterface, MultiResponseInter
 		$this->currentResponse = reset($this->responses) ?: null;
 
 		return (bool)$this->currentResponse;
-	}
-
-	public function getRef() : string {
-		return $this->ref;
 	}
 
 	public function getBody( RequestInfo $request ) : string {

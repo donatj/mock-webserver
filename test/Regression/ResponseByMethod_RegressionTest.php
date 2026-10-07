@@ -10,6 +10,18 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseByMethod_RegressionTest extends TestCase {
 
+	public function testGetRefIsUniquePerInstance() : void {
+		$response = new Response('response');
+		$first    = new ResponseByMethod([ ResponseByMethod::METHOD_GET => $response ]);
+
+		$this->assertSame($first->getRef(), $first->getRef(), 'A response ref must remain stable');
+		$this->assertNotSame(
+			$first->getRef(),
+			(new ResponseByMethod([ ResponseByMethod::METHOD_GET => $response ]))->getRef(),
+			'Independent response maps must not share storage'
+		);
+	}
+
 	public function test_forwardNextAsExpected() : void {
 		$server = new MockWebServer;
 		$path   = $server->setResponseOfPath(
