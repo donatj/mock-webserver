@@ -59,4 +59,4 @@ jobs:
       run: composer global require donatj/mddoc:0.13.0
 
     - name: Check documentation with mddoc
-      run: $(composer global config bin-dir --absolute)/mddoc --dry-run=true mddoc.xml
+      run: php -d auto_prepend_file="$PWD/vendor/autoload.php" "$(composer global config bin-dir --absolute)/mddoc" --dry-run=true .mddoc.xml.dist
