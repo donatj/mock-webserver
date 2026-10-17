@@ -22,7 +22,8 @@ echo "Requesting: $url\n\n";
 
 $content = file_get_contents($url);
 
-// $http_response_header is a little known variable magically defined
-// in the current scope by file_get_contents with the response headers
-echo implode("\n", $http_response_header) . "\n\n";
+// PHP 8.3 and earlier should use $http_response_header here.
+$headers = http_get_last_response_headers();
+
+echo implode("\n", $headers) . "\n\n";
 echo $content . "\n";
