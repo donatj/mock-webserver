@@ -41,8 +41,9 @@ class ResponseStack implements InitializingResponseInterface, MultiResponseInter
 	}
 
 	public function initialize( RequestInfo $request ) : void {
-		if( $this->currentResponse instanceof InitializingResponseInterface ) {
-			$this->currentResponse->initialize($request);
+		$response = $this->currentResponse ?: $this->pastEndResponse;
+		if( $response instanceof InitializingResponseInterface ) {
+			$response->initialize($request);
 		}
 	}
 
