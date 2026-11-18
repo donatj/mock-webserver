@@ -2,9 +2,9 @@
 
 namespace donatj\MockWebServer\Responses;
 
-use donatj\MockWebServer\MockWebServer;
 use donatj\MockWebServer\RequestInfo;
 use donatj\MockWebServer\ResponseInterface;
+use donatj\MockWebServer\ResponseRefTrait;
 
 /**
  * The Built-In Default Response.
@@ -12,8 +12,10 @@ use donatj\MockWebServer\ResponseInterface;
  */
 class DefaultResponse implements ResponseInterface {
 
-	public function getRef() : string {
-		return md5(MockWebServer::VND . '.default-ref');
+	use ResponseRefTrait;
+
+	public function __construct() {
+		$this->initializeResponseRef();
 	}
 
 	public function getBody( RequestInfo $request ) : string {
